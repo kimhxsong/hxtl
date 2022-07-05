@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  dev:
+    image: dev:0704
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dev
+    volumes:
+      - ../src:/usr/local/src/dev
+    # ports:
+    #   - 4444:443
+    #   - 8888:80
+    #   - 2222:22

@@ -8,17 +8,13 @@ usage:
 	@echo "<command>: docker-compose command"
 	@echo "<name>: service_name specified in docker-compose.yml"
 
-.PHONY: build
-build:
-	@$(DC) build $(c)
-
 .PHONY: run
-run: build
-	@$(DC) run $(c)
+run:
+	@$(DC) run --build $(c)
 
 .PHONY: up
 up: build
-	@$(DC) up -d $(c)
+	@$(DC) up --build -d $(c)
 
 .PHONY: down
 down:
@@ -57,11 +53,10 @@ inspect:
 remove:
 	@$(DC) remove $(c)
 
-.PHONY: prune
-prune:
-	@docker system prune -a -f --volumes 
-# docker kill $(docker ps -qa)
-# docker rm $(docker ps -qa)
-# docker rmi $(docker images -qa)
-# docker volume rm $(docker volume ls -q)
-	@docker network rm $(docker network ls -q)
+.PHONY: dclean
+dclean:
+	-@2>/dev/null docker kill $(shell docker ps -qa)
+	-@2>/dev/null docker rm $(shell docker ps -qa)
+	-@2>/dev/null docker rmi $(shell docker images -qa)
+	-@2>/dev/null docker volume rm $(shell docker volume ls -q)
+	-@2>/dev/null docker network rm $(shell docker network ls -q)

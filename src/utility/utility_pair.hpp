@@ -1,6 +1,8 @@
 #ifndef UTILITY_PAIR_HPP_
 #define UTILITY_PAIR_HPP_
 
+
+
 namespace ft {
 
 template<class T1, class T2>
@@ -11,20 +13,18 @@ struct pair {
   T1 first;
   T2 second;
 
-// https://en.cppreference.com/w/cpp/utility/pair/pair
-  pair(T1 _first, T2 _second)
-    : first(_first),
-      second(_second) {}
+  pair();  // default
+  pair(const pair& pr);  // copy constructor
+  pair(const first_type& a, const second_type& b);  // initialization
 
-  operator=(T1 )
-
+  pair& operator=(const pair& pr);  // copy operator
 };
 
-template<class T1, class T2>
-pair<T1,T2> make_pair(T1 t, T2 u) {
-
-}
+template <class T1, class T2>
+pair<T1,T2> make_pair(T1 x, T2 y);
 
 }  // ft::
+
+#include "utility_pair.tpp"
 
 #endif  // UTILITY_PAIR_HPP_

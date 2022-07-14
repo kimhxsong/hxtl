@@ -10,11 +10,11 @@ usage:
 
 .PHONY: run
 run:
-	@$(DC) run --build $(c)
+	@$(DC) run $(c)
 
 .PHONY: up
 up: build
-	@$(DC) up --build -d $(c)
+	@$(DC) up -d $(c)
 
 .PHONY: down
 down:

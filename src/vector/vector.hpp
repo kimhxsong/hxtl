@@ -6,6 +6,7 @@
 
 #include "../iterator/reverse_iterator.hpp"
 #include "../iterator/random_iterator.hpp"
+#include "../type_traits/type_traits.hpp"
 
 namespace ft {
 
@@ -27,12 +28,11 @@ class vector {
 
   explicit vector(const allocator_type& alloc = allocator_type());
   explicit vector(size_type n, const value_type& val = value_type(),
-                   const allocator_type& alloc = allocator_type());
-
+                  const allocator_type& alloc = allocator_type());
   template <class InputIterator>
-  vector(InputIterator first, InputIterator last,
+  vector(InputIterator first,
+         typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last,
          const allocator_type& alloc = allocator_type());
-
   vector(const vector<T, Alloc>& x);
   ~vector();
   vector& operator=(const vector<T, Alloc>& rhs);

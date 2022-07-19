@@ -2,54 +2,40 @@
 // #include "vector.hpp"
 #include <iostream>
 
-// void test_ctor() {
-//     vector v;
-//     vector v2(5);
-//     v2.reserve(2);
-//     v2.resize(100);
-//     v2.resize(50);
-//     std::cout << v2.max_size() << '\n';
-// }
-
 #include <vector>
 #include <set>
 #include "vector.hpp"
 
+// 생성자 호출 가능한지
+void test_primitive_constructor() {
+  { 
+    std::vector<int> vec_1;
+    std::vector<int> vec_2(10);
+    std::vector<int> vec_3(10, 10);
+    std::vector<int> vec_4(vec_3.begin(), vec_3.end());
+  }
+  {
+    ft::vector<int> vec_1;
+    ft::vector<int> vec_2(10);
+    ft::vector<int> vec_3(10, 10);
+    ft::vector<int>::iterator _begin = vec_2.begin();
+    ft::vector<int>::iterator _end = vec_2.end();
+    ft::vector<int> vec_4(_begin, _end);
+  }
+
+  { 
+    std::vector<int> vec_1;
+    std::vector<int> vec_2(10);
+    ft::vector<int> vec_3(vec_2.begin(), vec_2.end());
+  }
+
+  { 
+    ft::vector<int> vec_1;
+    ft::vector<int> vec_2(10);
+    std::vector<int> vec_3(vec_2.begin(), vec_2.end());
+  }
+}
+
 int main() {
-    {
-        // std::vector<int> v1;
-        // for (int i = 0; i < 100; i++) {
-        //     v1.push_back(i);
-        // }
-        // for (std::vector<int>::iterator first = v1.begin(); first != v1.end(); first++) {
-        //     std::cout << *first << std::endl;
-        // }
-        // for (std::vector<int>::const_iterator first = v1.begin(); first != v1.end(); first++) {
-        //     std::cout << *first << std::endl;
-        // }
-        // for (std::vector<int>::reverse_iterator first = v1.rbegin(); first != v1.rend(); first++) {
-        //     std::cout << *first << std::endl;
-        // }
-        // for (std::vector<int>::const_reverse_iterator first = v1.rbegin(); first != v1.rend(); first++) {
-        //     std::cout << *first << std::endl;
-        // }
-    }
-    {
-        ft::vector<int> v1;
-        for (int i = 0; i < 100; i++) {
-            v1.push_back(i);
-        }
-        // for (ft::vector<int>::iterator first = v1.begin(); first != v1.end(); first++) {
-        //     std::cout << first << std::endl;  // TODO: 컴파일 불가능하도록 만들어야 함.
-        // }
-        for (ft::vector<int>::const_iterator first = v1.begin(); first != v1.end(); first++) {
-            std::cout << first << std::endl;
-        }
-        // for (ft::vector<int>::reverse_iterator first = v1.rbegin(); first != v1.rend(); first++) {
-        //     std::cout << *first << std::endl;
-        // }
-        for (ft::vector<int>::const_reverse_iterator first = v1.rbegin(); first != v1.rend(); first++) {
-            std::cout << *first << std::endl;
-        }
-    }
+  test_primitive_constructor();
 }

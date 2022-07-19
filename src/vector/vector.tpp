@@ -12,6 +12,9 @@
 #include <limits>
 #include <exception>
 
+#include "vector.hpp"
+#include <type_traits>
+
 namespace ft {
 
 template<typename T, typename Alloc>
@@ -24,9 +27,9 @@ vector<T, Alloc>::vector(const allocator_type& alloc)
 }
 
 template <typename T, typename Alloc>
-vector<T, Alloc>::vector(size_type n, \
-                  const value_type& val, \
-                  const allocator_type& alloc)
+vector<T, Alloc>::vector(size_type n,
+                         const value_type& val,
+                         const allocator_type& alloc)
   : alloc_(alloc),
     elem_(alloc_.allocate(n)),
     space_(n),
@@ -39,19 +42,17 @@ vector<T, Alloc>::vector(size_type n, \
   }
 }
 
-template<typename T, typename Alloc>
-template<class InputIterator>
+template <typename T, typename Alloc>
+template <class InputIterator>
 vector<T, Alloc>::vector(InputIterator first,
-                         InputIterator last,
-                         const allocator_type& alloc)
+      typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last,
+      const allocator_type& alloc)
   : alloc_(alloc),
     elem_(0),
     space_(0),
     size_(0) {
-  iterator s(first);
-  iterator e(last);
-  for (; s != e; s++) {
-    this->push_back(*s);
+  for (; first != last; first++) {
+    this->push_back(*first);
   }
 }
 

@@ -4,25 +4,24 @@
 #include <ostream>
 
 #include "iterator_traits.hpp"
-
 namespace ft {
 
 template <class T>
 class random_iterator {
  public:
-  typedef typename ft::iterator_traits<T*>::iterator_category iterator_category;
-  typedef typename ft::iterator_traits<T*>::value_type value_type;
-  typedef typename ft::iterator_traits<T*>::difference_type difference_type;
-  typedef typename ft::iterator_traits<T*>::pointer pointer;
-  typedef typename ft::iterator_traits<T*>::reference reference;
+  typedef typename ft::iterator_traits<T>::iterator_category iterator_category;
+  typedef typename ft::iterator_traits<T>::value_type value_type;
+  typedef typename ft::iterator_traits<T>::difference_type difference_type;
+  typedef typename ft::iterator_traits<T>::pointer pointer;
+  typedef typename ft::iterator_traits<T>::reference reference;
 
   random_iterator();
   random_iterator(pointer p);
-  random_iterator(const random_iterator<T>& other);
+  random_iterator(const random_iterator<value_type*>& other);
 
   ~random_iterator();
 
-  random_iterator& operator=(const random_iterator<T>& other);
+  random_iterator& operator=(const random_iterator<value_type*>& other);
 
   reference operator*() const;
   pointer operator->() const;
@@ -56,6 +55,9 @@ class random_iterator {
 };
 
 }  // namespace ft
+
+template <class T>
+ft::random_iterator<T> operator+(int n, const ft::random_iterator<T>& it);
 
 template <class T>
 std::ostream& operator<<(std::ostream& os, const ft::random_iterator<T>& it);

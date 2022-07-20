@@ -17,13 +17,16 @@ class reverse_iterator {
 
   reverse_iterator();
   explicit reverse_iterator(iterator_type x);
-  reverse_iterator(const reverse_iterator<Iterator>& other);
+  
+  template <class Iter>
+  reverse_iterator(const reverse_iterator<Iter>& other);
 
   iterator_type base() const;
 
   reference operator*() const;
 
-  reverse_iterator& operator=(const reverse_iterator<Iterator>& other);
+  template <class Iter>
+  reverse_iterator& operator=(const reverse_iterator<Iter>& other);
 
   reverse_iterator& operator++();
   reverse_iterator& operator--();
@@ -40,8 +43,8 @@ class reverse_iterator {
   pointer operator->() const;
   reference operator[](difference_type n) const;
 
- protected:
   iterator_type current;
+ protected:
 };
 
 }  // namespace ft

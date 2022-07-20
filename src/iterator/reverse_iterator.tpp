@@ -17,8 +17,9 @@ template<class Iterator>
 reverse_iterator<Iterator>::reverse_iterator(iterator_type x)
   : current(x) {}
 
-template<class Iterator>
-reverse_iterator<Iterator>::reverse_iterator(const reverse_iterator<Iterator>& other)
+template <class Iterator>
+template <class Iter>
+reverse_iterator<Iterator>::reverse_iterator(const reverse_iterator<Iter>& other)
   : current(other.current) {}
 
 template<class Iterator>
@@ -28,17 +29,18 @@ typename reverse_iterator<Iterator>::iterator_type reverse_iterator<Iterator>::b
 
 template<class Iterator>
 typename reverse_iterator<Iterator>::reference reverse_iterator<Iterator>::operator*() const {
-  return *current;
+  return *(current - 1);
 }
 
 template<class Iterator>
 typename reverse_iterator<Iterator>::pointer reverse_iterator<Iterator>::operator->() const {
-  return current;
+  return &*(current - 1);
 }
 
 template<class Iterator>
+template<class Iter> // REVIEW...
 reverse_iterator<Iterator>& reverse_iterator<Iterator>::operator=(
-    const reverse_iterator<Iterator>& other) {
+    const reverse_iterator<Iter>& other) {
   current = other.current;
   return *this;
 }
@@ -72,13 +74,13 @@ reverse_iterator<Iterator> reverse_iterator<Iterator>::operator--(int) {
 template<class Iterator>
 reverse_iterator<Iterator> reverse_iterator<Iterator>::operator+(
     difference_type n) const {
-  return current - n;
+  return reverse_iterator(current - n);
 }
 
 template<class Iterator>
 reverse_iterator<Iterator> reverse_iterator<Iterator>::operator-(
     difference_type n) const {
-  return current + n;
+  return reverse_iterator(current + n);
 }
 
 template<class Iterator>
@@ -97,7 +99,7 @@ reverse_iterator<Iterator>& reverse_iterator<Iterator>::operator-=(
 
 template<class Iterator>
 typename reverse_iterator<Iterator>::reference reverse_iterator<Iterator>::operator[](difference_type n) const {
-  return *(current + n);
+  return *(current - n - 1);
 }
 
 }  // namespace ft

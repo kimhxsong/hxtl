@@ -5,8 +5,6 @@
 #ifndef VECTOR_TPP_
 #define VECTOR_TPP_
 
-#include "../iterator/random_iterator.hpp"
-
 #include <iostream>
 #include <memory>
 #include <limits>
@@ -401,9 +399,5 @@ template <class T, class Alloc>
 bool operator>=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
   return !(lhs < rhs);
 }
-
-
-
-
 
 #endif // VECTOR_TPP_

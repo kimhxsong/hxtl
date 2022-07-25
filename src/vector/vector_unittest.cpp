@@ -4,8 +4,8 @@
 #include <string>
 
 #include "gtest/gtest.h"
-
-namespace ft = std;
+#include "vector.hpp"
+// namespace ft = std;
 
 TEST(VectorConstructor, default_constructor) {
   std::vector<int> vi_1;
@@ -85,9 +85,14 @@ TEST(VectorModifiers, pop_back) {
 TEST(VectorModifiers, insert) {
   std::vector<int> vi_1;
   std::vector<int> vi_2;
+  ft::vector<int> __vi_1;
+  ft::vector<int> __vi_2;
   vi_1.insert(vi_1.begin(), 5);  // single element(1)
   vi_1.insert(vi_1.begin(), 10, 42);  // fill(2)
   vi_2.insert(vi_2.begin(), vi_1.begin(), vi_1.end());  // range(3)
+  __vi_1.insert(__vi_1.begin(), 5);  // single element(1)
+  __vi_1.insert(__vi_1.begin(), 10, 42);  // fill(2)
+  __vi_2.insert(__vi_2.begin(), __vi_1.begin(), __vi_1.end());  // range(3)
 }
 
 TEST(VectorModifiers, erase) {

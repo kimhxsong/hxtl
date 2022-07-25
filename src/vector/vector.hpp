@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <memory>
+#include <iterator>
 
 #include "vector_iterator.hpp"
 #include "../iterator/reverse_iterator.hpp"
@@ -72,7 +73,8 @@ class vector {
   iterator insert (iterator position, const value_type& val);
   void insert (iterator position, size_type n, const value_type& val);
   template <class InputIterator>
-  void insert (iterator position, InputIterator first, InputIterator last);
+  void insert (iterator position,InputIterator first,
+               typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last);
   iterator erase (iterator position);
   iterator erase (iterator first, iterator last);
   void push_back(const value_type& val);

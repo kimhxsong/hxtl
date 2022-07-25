@@ -9,6 +9,7 @@
 #include <memory>
 #include <limits>
 #include <exception>
+#include <iterator>
 
 #include "vector.hpp"
 #include <type_traits>
@@ -204,7 +205,7 @@ void vector<T, Alloc>::reserve(size_type n) {
   }
   pointer elem = alloc_.allocate(n);
   for (size_type i = 0; i < size_; i++) {
-    alloc_.construct(&elem[i], elem_[i]);
+    alloc_.construct(&elem_[i], elem_[i]);
     alloc_.destroy(&elem_[i]);
   }
   alloc_.deallocate(elem_, space_);
@@ -284,87 +285,68 @@ void vector<T, Alloc>::pop_back() {
   size_--;
 }
 
-template<typename T, typename Alloc>
-typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position,
-                                           const typename vector<T, Alloc>::value_type& val) {
-  difference_type offset = position - begin();
-  if (size_ + 1 > space_) {
-    int new_space = space_ << 1;
-    if (new_space == 0) {
-      new_space++;
-    }
-    reserve(new_space);
-  }
-  position = begin() + offset;
-  for (iterator it = end(); position != it; it--) {
-    *it = *(it - 1);
-  }
-  *position = val;
-  size_++;
+template <typename T, typename Alloc>
+typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(
+    typename vector<T, Alloc>::iterator position,
+    const typename vector<T, Alloc>::value_type& val) {
+  this->insert(position, 1, val);
   return position;
 }
 
-
 template <typename T, typename Alloc>
-void vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position, typename vector<T, Alloc>::size_type n, const typename vector<T, Alloc>::value_type& val) {
-  difference_type offset = position - begin();
-  if (size_ + n > space_) {
-    reserve(size_ + n);
+void vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position,
+                              typename vector<T, Alloc>::size_type n,
+                              const typename vector<T, Alloc>::value_type& val) {
+  difference_type pos = std::distance(this->begin(), position);
+  size_type new_size = size_ + n;
+  reserve(new_size);
+  difference_type src = size_;
+  difference_type dest = new_size;
+  while (dest > size_ && src > pos) {
+    alloc_.construct(&elem_[--dest], elem_[--src]);
   }
-  position = begin() + offset;
-  for (iterator it = end() + n; position < it - n; it--) {
-    *it = *(it - n);
+  while (dest > size_ && n > 0) {
+    alloc_.construct(&elem_[--dest], val);
+    n--;
   }
   for (size_type i = 0; i < n; i++) {
-    *position++ = val;
+    elem_[pos + i] = val;
   }
-  size_ += n;
 }
 
 template <typename T, typename Alloc>
 template <class InputIterator>
-void vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position, InputIterator first, InputIterator last) {
-  difference_type offset = position - begin();
-  difference_type n = last - first;
-  if (size_ + n > space_) {
-    reserve(size_ + n);
+void vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position,
+                              InputIterator first,
+                              typename ft::enable_if<!ft::is_integral<InputIterator>::value,
+                              InputIterator>::type last) {
+  difference_type offset = std::distance(this->begin(), position);
+  size_type n = 0;
+  difference_type pos = std::distance(this->begin(), position);
+  size_type new_size = size_ + n;
+  reserve(new_size);
+  difference_type src = size_;
+  difference_type dest = new_size;
+  while (dest > size_ && src > pos) {
+    alloc_.construct(&elem_[--dest], elem_[--src]);
   }
-  position = begin() + offset;
-  for (iterator it = end() + n - 1; position < it - n; it--) {
-    *it = *(it - n);
+  while (dest > size_ && first != last) {
+    alloc_.construct(&elem_[--dest], *--last);
   }
+  iterator it(&elem_[pos]);
   while (first != last) {
-    *position++ = *first++;
+    *it++ = *first++;
   }
-  size_ += n;
 }
 
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator position) {
-  alloc_.destroy(&*position);
-  for (; position != this->end() - 1; position++) {
-    *position = *(position + 1);
-  }
-  alloc_.destroy(&*position);
-  size_--;
   return position;
 }
 
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator first, iterator last) {
-  difference_type distance = last - first;
-  for (iterator it = first; it != last; it++) {
-    alloc_.destroy(&*it);
-  }
-  while (first != last) {
-    *first = *(first + distance);
-    first++;
-  }
-  while (first != this->end()) {
-    alloc_.destroy(&*first);
-    first++;
-  }
-  size_ -= distance;
+  difference_type offset = last - first;
   return last;
 }
 
@@ -372,7 +354,7 @@ typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator first, iter
 
 template <class T, class Alloc>
 bool operator==(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
-  return lhs.size() == rhs.size() && std::equal(lhs.begin(), rhs.begin(), rhs.end());
+  return (lhs.size() == rhs.size()) && std::equal(lhs.begin(), lhs.end(), rhs.begin());
 }
 
 template <class T, class Alloc>
@@ -382,7 +364,7 @@ bool operator!=(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) 
 
 template <class T, class Alloc>
 bool operator<(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {
- return lhs.size() < rhs.size() || std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+ return (lhs.size() < rhs.size()) || std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 template <class T, class Alloc>

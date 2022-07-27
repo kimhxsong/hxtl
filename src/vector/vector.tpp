@@ -23,7 +23,6 @@ vector<T, Alloc>::vector(const allocator_type& alloc)
    elem_(0),
    space_(0),
    size_(0) {
-  std::cout << __func__ << std::endl;
 }
 
 template <typename T, typename Alloc>
@@ -34,7 +33,6 @@ vector<T, Alloc>::vector(size_type n,
     elem_(alloc_.allocate(n)),
     space_(n),
     size_(n) {
-  std::cout << __func__ << std::endl;
   assign(n, val);
 }
 

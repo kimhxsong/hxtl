@@ -1,5 +1,5 @@
 #ifndef VECTOR_HPP_
-#error what?
+#error  vector.tpp:
 #endif  // VECTOR_HPP_
 
 #ifndef VECTOR_TPP_
@@ -33,7 +33,9 @@ vector<T, Alloc>::vector(size_type n,
     elem_(alloc_.allocate(n)),
     space_(n),
     size_(n) {
-  assign(n, val);
+  for (size_type i = 0; i < n; i++) {
+    alloc_.construct(&elem_[i], val);
+  }
 }
 
 template <typename T, typename Alloc>
@@ -204,6 +206,8 @@ void vector<T, Alloc>::reserve(size_type n) {
   pointer elem = alloc_.allocate(n);
   for (size_type i = 0; i < size_; i++) {
     alloc_.construct(&elem_[i], elem_[i]);
+  }
+  for (size_type i = 0; i < size_; i++) {
     alloc_.destroy(&elem_[i]);
   }
   alloc_.deallocate(elem_, space_);
@@ -310,6 +314,7 @@ void vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position,
   for (size_type i = 0; i < n; i++) {
     elem_[pos + i] = val;
   }
+  size_ = new_size;
 }
 
 template <typename T, typename Alloc>
@@ -334,20 +339,42 @@ void vector<T, Alloc>::insert(typename vector<T, Alloc>::iterator position,
   while (first != last) {
     *it++ = *first++;
   }
+  size_ = new_size;
 }
 
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator position) {
+  difference_type pos = std::distance(begin(), position);
+  size_type n = 1;
+  while (pos + n < size_) {
+    elem_[pos] = elem_[pos + n];
+    pos++;
+  }
+  while (n > 0) {
+    alloc_.destroy(&elem_[size_ - 1]);
+    size_--;
+    n--;
+  }
   return position;
 }
 
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator first, iterator last) {
-  difference_type offset = last - first;
+  difference_type pos = std::distance(begin(), first);
+  size_type n = std::distance(first, last);
+  while (pos + n < size_) {
+    elem_[pos] = elem_[pos + n];
+    pos++;
+  }
+  while (n > 0) {
+    alloc_.destroy(&elem_[size_ - 1]);
+    size_--;
+    n--;
+  }
   return last;
 }
 
-}
+}  // namespace ft
 
 template <class T, class Alloc>
 bool operator==(const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs) {

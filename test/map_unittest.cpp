@@ -3,9 +3,11 @@
 #include <map>
 #include <string>
 
+
 #include "gtest/gtest.h"
 
-namespace ft = std;
+// namespace ft = std;
+#include "../map.hpp"
 
 using std::string;
 

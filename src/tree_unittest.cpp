@@ -161,6 +161,71 @@ TEST(tree_iterators, rbegin_rend) {
 
 }
 
+TEST(tree_iterators, bidirectional_iterator_test) {
+  ft::__tree<int, std::less<int>, std::allocator<int> > mytree;
+  ft::__tree<std::string, std::less<std::string>, std::allocator<int> > mytree2;
+
+  for (int i = 0; i < 21; i++) {
+    mytree.insert(i);
+  }
+
+  mytree2.insert("Hello");
+
+// Is default-constructible, copy-constructible, copy-assignable and destructible
+  ft::__tree<int, std::less<int>, std::allocator<int> >::iterator it = mytree.begin();
+  ft::__tree<int, std::greater<int>, std::allocator<int> >::iterator it2(it);
+  ft::__tree<int, std::plus<int>, std::allocator<int> >::iterator it3;
+  it3 = it2;
+
+// Can be compared for equivalence using the equality/inequality operators
+  EXPECT_EQ(it2 == it3, true);
+  EXPECT_EQ(it2 != mytree.end(), true);
+
+// Can be dereferenced as an rvalue (if in a dereferenceable state).
+  EXPECT_EQ(*it2 == 0, true);
+  EXPECT_EQ(mytree2.begin()->size() == std::string("Hello").size(), true);
+
+// For mutable iterators (non-constant iterators):
+// Can be dereferenced as an lvalue (if in a dereferenceable state).
+  *it2 = -1;
+  EXPECT_EQ(*it2 == -1, true);
+  *it2 = 0;
+
+// Can be incremented (if in a dereferenceable state).
+// The result is either also dereferenceable or a past-the-end iterator.
+// Two iterators that compare equal, keep comparing equal after being both increased.
+  ++it;
+  it++;
+  EXPECT_EQ(*it++ == 2, true);
+
+  --it;
+  it--;
+  EXPECT_EQ(*it-- == 1, true);
+}
+
+// TODO
+TEST(tree_iterators, convert_iterator_to_const_iterator) {
+  ft::__tree<int, std::less<int>, std::allocator<int> > mytree;
+
+  for (int i = 0; i < 21; i++) {
+    mytree.insert(i);
+  }
+
+  typedef ft::__tree<int, std::less<int>, std::allocator<int> >::iterator iterator;
+  typedef ft::__tree<int, std::less<int>, std::allocator<int> >::const_iterator const iterator;
+  iterator it = mytree.begin();
+  const_iterator cit;
+  const_iterator cit2(cit);
+  const_iterator cit3;
+
+  // convert iterator to const_iterator
+  const_iterator cit4(it);
+  const_iterator cit5;
+  cit5 = it;
+  // iterator it2(cit); // Does Not Compile.
+}
+
+
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

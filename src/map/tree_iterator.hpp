@@ -3,20 +3,10 @@
 
 #include <iterator>
 #include <ostream>
-#include <__tree>
+
+#include "tree.hpp"
+
 namespace ft {
-
-/*
-
-tree_iterator
-
-// TODO impl tree_node
-template <class T>
-struct tree_node {
-  T data;
-  tree_node<T>* left;
-  tree_node<T>* right;
-}
 
 template <class T>
 class tree_iterator
@@ -29,7 +19,7 @@ class tree_iterator
   typedef typename tree_iterator<T>::reference reference;
 
   tree_iterator();
-  tree_iterator(pointer p);
+  tree_iterator(pointer node_ptr);
   tree_iterator(const tree_iterator<T>& other);
 
   ~tree_iterator();
@@ -49,7 +39,7 @@ class tree_iterator
   tree_iterator operator--(int);
 
  private:
-  pointer it_;
+  pointer ptr_;
 };
 
 template<class T>
@@ -57,6 +47,5 @@ std::ostream& operator<<(const std::ostream& os, const tree_iterator<T>& it);
 
 }  // namespace ft
 
-*/
 
 #endif  // VECTORE_ITERATOR_HPP_

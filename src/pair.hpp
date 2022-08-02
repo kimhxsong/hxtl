@@ -1,7 +1,5 @@
-#ifndef UTILITY_PAIR_HPP_
-#define UTILITY_PAIR_HPP_
-
-
+#ifndef PAIR_HPP_
+#define PAIR_HPP_
 
 namespace ft {
 
@@ -23,8 +21,8 @@ struct pair {
 template <class T1, class T2>
 pair<T1,T2> make_pair(T1 x, T2 y);
 
-}  // ft::
+}  // namespace ft
 
-#include "utility_pair.tpp"
+#include "pair.tpp"
 
-#endif  // UTILITY_PAIR_HPP_
+#endif  // PAIR_HPP_

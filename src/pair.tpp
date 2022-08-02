@@ -1,21 +1,23 @@
-#ifndef UTILITY_PAIR_TPP_
-#define UTILITY_PAIR_TPP_
+#ifndef PAIR_TPP_
+#define PAIR_TPP_
 
-#ifndef UTILITY_PAIR_HPP_
+#ifndef PAIR_HPP_
 #error __FILE__ should only be included from myclass.hpp.
-#endif // UTILITY_PAIR_HPP_
+#endif // PAIR_HPP_
+
+#include "pair.hpp"
 
 namespace ft {
 
 template<class T1, class T2>
-pair<T1,T2>::pair()
+pair<T1 ,T2>::pair()
   : first(),
     second() {}
 
 template<class T1, class T2>
-pair<T1,T2>::pair(const first_type& a, const second_type& b)
-  : first(a),
-    second(b) {}
+pair<T1,T2>::pair(const first_type& x, const second_type& y)
+  : first(x),
+    second(y) {}
 
 template<class T1, class T2>
 pair<T1,T2>::pair(const pair<T1,T2>& pr)
@@ -32,6 +34,6 @@ pair<T1,T2> make_pair(T1 x, T2 y) {
   return pair<T1,T2>::pair(x, y);
 }
 
-}  // ft::
+}  // namespace ft
 
-#endif  // UTILITY_PAIR_TPP_
+#endif  // PAIR_TPP_

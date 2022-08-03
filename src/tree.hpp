@@ -108,7 +108,7 @@ class __tree_iterator {
 
   template <class, class, class> friend class __tree;
   // template <class, class, class> friend class __tree_const_iterator;
-  template <class> friend class __tree_const_iterator;
+  // template <class> friend class __tree_const_iterator;
   template <class> friend class map_iterator;
   template <class, class, class, class> friend class map;
   // template <class, class, class> friend class set;
@@ -117,70 +117,70 @@ class __tree_iterator {
 };
 
 // TREE_CONST_ITERATOR
-// template<typename T, typename NodePtr, typename DiffType>
-// class __tree_const_iterator {
-//   public:
-//   typedef std::bidirectional_iterator_tag iterator_category;
-//   typedef T value_type;
-//   typedef DiffType difference_type;
-//   typedef value_type& reference;
-//   typedef value_type* pointer;
+template<typename T, typename NodePtr, typename DiffType>
+class __tree_const_iterator {
+  public:
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef T value_type;
+  typedef DiffType difference_type;
+  typedef value_type& reference;
+  typedef value_type* pointer;
 
-//   __tree_const_iterator() {}
+  __tree_const_iterator() {}
 
-//   // __tree_const_iterator(const non_const_iterator_type& it) : ptr_(it->ptr_) {}
+  // __tree_const_iterator(const non_const_iterator_type& it) : ptr_(it->ptr_) {}
 
-//   reference operator*() const {
-//   return ptr_->value_;
-//   }
+  reference operator*() const {
+  return ptr_->value_;
+  }
    
-//   pointer operator->() const {
-//     return &(ptr_->value_);
-//   }
+  pointer operator->() const {
+    return &(ptr_->value_);
+  }
 
-//   __tree_const_iterator& operator++() {
-//     ptr_ = tree_next<node_pointer>(ptr_);
-//     return *this;
-//   }
+  __tree_const_iterator& operator++() {
+    ptr_ = tree_next<node_pointer>(ptr_);
+    return *this;
+  }
 
-//   __tree_const_iterator operator++(int) {
-//     __tree_const_iterator tmp(*this);
-//     ++(*this);
-//     return tmp;
-//   }
+  __tree_const_iterator operator++(int) {
+    __tree_const_iterator tmp(*this);
+    ++(*this);
+    return tmp;
+  }
 
-//   __tree_const_iterator& operator--() {
-//     ptr_ = tree_prev<node_pointer>(ptr_);
-//     return *this;
-//   }
+  __tree_const_iterator& operator--() {
+    ptr_ = tree_prev<node_pointer>(ptr_);
+    return *this;
+  }
   
-//   __tree_const_iterator operator--(int) {
-//     __tree_const_iterator tmp(*this);
-//     --(*this);
-//     return tmp;
-//   }
+  __tree_const_iterator operator--(int) {
+    __tree_const_iterator tmp(*this);
+    --(*this);
+    return tmp;
+  }
 
-//   friend bool operator==(const __tree_const_iterator& np, const __tree_const_iterator& __y) {
-//     return np.ptr_ == __y.ptr_;
-//   }
+  friend bool operator==(const __tree_const_iterator& np, const __tree_const_iterator& __y) {
+    return np.ptr_ == __y.ptr_;
+  }
 
-//   friend bool operator!=(const __tree_const_iterator& np, const __tree_const_iterator& __y) {
-//     return !(np == __y);
-//   }
+  friend bool operator!=(const __tree_const_iterator& np, const __tree_const_iterator& __y) {
+    return !(np == __y);
+  }
 
-// private:
-//   typedef NodePtr node_pointer;
+private:
+  typedef NodePtr node_pointer;
 
-//   explicit __tree_const_iterator(node_pointer ptr) : ptr_(ptr) {}
+  explicit __tree_const_iterator(node_pointer ptr) : ptr_(ptr) {}
 
-//   template <class, class, class> friend class __tree;
-//   // template <class, class, class> friend class __tree_const_iterator;
-//   template <class> friend class map_iterator;
-//   template <class, class, class, class> friend class map;
-//   // template <class, class, class> friend class set;
+  template <class, class, class> friend class __tree;
+  // template <class, class, class> friend class __tree_const_iterator;
+  template <class> friend class map_iterator;
+  template <class, class, class, class> friend class map;
+  // template <class, class, class> friend class set;
 
-//   node_pointer ptr_;
-// };
+  node_pointer ptr_;
+};
 
 
 template <class T, class Compare, class Allocator>

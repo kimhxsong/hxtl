@@ -1,3 +1,8 @@
-#include "type_traits_integral_constants.hpp"
-#include "type_traits_is_integral.hpp"
-#include "type_traits_enable_if.hpp"
+#ifndef TYPE_TRAITS_HPP_
+#define TYPE_TRAITS_HPP_
+
+#include "__enable_if.hpp"
+#include "__integral_constants.hpp"
+#include "__is_integral.hpp"
+
+#endif  // TYPE_TRAITS_HPP_

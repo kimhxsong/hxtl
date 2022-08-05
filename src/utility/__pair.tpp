@@ -1,11 +1,11 @@
-#ifndef PAIR_TPP_
-#define PAIR_TPP_
+#ifndef __PAIR_TPP_
+#define __PAIR_TPP_
 
-#ifndef PAIR_HPP_
+#ifndef __PAIR_HPP_
 #error __FILE__ should only be included from pair.hpp.
-#endif // PAIR_HPP_
+#endif // __PAIR_HPP_
 
-#include "pair.hpp"
+#include "__pair.hpp"
 
 namespace ft {
 
@@ -71,4 +71,4 @@ pair<T1,T2>& pair<T1,T2>::operator=(const pair<T1,T2>& pr) {
 
 }  // namespace ft
 
-#endif  // PAIR_TPP_
+#endif  // __PAIR_TPP_

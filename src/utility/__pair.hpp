@@ -1,5 +1,5 @@
-#ifndef PAIR_HPP_
-#define PAIR_HPP_
+#ifndef __PAIR_HPP_
+#define __PAIR_HPP_
 
 namespace ft {
 
@@ -40,6 +40,6 @@ struct pair {
 
 }  // namespace ft
 
-#include "pair.tpp"
+#include "__pair.tpp"
 
-#endif  // PAIR_HPP_
+#endif  // __PAIR_HPP_

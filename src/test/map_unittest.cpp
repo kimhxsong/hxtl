@@ -20,16 +20,16 @@
 #if 1
   namespace ft = std;
 #else
-  #include "../map.hpp"
+# include "../map.hpp"
 #endif
 
 // MAP_CONSTRUCTOR
 // explicit map (const key_compare& comp = key_compare(),
 //              const allocator_type& alloc = allocator_type());
 TEST(map_constructor, empty__1__) {
-  std::map<char, int> __std__map;
+  ft::map<char, int> __ft__map;
 
-  EXPECT_EQ(__std__map.size(), 0);
+  EXPECT_EQ(__ft__map.size(), 0);
 }
 
 // template <class InputIterator>
@@ -41,17 +41,17 @@ TEST(map_constructor, range__2__) {
     __std__vec_with_pair.push_back(std::make_pair(static_cast<char>(i), i));
   }
 
-  std::map<char, int> __std__map(__std__vec_with_pair.begin(), __std__vec_with_pair.end());
+  ft::map<char, int> __ft__map(__std__vec_with_pair.begin(), __std__vec_with_pair.end());
 
-  EXPECT_EQ(__std__map.size(), 127 - 33);
+  EXPECT_EQ(__ft__map.size(), 127 - 33);
 }
 
 // map(const map& x);
 TEST(map_constructor, copy__3__) {
-  std::map<char,int> __std__map;
-  std::map<char,int> __std__map2(__std__map);
+  ft::map<char,int> __ft__map;
+  ft::map<char,int> __ft__map2(__ft__map);
 
-  EXPECT_EQ(__std__map.size(), __std__map2.size());
+  EXPECT_EQ(__ft__map.size(), __ft__map2.size());
 }
 
 TEST(map_operator, assign) {
@@ -60,166 +60,166 @@ TEST(map_operator, assign) {
     __std__vec_with_pair.push_back(std::make_pair(static_cast<char>(i), i));
   }
 
-  std::map<char, int> __std__map(__std__vec_with_pair.begin(), __std__vec_with_pair.end());
-  std::map<char, int> __std__map2(__std__map);
+  ft::map<char, int> __ft__map(__std__vec_with_pair.begin(), __std__vec_with_pair.end());
+  ft::map<char, int> __ft__map2(__ft__map);
 
-  EXPECT_EQ(__std__map.size(), __std__map2.size());
+  EXPECT_EQ(__ft__map.size(), __ft__map2.size());
 }
 
 // GETTER
 TEST(map_get_allocator, get_allocator) {
-    std::map<char,int> __std__map;
-    std::map<char,int>::allocator_type __std__alloc =  __std__map.get_allocator();
+    ft::map<char,int> __ft__map;
+    ft::map<char,int>::allocator_type __std__alloc =  __ft__map.get_allocator();
 }
 
 
 // ITERATORS
 TEST(map_iterator, bidirectional_iterator) {
-  std::map<std::string,int> __std__map;
-  __std__map["a"] = 10;
-  __std__map["b"] = 20;
-  __std__map["c"] = 30;
-  __std__map["d"] = 40;
+  ft::map<std::string,int> __ft__map;
+  __ft__map["a"] = 10;
+  __ft__map["b"] = 20;
+  __ft__map["c"] = 30;
+  __ft__map["d"] = 40;
 
   // Is default-constructible, copy-constructible, copy-assignable and destructible
-  std::map<std::string,int>::iterator __std__it = __std__map.begin();
-  std::map<std::string,int>::iterator __std__it2(__std__it);
-  std::map<std::string,int>::iterator __std__it3;
-  __std__it3 = __std__it2;
+  ft::map<std::string,int>::iterator __ft__it = __ft__map.begin();
+  ft::map<std::string,int>::iterator __ft__it2(__ft__it);
+  ft::map<std::string,int>::iterator __ft__it3;
+  __ft__it3 = __ft__it2;
 
   // Can be compared for equivalence using the equality/inequality operators
-  EXPECT_EQ(__std__it2 == __std__it3, true);
-  EXPECT_EQ(__std__it2 != __std__map.end(), true);
+  EXPECT_EQ(__ft__it2 == __ft__it3, true);
+  EXPECT_EQ(__ft__it2 != __ft__map.end(), true);
 
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
-  EXPECT_EQ((*__std__it2).second == 10, true);
-  EXPECT_EQ(__std__map.begin()->first.size() == std::string("a").size(), true);
+  EXPECT_EQ((*__ft__it2).second == 10, true);
+  EXPECT_EQ(__ft__map.begin()->first.size() == std::string("a").size(), true);
 
   // For mutable iterators (non-constant iterators):
   // Can be dereferenced as an lvalue (if in a dereferenceable state).
-  __std__it2->second = 100;
-  EXPECT_EQ(__std__it2->second == 100, true);
-  __std__it2->second = 10;
+  __ft__it2->second = 100;
+  EXPECT_EQ(__ft__it2->second == 100, true);
+  __ft__it2->second = 10;
 
   // Can be incremented (if in a dereferenceable state).
   // The result is either also dereferenceable or a past-the-end iterator.
   // Two iterators that compare equal, keep comparing equal after being both increased.
-  ++__std__it;
-  __std__it++;
-  EXPECT_EQ((*__std__it++).second == 30, true);
-  EXPECT_EQ((__std__it)->second == 40, true);
+  ++__ft__it;
+  __ft__it++;
+  EXPECT_EQ((*__ft__it++).second == 30, true);
+  EXPECT_EQ((__ft__it)->second == 40, true);
 
-  --__std__it;
-  __std__it--;
-  EXPECT_EQ((*__std__it--).second == 20, true);
-  EXPECT_EQ((__std__it)->second == 10, true);
+  --__ft__it;
+  __ft__it--;
+  EXPECT_EQ((*__ft__it--).second == 20, true);
+  EXPECT_EQ((__ft__it)->second == 10, true);
 }
 
 // ITERATORS
 TEST(map_iterator, const_iterator) {
-  std::map<std::string,int> __std__map;
-  __std__map["a"] = 10;
-  __std__map["b"] = 20;
-  __std__map["c"] = 30;
-  __std__map["d"] = 40;
+  ft::map<std::string,int> __ft__map;
+  __ft__map["a"] = 10;
+  __ft__map["b"] = 20;
+  __ft__map["c"] = 30;
+  __ft__map["d"] = 40;
 
   // Is default-constructible, copy-constructible, copy-assignable and destructible
-  std::map<std::string,int>::const_iterator __std__cit = __std__map.begin();
-  std::map<std::string,int>::const_iterator __std__cit2(__std__cit);
-  std::map<std::string,int>::const_iterator __std__cit3;
-  __std__cit3 = __std__cit2;
+  ft::map<std::string,int>::const_iterator __ft__cit = __ft__map.begin();
+  ft::map<std::string,int>::const_iterator __ft__cit2(__ft__cit);
+  ft::map<std::string,int>::const_iterator __ft__cit3;
+  __ft__cit3 = __ft__cit2;
 
   // Can be compared for equivalence using the equality/inequality operators
-  EXPECT_EQ(__std__cit2 == __std__cit3, true);
-  EXPECT_EQ(__std__cit2 != __std__map.end(), true);
+  EXPECT_EQ(__ft__cit2 == __ft__cit3, true);
+  EXPECT_EQ(__ft__cit2 != __ft__map.end(), true);
 
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
-  EXPECT_EQ((*__std__cit2).second == 10, true);
-  EXPECT_EQ(__std__map.begin()->first.size() == std::string("a").size(), true);
+  EXPECT_EQ((*__ft__cit2).second == 10, true);
+  EXPECT_EQ(__ft__map.begin()->first.size() == std::string("a").size(), true);
 
   // For mutable iterators (non-constant iterators):
   // Can be dereferenced as an lvalue (if in a dereferenceable state).
-//   __std__cit2->second = 100; // !NOTE: Does Not Compile.
-//   EXPECT_EQ(__std__cit2->second == 100, true);
-//   __std__cit2->second = 10;
+//   __ft__cit2->second = 100; // !NOTE: Does Not Compile.
+//   EXPECT_EQ(__ft__cit2->second == 100, true);
+//   __ft__cit2->second = 10;
 
   // Can be incremented (if in a dereferenceable state).
   // The result is either also dereferenceable or a past-the-end iterator.
   // Two iterators that compare equal, keep comparing equal after being both increased.
-  ++__std__cit;
-  __std__cit++;
-  EXPECT_EQ((*__std__cit++).second == 30, true);
-  EXPECT_EQ((__std__cit)->second == 40, true);
+  ++__ft__cit;
+  __ft__cit++;
+  EXPECT_EQ((*__ft__cit++).second == 30, true);
+  EXPECT_EQ((__ft__cit)->second == 40, true);
 
-  --__std__cit;
-  __std__cit--;
-  EXPECT_EQ((*__std__cit--).second == 20, true);
-  EXPECT_EQ((__std__cit)->second == 10, true);
+  --__ft__cit;
+  __ft__cit--;
+  EXPECT_EQ((*__ft__cit--).second == 20, true);
+  EXPECT_EQ((__ft__cit)->second == 10, true);
 }
 
 TEST(map_iterator, reverse_iterator) {
-  std::map<std::string,int> __std__map;
-  __std__map["a"] = 10;
-  __std__map["b"] = 20;
-  __std__map["c"] = 30;
-  __std__map["d"] = 40;
+  ft::map<std::string,int> __ft__map;
+  __ft__map["a"] = 10;
+  __ft__map["b"] = 20;
+  __ft__map["c"] = 30;
+  __ft__map["d"] = 40;
 
   // Is default-constructible, copy-constructible, copy-assignable and destructible
-  std::map<std::string,int>::reverse_iterator __std__rit = __std__map.rbegin();
-  std::map<std::string,int>::reverse_iterator __std__rit2(__std__rit);
-  std::map<std::string,int>::reverse_iterator __std__rit3;
-  __std__rit3 = __std__rit2;
+  ft::map<std::string,int>::reverse_iterator __ft__rit = __ft__map.rbegin();
+  ft::map<std::string,int>::reverse_iterator __ft__rit2(__ft__rit);
+  ft::map<std::string,int>::reverse_iterator __ft__rit3;
+  __ft__rit3 = __ft__rit2;
 
   // Can be compared for equivalence using the equality/inequality operators
-  EXPECT_EQ(__std__rit2 == __std__rit3, true);
-  EXPECT_EQ(__std__rit2 != __std__map.rend(), true);
+  EXPECT_EQ(__ft__rit2 == __ft__rit3, true);
+  EXPECT_EQ(__ft__rit2 != __ft__map.rend(), true);
 
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
-  EXPECT_EQ((*__std__rit2).second == 40, true);
-  EXPECT_EQ(__std__map.rbegin()->first.size() == std::string("d").size(), true);
+  EXPECT_EQ((*__ft__rit2).second == 40, true);
+  EXPECT_EQ(__ft__map.rbegin()->first.size() == std::string("d").size(), true);
 
   // For mutable iterators (non-constant iterators):
   // Can be dereferenced as an lvalue (if in a dereferenceable state).
-  __std__rit2->second = 400;
-  EXPECT_EQ(__std__rit2->second == 400, true);
-  __std__rit2->second = 40;
+  __ft__rit2->second = 400;
+  EXPECT_EQ(__ft__rit2->second == 400, true);
+  __ft__rit2->second = 40;
 
   // Can be incremented (if in a dereferenceable state).
   // The result is either also dereferenceable or a past-the-end iterator.
   // Two iterators that compare equal, keep comparing equal after being both increased.
-  ++__std__rit;
-  __std__rit++;
-  EXPECT_EQ((*__std__rit++).second == 20, true);
-  EXPECT_EQ((__std__rit)->second == 10, true);
+  ++__ft__rit;
+  __ft__rit++;
+  EXPECT_EQ((*__ft__rit++).second == 20, true);
+  EXPECT_EQ((__ft__rit)->second == 10, true);
 
-  --__std__rit;
-  __std__rit--;
-  EXPECT_EQ((*__std__rit--).second == 30, true);
-  EXPECT_EQ((__std__rit)->second == 40, true);
+  --__ft__rit;
+  __ft__rit--;
+  EXPECT_EQ((*__ft__rit--).second == 30, true);
+  EXPECT_EQ((__ft__rit)->second == 40, true);
 }
 
 // ITERATORS
 TEST(map_iterator, const_reverse_iterator) {
-  std::map<std::string,int> __std__map;
-  __std__map["a"] = 10;
-  __std__map["b"] = 20;
-  __std__map["c"] = 30;
-  __std__map["d"] = 40;
+  ft::map<std::string,int> __ft__map;
+  __ft__map["a"] = 10;
+  __ft__map["b"] = 20;
+  __ft__map["c"] = 30;
+  __ft__map["d"] = 40;
 
   // Is default-constructible, copy-constructible, copy-assignable and destructible
-  std::map<std::string,int>::const_reverse_iterator __std__crit = __std__map.rbegin();
-  std::map<std::string,int>::const_reverse_iterator __std__crit2(__std__crit);
-  std::map<std::string,int>::const_reverse_iterator __std__crit3;
+  ft::map<std::string,int>::const_reverse_iterator __std__crit = __ft__map.rbegin();
+  ft::map<std::string,int>::const_reverse_iterator __std__crit2(__std__crit);
+  ft::map<std::string,int>::const_reverse_iterator __std__crit3;
   __std__crit3 = __std__crit2;
-  std::map<std::string,int>::const_reverse_iterator __std__crit4(__std__map.begin());  // copy iterator to reverse_iterator
+  ft::map<std::string,int>::const_reverse_iterator __std__crit4(__ft__map.begin());  // copy iterator to reverse_iterator
 
   // Can be compared for equivalence using the equality/inequality operators
   EXPECT_EQ(__std__crit2 == __std__crit3, true);
-  EXPECT_EQ(__std__crit2 != __std__map.rend(), true);
+  EXPECT_EQ(__std__crit2 != __ft__map.rend(), true);
 
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
   EXPECT_EQ((*__std__crit2).second == 40, true);
-  EXPECT_EQ(__std__map.rbegin()->first.size() == std::string("a").size(), true);
+  EXPECT_EQ(__ft__map.rbegin()->first.size() == std::string("a").size(), true);
 
   // For mutable iterators (non-constant iterators):
   // Can be dereferenced as an lvalue (if in a dereferenceable state).
@@ -242,93 +242,88 @@ TEST(map_iterator, const_reverse_iterator) {
 }
 
 TEST(map_iterator, convertible_to_const) {
-  std::map<char,int> __std__map;
-  std::map<char,int>::iterator __std__it(__std__map.begin());
-  std::map<char,int>::const_iterator __std__cit(__std__it);
-  std::map<char,int>::const_iterator __std__cit2(__std__cit);
-  // std::map<char,int>::iterator __std__it2(__std__cit2);  // !NOTE: Does Not Compile
-
-  std::map<char,int>::reverse_iterator __std__rit(__std__it);
-  std::map<char,int>::const_reverse_iterator __std__crit(__std__rit);
-  std::map<char,int>::const_reverse_iterator __std__crit2(__std__crit);
-  std::map<char,int>::const_reverse_iterator __std__crit3(__std__it);
-  std::map<char,int>::const_reverse_iterator __std__crit4(__std__cit);
-  // std::map<char,int>::reverse_iterator __std__rit2(__std__crit); !NOTE: Does Not Compile
-
   ft::map<char,int> __ft__map;
   ft::map<char,int>::iterator __ft__it(__ft__map.begin());
   ft::map<char,int>::const_iterator __ft__cit(__ft__it);
   ft::map<char,int>::const_iterator __ft__cit2(__ft__cit);
+  // ft::map<char,int>::iterator __ft__it2(__ft__cit2);  // !NOTE: Does Not Compile
+
+  ft::map<char,int>::reverse_iterator __ft__rit(__ft__it);
+  ft::map<char,int>::const_reverse_iterator __std__crit(__ft__rit);
+  ft::map<char,int>::const_reverse_iterator __std__crit2(__std__crit);
+  ft::map<char,int>::const_reverse_iterator __std__crit3(__ft__it);
+  ft::map<char,int>::const_reverse_iterator __std__crit4(__ft__cit);
+  // ft::map<char,int>::reverse_iterator __ft__rit2(__std__crit); !NOTE: Does Not Compile
 }
 
 TEST(map_iterator, relational_opeartors) {
-  std::map<char,int> __std__map;
-  std::map<char,int>::iterator __std__it(__std__map.begin());
-  std::map<char,int>::const_iterator __std__cit(__std__it);
-  std::map<char,int>::const_iterator __std__cit2(__std__cit);
-  // std::map<char,int>::iterator __std__it2(__std__cit2);  // !NOTE: Does Not Compile
+  ft::map<char,int> __ft__map;
+  ft::map<char,int>::iterator __ft__it(__ft__map.begin());
+  ft::map<char,int>::const_iterator __ft__cit(__ft__it);
+  ft::map<char,int>::const_iterator __ft__cit2(__ft__cit);
+  // ft::map<char,int>::iterator __ft__it2(__ft__cit2);  // !NOTE: Does Not Compile
 
-  std::map<char,int>::reverse_iterator __std__rit(__std__it);
-  std::map<char,int>::const_reverse_iterator __std__crit(__std__rit);
-  std::map<char,int>::const_reverse_iterator __std__crit2(__std__crit);
-  std::map<char,int>::const_reverse_iterator __std__crit3(__std__it);
-  std::map<char,int>::const_reverse_iterator __std__crit4(__std__cit);
-  // std::map<char,int>::reverse_iterator __std__rit2(__std__crit); !NOTE: Does Not Compile
+  ft::map<char,int>::reverse_iterator __ft__rit(__ft__it);
+  ft::map<char,int>::const_reverse_iterator __std__crit(__ft__rit);
+  ft::map<char,int>::const_reverse_iterator __std__crit2(__std__crit);
+  ft::map<char,int>::const_reverse_iterator __std__crit3(__ft__it);
+  ft::map<char,int>::const_reverse_iterator __std__crit4(__ft__cit);
+  // ft::map<char,int>::reverse_iterator __ft__rit2(__std__crit); !NOTE: Does Not Compile
 
   bool __b;
-  __b = __std__it == __std__map.begin();
-  __b = __std__cit == __std__map.begin();
-  __b = __std__rit == __std__map.rbegin();
-  __b = __std__crit == __std__map.rbegin();
+  __b = __ft__it == __ft__map.begin();
+  __b = __ft__cit == __ft__map.begin();
+  __b = __ft__rit == __ft__map.rbegin();
+  __b = __std__crit == __ft__map.rbegin();
 
-  __b = __std__it != __std__map.begin();
-  __b = __std__cit != __std__map.begin();
-  __b = __std__rit != __std__map.rbegin();
-  __b = __std__crit != __std__map.rbegin();
+  __b = __ft__it != __ft__map.begin();
+  __b = __ft__cit != __ft__map.begin();
+  __b = __ft__rit != __ft__map.rbegin();
+  __b = __std__crit != __ft__map.rbegin();
 
-  // __b = __std__it < __std__map.begin(); // !NOTE: Does Not Compile
-  // __b = __std__cit < __std__map.begin();s // !NOTE: Does Not Compile
-  // __b = __std__rit < __std__map.rbegin(); // !NOTE: Does Not Compile
-  // __b = __std__crit < __std__map.rbegin(); // !NOTE: Does Not Compile
+  // __b = __ft__it < __ft__map.begin(); // !NOTE: Does Not Compile
+  // __b = __ft__cit < __ft__map.begin();s // !NOTE: Does Not Compile
+  // __b = __ft__rit < __ft__map.rbegin(); // !NOTE: Does Not Compile
+  // __b = __std__crit < __ft__map.rbegin(); // !NOTE: Does Not Compile
 
-  // __b = __std__it == __std__map.rbegin();  // !NOTE: Does Not Compile
-  // __b = __std__cit == __std__map.rbegin();  // !NOTE: Does Not Compile
-  // __b = __std__rit == __std__map.begin();  // !NOTE: Does Not Compile
-  // __b = __std__crit == __std__map.begin();  // !NOTE: Does Not Compile
+  // __b = __ft__it == __ft__map.rbegin();  // !NOTE: Does Not Compile
+  // __b = __ft__cit == __ft__map.rbegin();  // !NOTE: Does Not Compile
+  // __b = __ft__rit == __ft__map.begin();  // !NOTE: Does Not Compile
+  // __b = __std__crit == __ft__map.begin();  // !NOTE: Does Not Compile
 }
 
 TEST(map_capacity, capacity) {
-  std::map<char,int> __std__map;
-  EXPECT_EQ(__std__map.empty(), true);
-  EXPECT_EQ(__std__map.size(), 0);
+  ft::map<char,int> __ft__map;
+  EXPECT_EQ(__ft__map.empty(), true);
+  EXPECT_EQ(__ft__map.size(), 0);
 
   // This is the maximum potential size the container can reach due to known
   // system or library implementation limitations, but the container is by no
   // means guaranteed to be able to reach that size: it can still fail to allocate
   //  storage at any point before that size is reached.
-  // __std__map.max_size();  // 
+  // __ft__map.max_size();  // 
 }
 
 TEST(map_operator, element_access) {
-  std::map<std::string,int> __std__map;
+  ft::map<std::string,int> __ft__map;
   // mapped_type& operator[] (const key_type& k);
   // (*((this->insert(make_pair(k,mapped_type()))).first)).second
-  __std__map["answer"] = 42;
-  EXPECT_EQ(__std__map["answer"], 42);
+  __ft__map["answer"] = 42;
+  EXPECT_EQ(__ft__map["answer"], 42);
 }
 
 TEST(map_insert, single_element__1) {
-  std::map<std::string,int> __std__map;
+  ft::map<std::string,int> __ft__map;
   // pair<iterator,bool> insert (const value_type& val);
-  __std__map.insert(std::pair<std::string,int>("zero", 0));  // single element(1)
+  __ft__map.insert(std::pair<std::string,int>("zero", 0));  // single element(1)
 }
 
 TEST(map_insert, with_hint__2) {
-  std::map<std::string,int> __std__map;
+  ft::map<std::string,int> __ft__map;
 
   std::pair<std::map<std::string,int>::iterator, bool> ret;
   // iterator insert (iterator position, const value_type& val);
-  ret = __std__map.insert(std::pair<std::string,int>("answer", 42));  // with hint(2)
+  ret = __ft__map.insert(std::pair<std::string,int>("answer", 42));  // with hint(2)
   EXPECT_EQ(ret.second, true);
 }
 
@@ -336,70 +331,70 @@ TEST(map_insert, range__3) {
   std::vector<std::pair<std::string,int> > __std__vec;
   __std__vec.push_back(std::make_pair("answer", 42));
 
-  std::map<std::string,int> __std__map;
+  ft::map<std::string,int> __ft__map;
   // template <class InputIterator>
   // void insert (InputIterator first, InputIterator last);
-  __std__map.insert(__std__vec.begin(), __std__vec.end());  // range(3)
+  __ft__map.insert(__std__vec.begin(), __std__vec.end());  // range(3)
 }
 
 TEST(map_erase, __1) {
-  std::map<char,int> __std__map;
-  std::map<char,int>::iterator it;
-  __std__map['a'] = 10;
-  __std__map['b'] = 20;
-  __std__map['c'] = 30;
-  __std__map['d'] = 40;
-  it = __std__map.begin();
+  ft::map<char,int> __ft__map;
+  ft::map<char,int>::iterator it;
+  __ft__map['a'] = 10;
+  __ft__map['b'] = 20;
+  __ft__map['c'] = 30;
+  __ft__map['d'] = 40;
+  it = __ft__map.begin();
   // void erase (iterator position);
-  __std__map.erase(it);                   // erasing by iterator
+  __ft__map.erase(it);                   // erasing by iterator
 }
 
 TEST(map_erase, __2) {
-  std::map<char,int> __std__map;
-  std::map<char,int>::iterator it;
-  __std__map['a'] = 10;
-  __std__map['b'] = 20;
-  __std__map['c'] = 30;
-  __std__map['d'] = 40;
+  ft::map<char,int> __ft__map;
+  ft::map<char,int>::iterator it;
+  __ft__map['a'] = 10;
+  __ft__map['b'] = 20;
+  __ft__map['c'] = 30;
+  __ft__map['d'] = 40;
   // size_type erase (const key_type& k);
-  __std__map.erase('c');                  // erasing by key
+  __ft__map.erase('c');                  // erasing by key
 }
 
 TEST(map_erase, __3) {
-  std::map<char,int> __std__map;
-  __std__map['a'] = 10;
-  __std__map['b'] = 20;
-  __std__map['c'] = 30;
-  __std__map['d'] = 40;
-  std::map<char,int>::iterator it = __std__map.find ('d');
+  ft::map<char,int> __ft__map;
+  __ft__map['a'] = 10;
+  __ft__map['b'] = 20;
+  __ft__map['c'] = 30;
+  __ft__map['d'] = 40;
+  ft::map<char,int>::iterator it = __ft__map.find ('d');
   //  void erase (iterator first, iterator last);
-  __std__map.erase(it, __std__map.end());    // erasing by range
+  __ft__map.erase(it, __ft__map.end());    // erasing by range
 }
 
 TEST(map_swap, swap) {
-  std::map<char, int> __std__map;
-  std::map<char, int> __std__map2;
-  __std__map['x'] = 100;
-  __std__map['y'] = 200;
-  __std__map2['a'] = 100;
-  __std__map2['b'] = 200;
-  __std__map2['c'] = 300;
-  std::map<char, int> __std__map__copied(__std__map);
-  __std__map2.swap(__std__map);
-  EXPECT_EQ(__std__map2 == __std__map__copied, true);
+  ft::map<char, int> __ft__map;
+  ft::map<char, int> __ft__map2;
+  __ft__map['x'] = 100;
+  __ft__map['y'] = 200;
+  __ft__map2['a'] = 100;
+  __ft__map2['b'] = 200;
+  __ft__map2['c'] = 300;
+  ft::map<char, int> __ft__map__copied(__ft__map);
+  __ft__map2.swap(__ft__map);
+  EXPECT_EQ(__ft__map2 == __ft__map__copied, true);
 }
 
 TEST(map_clear, clear) {
-  std::map<char, int> __std__map;
-  __std__map['x'] = 100;
-  __std__map['y'] = 200;
-  __std__map.clear();
-  EXPECT_EQ(__std__map.size(), 0);
+  ft::map<char, int> __ft__map;
+  __ft__map['x'] = 100;
+  __ft__map['y'] = 200;
+  __ft__map.clear();
+  EXPECT_EQ(__ft__map.size(), 0);
 
-  __std__map['x'] = 1100;
-  __std__map['y'] = 2200;
-  EXPECT_EQ(__std__map['x'], 1100);
-  EXPECT_EQ(__std__map['y'], 2200);
+  __ft__map['x'] = 1100;
+  __ft__map['y'] = 2200;
+  EXPECT_EQ(__ft__map['x'], 1100);
+  EXPECT_EQ(__ft__map['y'], 2200);
 }
 
 // template < class Key,                                     // map::key_type
@@ -408,11 +403,11 @@ TEST(map_clear, clear) {
 //            class Alloc = allocator<pair<const Key,T> >    // map::allocator_type
 //            > class map;
 TEST(map_key_compare, key_compare) {
-  std::map<char,int> __std__map;
+  ft::map<char,int> __ft__map;
   // key_compare key_comp() const;
-  std::map<char,int>::key_compare __std__map__cmp = __std__map.key_comp();
+  ft::map<char,int>::key_compare __ft__map__cmp = __ft__map.key_comp();
 
-  EXPECT_EQ(__std__map__cmp('a', 'b'), true);
+  EXPECT_EQ(__ft__map__cmp('a', 'b'), true);
 }
 
 // template <class Key, class T, class Compare, class Alloc>
@@ -432,133 +427,133 @@ TEST(map_key_compare, key_compare) {
 //   }
 // }
 TEST(map_value_comp, value_comp) {
-  std::map<char,int> __std__map;
-  std::map<char,int>::value_compare __std__map__cmp = __std__map.value_comp();
-  __std__map['a'] = 20;
-  __std__map['b'] = 40;
-  __std__map['c'] = 60;
-  __std__map['d'] = 80;
-  __std__map['e'] = 100;
-  std::map<char,int>::iterator it = __std__map.begin();
-  std::map<char,int>::iterator it2(it);
-  EXPECT_EQ(__std__map__cmp(*it, *it2++), false);
-  EXPECT_EQ(__std__map__cmp(*it, *it2), true);
+  ft::map<char,int> __ft__map;
+  ft::map<char,int>::value_compare __ft__map__cmp = __ft__map.value_comp();
+  __ft__map['a'] = 20;
+  __ft__map['b'] = 40;
+  __ft__map['c'] = 60;
+  __ft__map['d'] = 80;
+  __ft__map['e'] = 100;
+  ft::map<char,int>::iterator it = __ft__map.begin();
+  ft::map<char,int>::iterator it2(it);
+  EXPECT_EQ(__ft__map__cmp(*it, *it2++), false);
+  EXPECT_EQ(__ft__map__cmp(*it, *it2), true);
 }
 
 TEST(map_find, find) {
-  std::map<char,int> __std__map;
-  std::map<char,int>::iterator it;
-  __std__map['a'] = 50;
-  __std__map['b'] = 100;
-  __std__map['c'] = 150;
-  __std__map['d'] = 200;
-  it = __std__map.find('b');
+  ft::map<char,int> __ft__map;
+  ft::map<char,int>::iterator it;
+  __ft__map['a'] = 50;
+  __ft__map['b'] = 100;
+  __ft__map['c'] = 150;
+  __ft__map['d'] = 200;
+  it = __ft__map.find('b');
   EXPECT_EQ((*it).second, 100);
-  EXPECT_EQ(__std__map.find('e'), __std__map.end());
+  EXPECT_EQ(__ft__map.find('e'), __ft__map.end());
 }
 
 TEST(map_find, find_const) {
-  std::map<char,int> __std__map;
-  __std__map['a'] = 50;
-  __std__map['b'] = 100;
-  __std__map['c'] = 150;
-  __std__map['d'] = 200;
-  std::map<char,int>::const_iterator cit = __std__map.find('b');
+  ft::map<char,int> __ft__map;
+  __ft__map['a'] = 50;
+  __ft__map['b'] = 100;
+  __ft__map['c'] = 150;
+  __ft__map['d'] = 200;
+  ft::map<char,int>::const_iterator cit = __ft__map.find('b');
   EXPECT_EQ((*cit).second, 100);
-  EXPECT_EQ(__std__map.find('e'), __std__map.end());
+  EXPECT_EQ(__ft__map.find('e'), __ft__map.end());
 }
 
 TEST(map_count, count) {
-  std::map<char,int> __std__map;
+  ft::map<char,int> __ft__map;
   char ch;
-  __std__map['a'] = 101;
-  __std__map['c'] = 202;
-  __std__map['f'] = 303;
+  __ft__map['a'] = 101;
+  __ft__map['c'] = 202;
+  __ft__map['f'] = 303;
   // size_type count (const key_type& k) const;
-  EXPECT_EQ(__std__map.count('a'), 1);
-  EXPECT_EQ(__std__map.count('e'), 0);
+  EXPECT_EQ(__ft__map.count('a'), 1);
+  EXPECT_EQ(__ft__map.count('e'), 0);
 }
 
 
 TEST(map_lower_upper_bound, lower_upper_bound) {
-  std::map<char,int> __std__map;
-  __std__map['a'] = 20;
-  __std__map['b'] = 40;
-  __std__map['c'] = 60;
-  __std__map['d'] = 80;
-  __std__map['e'] = 100;
+  ft::map<char,int> __ft__map;
+  __ft__map['a'] = 20;
+  __ft__map['b'] = 40;
+  __ft__map['c'] = 60;
+  __ft__map['d'] = 80;
+  __ft__map['e'] = 100;
   // iterator lower_bound (const key_type& k);
-  std::map<char,int>::iterator itlow = __std__map.lower_bound ('b');  // itlow points to b
-  EXPECT_EQ(itlow, __std__map.find('b'));
-  std::map<char,int>::iterator itup = __std__map.upper_bound ('d');   // itup points to e (not d!)
-  EXPECT_EQ(--itup, __std__map.find('d'));
+  ft::map<char,int>::iterator itlow = __ft__map.lower_bound ('b');  // itlow points to b
+  EXPECT_EQ(itlow, __ft__map.find('b'));
+  ft::map<char,int>::iterator itup = __ft__map.upper_bound ('d');   // itup points to e (not d!)
+  EXPECT_EQ(--itup, __ft__map.find('d'));
 
-  std::map<char,int>::iterator itend = __std__map.upper_bound ('e');   // itup points to e (not d!)
-  EXPECT_EQ(itend, __std__map.end());
-    std::map<char,int>::iterator itend2 = __std__map.lower_bound ('e');   // itup points to e (not d!)
-  EXPECT_EQ(itend, __std__map.end());
+  ft::map<char,int>::iterator itend = __ft__map.upper_bound ('e');   // itup points to e (not d!)
+  EXPECT_EQ(itend, __ft__map.end());
+    ft::map<char,int>::iterator itend2 = __ft__map.lower_bound ('e');   // itup points to e (not d!)
+  EXPECT_EQ(itend, __ft__map.end());
 }
 
 TEST(map_lower_upper_bound, lower_upper_bound_const) {
-  std::map<char,int> __std__map;
-  __std__map['a'] = 20;
-  __std__map['b'] = 40;
-  __std__map['c'] = 60;
-  __std__map['d'] = 80;
-  __std__map['e'] = 100;
+  ft::map<char,int> __ft__map;
+  __ft__map['a'] = 20;
+  __ft__map['b'] = 40;
+  __ft__map['c'] = 60;
+  __ft__map['d'] = 80;
+  __ft__map['e'] = 100;
   // const_iterator lower_bound (const key_type& k) const;
-  std::map<char,int>::const_iterator citlow = __std__map.lower_bound ('b');  // itlow points to b
-  EXPECT_EQ(citlow, __std__map.find('b'));
-  std::map<char,int>::const_iterator citup = __std__map.upper_bound ('d');   // itup points to e (not d!)
-  EXPECT_EQ(--citup, __std__map.find('d'));
+  ft::map<char,int>::const_iterator citlow = __ft__map.lower_bound ('b');  // itlow points to b
+  EXPECT_EQ(citlow, __ft__map.find('b'));
+  ft::map<char,int>::const_iterator citup = __ft__map.upper_bound ('d');   // itup points to e (not d!)
+  EXPECT_EQ(--citup, __ft__map.find('d'));
 
-  // std::map<char,int>::const_iterator citend = __std__map.upper_bound ('e');
-  // EXPECT_EQ(citend, __std__map.end());  // !NOTE: Does Not Compile
-  // std::map<char,int>::const_iterator citend2 = __std__map.lower_bound ('e');
-  // EXPECT_EQ(citend2, __std__map.end());  // !NOTE: Does Not Compile
+  // ft::map<char,int>::const_iterator citend = __ft__map.upper_bound ('e');
+  // EXPECT_EQ(citend, __ft__map.end());  // !NOTE: Does Not Compile
+  // ft::map<char,int>::const_iterator citend2 = __ft__map.lower_bound ('e');
+  // EXPECT_EQ(citend2, __ft__map.end());  // !NOTE: Does Not Compile
 }
 
 TEST(map_equal_range, equal_range) {
-  std::map<char,int> __std__map;
-  __std__map['a'] = 20;
-  __std__map['b'] = 40;
-  __std__map['c'] = 60;
-  __std__map['d'] = 80;
-  __std__map['e'] = 100;
-  std::pair<std::map<char,int>::iterator, std::map<char, int>::iterator> ret;
+  ft::map<char,int> __ft__map;
+  __ft__map['a'] = 20;
+  __ft__map['b'] = 40;
+  __ft__map['c'] = 60;
+  __ft__map['d'] = 80;
+  __ft__map['e'] = 100;
+  std::pair<std::map<char,int>::iterator, ft::map<char, int>::iterator> ret;
   // pair<iterator,iterator>             equal_range (const key_type& k);
-  ret = __std__map.equal_range('b');
+  ret = __ft__map.equal_range('b');
   EXPECT_EQ(ret.first->first, 'b');
   EXPECT_EQ(ret.second->first, 'c');
 
-  ret = __std__map.equal_range('f');
-  EXPECT_EQ(ret.first, __std__map.end());
-  EXPECT_EQ(ret.second, __std__map.end());
+  ret = __ft__map.equal_range('f');
+  EXPECT_EQ(ret.first, __ft__map.end());
+  EXPECT_EQ(ret.second, __ft__map.end());
 }
 
 TEST(map_equal_range, equal_range_const) {
-  std::map<char,int> __std__map;
-  __std__map['a'] = 20;
-  __std__map['b'] = 40;
-  __std__map['c'] = 60;
-  __std__map['d'] = 80;
-  __std__map['e'] = 100;
-  std::pair<std::map<char,int>::const_iterator, std::map<char, int>::const_iterator> cret;
+  ft::map<char,int> __ft__map;
+  __ft__map['a'] = 20;
+  __ft__map['b'] = 40;
+  __ft__map['c'] = 60;
+  __ft__map['d'] = 80;
+  __ft__map['e'] = 100;
+  std::pair<std::map<char,int>::const_iterator, ft::map<char, int>::const_iterator> cret;
   // pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
-  cret = __std__map.equal_range('b');
+  cret = __ft__map.equal_range('b');
   EXPECT_EQ(cret.first->first, 'b');
   EXPECT_EQ(cret.second->first, 'c');
 
-  cret = __std__map.equal_range('f');
-  EXPECT_EQ(cret.first, __std__map.end());
-  EXPECT_EQ(cret.second, __std__map.end());
+  cret = __ft__map.equal_range('f');
+  EXPECT_EQ(cret.first, __ft__map.end());
+  EXPECT_EQ(cret.second, __ft__map.end());
 }
 
 TEST(etc, etc) {
-  std::map<char, const int> __std__map;
-  // __std__map['a'] = static_cast<int>('a'); // !NOTE: Does Not Compile
-  // __std__map['a'] = static_cast<const int>('a'); // !NOTE: Does Not Compile
-  std::map<char, const int>::iterator it = __std__map.begin();
+  ft::map<char, const int> __ft__map;
+  // __ft__map['a'] = static_cast<int>('a'); // !NOTE: Does Not Compile
+  // __ft__map['a'] = static_cast<const int>('a'); // !NOTE: Does Not Compile
+  ft::map<char, const int>::iterator it = __ft__map.begin();
   // *it = 'b';  // !NOTE: Does Not Compile
 }
 

@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -g
 INCLUDES = -I $(shell brew --prefix googletest)/include 
 LIBS = -L $(shell brew --prefix googletest)/lib  -lgtest
 
-all: equal clean
+all: equal lexi clean
 
 equal:
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) __equal_unittest.cpp -o __equal_unittest

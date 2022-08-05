@@ -1,11 +1,16 @@
-.PHONY: all
-all: pair
+CXX = c++
+CXXFLAGS = -std=c++11 -g
+INCLUDES = -I $(shell brew --prefix googletest)/include 
+LIBS = -L $(shell brew --prefix googletest)/lib  -lgtest
 
-.PHONY: pair
+all: pair clean
+
 pair:
-	c++ pair_unittest.cpp -g -std=c++11 -I $(shell brew --prefix googletest)/include -L $(shell brew --prefix googletest)/lib -lgtest -o pair_unittest
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) __pair_unittest.cpp -o __pair_unittest
+	@./__pair_unittest
 
-.PHONY: clean
 clean:
-	rm *_unittest;
-	rm -rf *.dSYM;
+	@rm -f *_unittest;
+	@rm -rf *.dSYM;
+
+.PHONY: all pair clean

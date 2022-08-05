@@ -1,135 +1,252 @@
+#include "__reverse_iterator.hpp"
 
 #include <iostream>
 #include <iterator>
-#include <string>
 #include <iterator>
+#include <string>
+#include <typeinfo>
 
 #include "gtest/gtest.h"
 
-namespace ft = std;
+TEST(reverse_iterator_typedefs, typedefs) {
+  typedef ft::reverse_iterator<std::vector<int>::iterator> __ft__reverse_iterator_t;
+  typedef std::reverse_iterator<std::vector<int>::iterator> __std__reverse_iterator_t;
 
-TEST(reverse_iteratorConstructor, default_constructor) {
-  std::reverse_iterator<int> vi_1;
-  ft::reverse_iterator<int> vi_2;
+  EXPECT_EQ(typeid(__ft__reverse_iterator_t::iterator_type).name(),
+            typeid(__std__reverse_iterator_t::iterator_type).name());
+  EXPECT_EQ(typeid(__ft__reverse_iterator_t::iterator_category).name(),
+            typeid(__std__reverse_iterator_t::iterator_category).name());
+  EXPECT_EQ(typeid(__ft__reverse_iterator_t::value_type).name(),
+            typeid(__std__reverse_iterator_t::value_type).name());
+  EXPECT_EQ(typeid(__ft__reverse_iterator_t::pointer).name(),
+            typeid(__std__reverse_iterator_t::pointer).name());
+  EXPECT_EQ(typeid(__ft__reverse_iterator_t::reference).name(),
+            typeid(__std__reverse_iterator_t::reference).name());
+};
 
-  EXPECT_EQ(vi_1.size(), vi_2.size());
-  std::reverse_iterator<std::string> vstr_1;
-  ft::reverse_iterator<std::string> vstr_2;
+TEST(reverse_iterator_constructor, default__1) {
+  ft::reverse_iterator<std::vector<int>::iterator> rev_it;
+};
+
+TEST(reverse_iterator_constructor, initialization__2) {
+  typedef std::vector<int>::iterator iter_type;
+
+  iter_type __std__vec_it;
+  ft::reverse_iterator<iter_type> rev_it(__std__vec_it);
+};
+
+TEST(reverse_iterator_constructor, copy__3) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec(42, 42);
+  ft::reverse_iterator<iter_type> rev_it(__std__vec.begin());
+};
+
+TEST(reverse_iterator_base, base) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_end (__std__vec.begin());
+  ft::reverse_iterator<iter_type> rev_begin (__std__vec.end());
+
+  size_t countOfIteration = 0;
+  for (iter_type it = rev_end.base(); it != rev_begin.base(); ++it) {
+    countOfIteration++;
+  }
+  EXPECT_EQ(countOfIteration, __std__vec.size());
 }
 
-TEST(reverse_iteratorConstructor, fill_constructor) {
-  std::reverse_iterator<int> vi_1(10);
-  std::reverse_iterator<std::string> vstr_1(10);
+TEST(reverse_iterator_operator, dereference_reference) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_begin(__std__vec.end());
+  EXPECT_EQ(*rev_begin, *__std__vec.rbegin());
 }
 
-TEST(reverse_iteratorConstructor, range_constructor) {
-  std::reverse_iterator<int> vi_1;
-  std::reverse_iterator<int> vi_2(vi_1.begin(), vi_1.end());
+TEST(reverse_iterator_operator, addition) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_begin(__std__vec.end() - 3);
+  EXPECT_EQ(*rev_begin, *(__std__vec.rbegin() + 3));
 }
 
-TEST(reverse_iteratorConstructor, copy_constructor) {
-  std::reverse_iterator<int> vi_1;
-  std::reverse_iterator<int> vi_2(vi_1);
+TEST(reverse_iterator_operator, increment) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_begin(__std__vec.end());
+  EXPECT_EQ(*rev_begin++, *(__std__vec.rbegin()));
+  EXPECT_EQ(*rev_begin, *(__std__vec.rbegin() + 1));
+  EXPECT_EQ(*++rev_begin, *(__std__vec.rbegin() + 2));
 }
 
-TEST(reverse_iteratorIterator, iterator) {
-  std::reverse_iterator<int> vi_1(10);
-  vi_1.begin();
-  vi_1.end();
+TEST(reverse_iterator_operator, advance) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  std::reverse_iterator<iter_type> rev_begin(__std__vec.end());
+  rev_begin += 3;
+  EXPECT_EQ(*rev_begin, *(__std__vec.rbegin() + 3));
 }
 
-TEST(reverse_iteratorIterator, reverse_iterator) {
-  std::reverse_iterator<int> vi_1(10);
-  vi_1.rbegin();
-  vi_1.rend();
+TEST(reverse_iterator_operator, substraction) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  std::reverse_iterator<iter_type> rev_end(__std__vec.begin());
+  EXPECT_EQ(*(rev_end - 3), *(__std__vec.rend() - 3));
 }
 
-TEST(reverse_iteratorIterator, convertible_to_const_iterator) {
-  std::reverse_iterator<int>::iterator it;
-  std::reverse_iterator<int>::const_iterator cit(it);
+TEST(reverse_iterator_operator, decrease) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_end(__std__vec.begin());
+  EXPECT_EQ(*rev_end--, *(__std__vec.rend()));
+  EXPECT_EQ(*rev_end, *(__std__vec.rend() - 1));
+  EXPECT_EQ(*--rev_end, *(__std__vec.rend() - 2));
 }
 
-TEST(reverse_iteratorCapacity, capacity) {
-  std::reverse_iterator<int> vi_1(10);
-  vi_1.size();
-  vi_1.max_size();
-  vi_1.resize(20);
-  vi_1.empty();
-  vi_1.reserve(40);
+TEST(reverse_iterator_operator, retrocede) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_end(__std__vec.begin());
+  rev_end -= 3;
+  EXPECT_EQ(*rev_end, *(__std__vec.rend() - 3));
 }
 
-TEST(reverse_iteratorElementAceess, element_access) {
-  std::reverse_iterator<int> vi_1(10);
-  vi_1[0];
-  vi_1.at(0);
-  vi_1.front();
-  vi_1.back();
+TEST(reverse_iterator_operator, dereference_pointer) {
+  typedef std::map<int, std::string>::iterator iter_type;
+
+  std::map<int, std::string> numbers;
+  numbers[1] = "one";
+  numbers[2] = "two";
+  numbers[3] = "three";
+
+  ft::reverse_iterator<iter_type> rev_end(numbers.begin());
+  ft::reverse_iterator<iter_type> rev_it(numbers.end());
+
+  EXPECT_EQ(rev_it->first == 3 && (rev_it++)->second == "three", true);
+  EXPECT_EQ(rev_it->first ==  2 && (rev_it++)->second == "two", true);
+  EXPECT_EQ(rev_it->first == 1 && (rev_it++)->second == "one", true);
+  EXPECT_EQ(rev_it == rev_end, true);
 }
 
-TEST(reverse_iteratorModifiers, assign) {
-  std::reverse_iterator<int> vi_1(10);
-  std::reverse_iterator<int> vi_2;
-  vi_2.assign(vi_1.begin(), vi_1.end()); // range(1)
-  vi_2.assign(20, 5);  // fill(2)
+TEST(reverse_iterator_operator, dereference_with_offset) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_it(__std__vec.end());
+  EXPECT_EQ(rev_it[3], *(__std__vec.rbegin() + 3));
 }
 
-TEST(reverse_iteratorModifiers, push_back) {
-  std::reverse_iterator<int> vi_1;
-  vi_1.push_back(10);
+TEST(reverse_iterator_non_member, relational_operators) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_begin(__std__vec.end());
+  ft::reverse_iterator<iter_type> rev_begin2(__std__vec.end());
+  ft::reverse_iterator<iter_type> rev_end(__std__vec.begin());
+
+  EXPECT_EQ(rev_begin == rev_begin2, __std__vec.rbegin() == __std__vec.rbegin());
+  EXPECT_EQ(rev_begin == rev_end, __std__vec.rbegin() == __std__vec.rend());
+  EXPECT_EQ(rev_end == rev_begin, __std__vec.rend() == __std__vec.rbegin());
+
+  EXPECT_EQ(rev_begin != rev_begin2, __std__vec.rbegin() != __std__vec.rbegin());
+  EXPECT_EQ(rev_begin != rev_end, __std__vec.rbegin() != __std__vec.rend());
+  EXPECT_EQ(rev_end != rev_begin, __std__vec.rend() != __std__vec.rbegin());
+
+  EXPECT_EQ(rev_begin < rev_begin2, __std__vec.rbegin() < __std__vec.rbegin());
+  EXPECT_EQ(rev_begin < rev_end, __std__vec.rbegin() < __std__vec.rend());
+  EXPECT_EQ(rev_end < rev_begin, __std__vec.rend() < __std__vec.rbegin());
+
+  EXPECT_EQ(rev_begin <= rev_begin2, __std__vec.rbegin() <= __std__vec.rbegin());
+  EXPECT_EQ(rev_begin <= rev_end, __std__vec.rbegin() <= __std__vec.rend());
+  EXPECT_EQ(rev_end <= rev_begin, __std__vec.rend() <= __std__vec.rbegin());
+
+  EXPECT_EQ(rev_begin > rev_begin2, __std__vec.rbegin() > __std__vec.rbegin());
+  EXPECT_EQ(rev_begin > rev_end, __std__vec.rbegin() > __std__vec.rend());
+  EXPECT_EQ(rev_end > rev_begin, __std__vec.rend() > __std__vec.rbegin());
+
+  EXPECT_EQ(rev_begin >= rev_begin2, __std__vec.rbegin() >= __std__vec.rbegin());
+  EXPECT_EQ(rev_begin >= rev_end, __std__vec.rbegin() >= __std__vec.rend());
+  EXPECT_EQ(rev_end >= rev_begin, __std__vec.rend() >= __std__vec.rbegin());
+
+  // EXPECT_EQ(__std__vec.begin() == __std__vec.rend(), true); !NOTE: Does Not Compile
+  // EXPECT_EQ(__std__vec.rbegin() == __std__vec.end(), true); !NOTE: Does Not Compile
+  // EXPECT_EQ(__std__vec.begin() == rev_end, true); !NOTE: Does Not Compile
+  // EXPECT_EQ(rev_begin == __std__vec.end(), true); !NOTE: Does Not Compile
 }
 
-TEST(reverse_iteratorModifiers, pop_back) {
-  std::reverse_iterator<int> vi_1(10);
-  vi_1.pop_back();
+TEST(reverse_iterator_non_member_operator, addition) {
+  typedef std::vector<int>::iterator iter_type;
+
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
+
+  ft::reverse_iterator<iter_type> rev_begin(__std__vec.end());
+  ft::reverse_iterator<iter_type> rev_end(__std__vec.begin());
+
+  EXPECT_EQ(*(3 + rev_begin), *(3 + __std__vec.rbegin()));
 }
 
-TEST(reverse_iteratorModifiers, insert) {
-  std::reverse_iterator<int> vi_1;
-  std::reverse_iterator<int> vi_2;
-  vi_1.insert(vi_1.begin(), 5);  // single element(1)
-  vi_1.insert(vi_1.begin(), 10, 42);  // fill(2)
-  vi_2.insert(vi_2.begin(), vi_1.begin(), vi_1.end());  // range(3)
-}
+TEST(reverse_iterator_non_member_operator, subtraction) {
+  typedef std::vector<int>::iterator iter_type;
 
-TEST(reverse_iteratorModifiers, erase) {
-  std::reverse_iterator<int> vi_1(50);
-  vi_1.erase(vi_1.begin());
-  vi_1.erase(vi_1.begin(), vi_1.end());
-}
+  std::vector<int> __std__vec;
+  for (int i = 0; i < 10; i++) {
+    __std__vec.push_back(i);
+  }
 
-TEST(reverse_iteratorModifiers, swap) {
-  std::reverse_iterator<int> vi_1(5, 42);
-  std::reverse_iterator<int> vi_2(5, 21);
-  vi_1.swap(vi_2);
-}
+  ft::reverse_iterator<iter_type> rev_begin(__std__vec.end());
+  ft::reverse_iterator<iter_type> rev_end(__std__vec.begin());
 
-TEST(reverse_iteratorModifiers, clear) {
-  std::reverse_iterator<int> vi_1(5, 42);
-  vi_1.clear();
-}
-
-TEST(reverse_iteratorAllocator, get_allocator) {
-  std::reverse_iterator<int> vi_1(5, 42);
-  vi_1.get_allocator();
-}
-
-TEST(reverse_iteratorNonMember, swap) {
-  std::reverse_iterator<int> vi_1(5, 42);
-  std::reverse_iterator<int> vi_2(5, 21);
-  std::swap(vi_1, vi_2);
-}
-
-TEST(reverse_iteratorNonMember, relational_operators) {
-  std::reverse_iterator<int> vi_1(5, 42);
-  std::reverse_iterator<int> vi_2(5, 42);
-  ft::reverse_iterator<int> __vi_1(5, 42);
-  ft::reverse_iterator<int> __vi_2(5, 42);
-  EXPECT_EQ(vi_1 == vi_2, __vi_1 == __vi_2);
-  EXPECT_EQ(vi_1 != vi_2, __vi_1 != __vi_2);
-  EXPECT_EQ(vi_1 < vi_2, __vi_1 < __vi_2);
-  EXPECT_EQ(vi_1 > vi_2, __vi_1 > __vi_2);
-  EXPECT_EQ(vi_1 <= vi_2, __vi_1 <= __vi_2);
-  EXPECT_EQ(vi_1 >= vi_2, __vi_1 >= __vi_2);
+  EXPECT_EQ(rev_end - rev_begin, __std__vec.rend() - __std__vec.rbegin());
 }
 
 int main(int argc, char** argv) {

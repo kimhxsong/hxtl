@@ -6,79 +6,80 @@
 #define TREE_ITERATOR_TPP_
 
 #include "tree_iterator.hpp"
+#include <__tree>
 
 namespace ft {
 
 template<class T>
 tree_iterator<T>::tree_iterator()
-  : p_(0) {}
+  : ptr_(0) {}
 
 template<class T>
-tree_iterator<T>::tree_iterator(tree_iterator<T>::pointer p)
-  : p_(p) {}
+tree_iterator<T>::tree_iterator(tree_iterator<T>::pointer ptr)
+  : ptr_(ptr) {}
 
 template<class T>
 tree_iterator<T>::tree_iterator(const tree_iterator<T>& other)
-  : p_(other.p_) {}
+  : ptr_(other.ptr_) {}
 
 template<class T>
 tree_iterator<T>::~tree_iterator() {}
 
 template<class T>
 tree_iterator<T>& tree_iterator<T>::operator=(tree_iterator<T>& other) {
-  p_ = other.p_;
+  ptr_ = other.ptr_;
   return *this;
 }
 
 template<class T>
 reference tree_iterator<T>::operator*() const {
-  return *p_;
+  return *ptr_;
 }
 
 template<class T>
 pointer tree_iterator<T>::operator->() const {
-  return p_;
+  return ptr_;
 }
 
 template<class T>
 tree_iterator<T>& tree_iterator<T>::operator++() {
-  ++p_;
+  ++ptr_;
   return *this;
 }
 
 template<class T>
 tree_iterator<T> tree_iterator<T>::operator++(int) {
   tree_iterator<T> tmp(*this);
-  p_++;
+  ptr_++;
   return tmp;
 }
 
 template<class T>
 tree_iterator<T>& tree_iterator<T>::operator--() {
-  --p_;
+  --ptr_;
   return *this;
 }
 
 template<class T>
 tree_iterator<T> tree_iterator<T>::operator--(int) {
   tree_iterator<T> tmp(*this);
-  p_--;
+  ptr_--;
   return tmp;
 }
 
 template <class T>
 bool tree_iterator<T>::operator==(const tree_iterator<T>& other) {
-  return p_ == other.p_;
+  return ptr_ == other.ptr_;
 }
 
 template <class T>
 bool tree_iterator<T>::operator!=(const tree_iterator<T>& other) {
-  return p_ != other.p_;
+  return ptr_ != other.ptr_;
 }
 
 template<class T>
 std::ostream& operator<<(const std::ostream& os, const tree_iterator<T>& it) {
-  os << *p_;
+  os << *ptr_;
   return *os;
 }
 

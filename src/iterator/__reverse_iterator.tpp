@@ -29,12 +29,14 @@ typename reverse_iterator<Iterator>::iterator_type reverse_iterator<Iterator>::b
 
 template<class Iterator>
 typename reverse_iterator<Iterator>::reference reverse_iterator<Iterator>::operator*() const {
-  return *(current - 1);
+  iterator_type tmp(current);  // 실수.
+  return *(--tmp);
 }
 
 template<class Iterator>
 typename reverse_iterator<Iterator>::pointer reverse_iterator<Iterator>::operator->() const {
-  return &*(current - 1);
+  iterator_type tmp(current);
+  return &(*(--tmp));
 }
 
 template<class Iterator>

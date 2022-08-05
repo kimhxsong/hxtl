@@ -27,13 +27,15 @@ struct pair {
   typedef T1 first_type;
   typedef T2 second_type;
 
+  T1 first;
+  T2 second;
+
   pair();  // default
   pair(const pair& pr);  // copy constructor
   pair(const first_type& a, const second_type& b);  // initialization
-  pair& operator=(const pair& pr);  // copy operator
 
-  T1 first;
-  T2 second;
+  // implicitly declared:
+  pair& operator=(const pair& pr);  // copy operator
 };
 
 }  // namespace ft

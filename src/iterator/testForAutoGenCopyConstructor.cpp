@@ -1,4 +1,5 @@
-#include "random_iterator.hpp"
+
+// A Test involving the constructor of const_iterator
 
 template <class T>
 class A {

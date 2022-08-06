@@ -32,12 +32,22 @@ vector_iterator<T>& vector_iterator<T>::operator=(const vector_iterator<value_ty
 }
 
 template <class T>
-typename vector_iterator<T>::reference vector_iterator<T>::operator*() const {
+typename vector_iterator<T>::reference vector_iterator<T>::operator*() {
   return *p_;
 }
 
 template <class T>
-typename vector_iterator<T>::pointer vector_iterator<T>::operator->() const {
+typename vector_iterator<T>::const_reference vector_iterator<T>::operator*() const {
+  return *p_;
+}
+
+template <class T>
+typename vector_iterator<T>::pointer vector_iterator<T>::operator->() {
+  return p_;
+}
+
+template <class T>
+typename vector_iterator<T>::const_pointer vector_iterator<T>::operator->() const {
   return p_;
 }
 
@@ -131,17 +141,17 @@ typename vector_iterator<T>::reference vector_iterator<T>::operator[](difference
   return *(p_ + n);
 }
 
-}  // namespace ft
-
 template <class T>
-ft::vector_iterator<T> operator+(int n, const ft::vector_iterator<T>& it) {
+vector_iterator<T> operator+(int n, const vector_iterator<T>& it) {
   return it + n;
 }
 
 template <class T>
-std::ostream& operator<<(std::ostream& os, const ft::vector_iterator<T>& it) {
+std::ostream& operator<<(std::ostream& os, const vector_iterator<T>& it) {
   os << *it;
   return os;
 }
+
+}  // namespace ft
 
 #endif  // VECTOR_ITERATOR_TPP_

@@ -1,5 +1,5 @@
-#ifndef TYPE_TRAITS_INTEGRAL_CONSTANTS_HPP_
-#define TYPE_TRAITS_INTEGRAL_CONSTANTS_HPP_
+#ifndef __INTEGRAL_CONSTANTS_HPP_
+#define __INTEGRAL_CONSTANTS_HPP_
 
 namespace ft {
 
@@ -11,7 +11,7 @@ struct integral_constant {
     operator value_type() const throw() { return value; }  // conversion operator
 };
 
-}  // ft::
+}  // namespace ft
 
 // Possible implementation 
 // From https://en.cppreference.com/w/cpp/types/integral_constant
@@ -24,5 +24,5 @@ struct integral_constant {
 //     constexpr value_type operator()() const noexcept { return value; } // since c++14
 // };
 
-// constexpr, const noexcept
-#endif  // TYPE_TRAITS_INTEGRAL_CONSTANTS_HPP_
+#endif  // __INTEGRAL_CONSTANTS_HPP_
+

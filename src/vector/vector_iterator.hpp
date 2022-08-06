@@ -3,18 +3,20 @@
 
 #include <ostream>
 
-#include "../iterator/iterator_traits.hpp"
+#include "../iterator/iterator.hpp"
 
 namespace ft {
 
 template <class T>
 class vector_iterator {
  public:
-  typedef typename ft::iterator_traits<T>::iterator_category iterator_category;
-  typedef typename ft::iterator_traits<T>::value_type value_type;
-  typedef typename ft::iterator_traits<T>::difference_type difference_type;
-  typedef typename ft::iterator_traits<T>::pointer pointer;
-  typedef typename ft::iterator_traits<T>::reference reference;
+  typedef typename iterator_traits<T>::iterator_category iterator_category;
+  typedef typename iterator_traits<T>::value_type value_type;
+  typedef typename iterator_traits<T>::difference_type difference_type;
+  typedef typename iterator_traits<T>::pointer pointer;
+  typedef const pointer const_pointer;
+  typedef typename iterator_traits<T>::reference reference;
+  typedef const reference const_reference;
 
   vector_iterator();
   vector_iterator(pointer p);
@@ -24,8 +26,10 @@ class vector_iterator {
 
   vector_iterator& operator=(const vector_iterator<value_type*>& other);
 
-  reference operator*() const;
-  pointer operator->() const;
+  reference operator*();
+  const_reference operator*() const;
+  pointer operator->();
+  const_pointer operator->() const;
 
   vector_iterator& operator++();
   vector_iterator operator++(int);

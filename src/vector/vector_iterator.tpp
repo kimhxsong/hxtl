@@ -32,12 +32,22 @@ vector_iterator<T>& vector_iterator<T>::operator=(const vector_iterator<value_ty
 }
 
 template <class T>
-typename vector_iterator<T>::reference vector_iterator<T>::operator*() const {
+typename vector_iterator<T>::reference vector_iterator<T>::operator*() {
   return *p_;
 }
 
 template <class T>
-typename vector_iterator<T>::pointer vector_iterator<T>::operator->() const {
+typename vector_iterator<T>::const_reference vector_iterator<T>::operator*() const {
+  return *p_;
+}
+
+template <class T>
+typename vector_iterator<T>::pointer vector_iterator<T>::operator->() {
+  return p_;
+}
+
+template <class T>
+typename vector_iterator<T>::const_pointer vector_iterator<T>::operator->() const {
   return p_;
 }
 

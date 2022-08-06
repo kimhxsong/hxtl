@@ -2,7 +2,7 @@
 #define VECTOR_TPP_
 
 #ifndef VECTOR_HPP_
-# error  vector.tpp:
+# error  __FILE__ should only be included from vector.hpp.
 #endif  // VECTOR_HPP_
 
 #include "vector.hpp"
@@ -228,18 +228,24 @@ void vector<T, Alloc>::swap(vector& other) {
 
 template <typename T, typename Alloc>
 void vector<T, Alloc>::reserve(size_type n) {
-  if (max_size() < n) {
-    throw std::length_error("__func__");
+  if (n > max_size()) {
+    throw std::length_error(__func__);
   }
   if (n <= space_) {
     return;
   }
   pointer elem = alloc_.allocate(n);
-  for (size_type i = 0; i < size_; i++) {
-    alloc_.construct(&elem_[i], elem_[i]);
-  }
-  for (size_type i = 0; i < size_; i++) {
-    alloc_.destroy(&elem_[i]);
+  if (!is_integral<value_type>::value) {
+    for (size_type i = 0; i < size_; i++) {
+      alloc_.construct(&elem[i], elem_[i]);
+    }
+    for (size_type i = 0; i < size_; i++) {
+      alloc_.destroy(&elem_[i]);
+    } 
+  } else {
+    for (size_type i = 0; i < size_; i++) {
+      elem[i] = elem_[i];
+    }
   }
   alloc_.deallocate(elem_, space_);
   elem_ = elem;
@@ -303,19 +309,22 @@ typename vector<T, Alloc>::allocator_type vector<T, Alloc>::get_allocator() cons
 template <typename T, typename Alloc>
 void vector<T, Alloc>::push_back(const value_type& val) {
   if (space_ == size_) {
-    int new_space = space_ << 1;
+    int new_space = space_ < (max_size() / 2) ? (space_ << 1)
+                                              : max_size();
     if (new_space == 0) {
-      new_space++;
+      ++new_space;
     }
     reserve(new_space);
     space_ = new_space;
   }
-  alloc_.construct(&elem_[size_], val);
+  alloc_.construct(&elem_[size_], val);  // TODO 예외처리
   size_++;
 }
 
 template <typename T, typename Alloc>
 void vector<T, Alloc>::pop_back() {
+  if (size_ == 0)
+    return;
   alloc_.destroy(&elem_[size_ - 1]);
   size_--;
 }
@@ -323,8 +332,9 @@ void vector<T, Alloc>::pop_back() {
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator
 vector<T, Alloc>::insert(iterator position, const value_type& val) {
+  difference_type pos = std::distance(begin(), position);
   insert(position, 1, val);
-  return ++position;
+  return begin() + pos;
 }
 
 template <typename T, typename Alloc>
@@ -377,32 +387,31 @@ template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator position) {
   difference_type pos = std::distance(begin(), position);
   size_type n = 1;
-  while (pos + n < size_) {
-    elem_[pos] = elem_[pos + n];
-    pos++;
+  for (size_type idx =  pos; idx < size_; idx++) {
+    elem_[idx] = elem_[idx + n];
   }
   while (n > 0) {
     alloc_.destroy(&elem_[size_ - 1]);
     size_--;
     n--;
   }
-  return position;
+  return begin() + pos;
 }
 
 template <typename T, typename Alloc>
-typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator first, iterator last) {
+typename vector<T, Alloc>::iterator
+vector<T, Alloc>::erase(iterator first, iterator last) {
   difference_type pos = std::distance(begin(), first);
   size_type n = std::distance(first, last);
-  while (pos + n < size_) {
-    elem_[pos] = elem_[pos + n];
-    pos++;
+  for (size_type idx =  pos; idx < size_; idx++) {
+    elem_[idx] = elem_[idx + n];
   }
   while (n > 0) {
     alloc_.destroy(&elem_[size_ - 1]);
     size_--;
     n--;
   }
-  return last;
+  return begin() + pos;
 }
 
 }; // namespace ft

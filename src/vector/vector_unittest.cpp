@@ -165,14 +165,18 @@ TEST(vector_iterator, convertible_to_const) {
 
 TEST(vector_capacity, capacity) {
   ft::vector<int> __ft__vec(10);
-  EXPECT_EQ(__ft__vec.size(), 10);
-  __ft__vec.max_size();
+  std::vector<int> __std__vec(10);
+  EXPECT_EQ(__ft__vec.size(), __std__vec.size());
+  EXPECT_EQ(__ft__vec.max_size(), __std__vec.max_size());
   __ft__vec.resize(20);
-  EXPECT_EQ(__ft__vec.size(), 20);
+  __std__vec.resize(20);
+  EXPECT_EQ(__ft__vec.size(), __std__vec.size());
   EXPECT_EQ(__ft__vec.empty(), false);
+  EXPECT_EQ(__ft__vec.empty(), __std__vec.empty());
 
   __ft__vec.reserve(40);
-  EXPECT_EQ(__ft__vec.size(), 40);  // TODO
+  __std__vec.reserve(40);
+  EXPECT_EQ(__ft__vec.size(), __std__vec.size());  // TODO
   //   vector_unittest.cpp:72: Failure
   // Expected equality of these values:
   //   __ft__vec.size()
@@ -180,7 +184,9 @@ TEST(vector_capacity, capacity) {
   //   40
 
   __ft__vec.reserve(30);
-  EXPECT_EQ(__ft__vec.size(), 40);
+  __std__vec.reserve(30);
+  EXPECT_EQ(__ft__vec.size(), __std__vec.size());
+  EXPECT_EQ(__ft__vec.capacity(), __std__vec.capacity());
   //   vector_unittest.cpp:74: Failure
   // Expected equality of these values:
   //   __ft__vec.size()
@@ -272,7 +278,6 @@ TEST(vector_modifiers, pop_back) {
   //   Which is: 4294967295
   // __std__vec.size()
   //   Which is: 18446744073709551615
-
 }
 
 TEST(vector_modifiers, insert) {
@@ -288,16 +293,17 @@ TEST(vector_modifiers, insert) {
   EXPECT_EQ(__ft__vec.size(), __std__vec.size());
 
   __ft__vec.insert(__ft__vec.begin(), 10, 42);  // fill(2)
+  __std__vec.insert(__std__vec.begin(), 10, 42);  // fill(2)
   EXPECT_EQ(__ft__vec.size(), __std__vec.size());
   EXPECT_EQ(__ft__vec[0], __std__vec[0]);
   EXPECT_EQ(__ft__vec[9], __std__vec[9]);
-  EXPECT_EQ(__ft__vec[10], __std__vec[10]);  // TODO
+  EXPECT_EQ(__ft__vec[10], __std__vec[10]);
 
   __ft__vec2.insert(__ft__vec2.begin(), __ft__vec.begin(), __ft__vec.end());  // range(3)
   __std__vec2.insert(__std__vec2.begin(), __std__vec.begin(), __std__vec.end());
   EXPECT_EQ(__ft__vec2[0], __std__vec2[0]);
   EXPECT_EQ(__ft__vec2[9], __std__vec2[9]);
-  EXPECT_EQ(__ft__vec2[10], __std__vec2[10]);  // TODO
+  EXPECT_EQ(__ft__vec2[10], __std__vec2[10]);
   EXPECT_EQ(__ft__vec2.size(), __std__vec2.size());
 }
 
@@ -312,12 +318,14 @@ TEST(vector_modifiers, erase) {
 
   __ft__vec.erase(__ft__vec.begin());
   __std__vec.erase(__std__vec.begin());
-  EXPECT_EQ(__ft__vec[0], __std__vec[0]);  // TODO
+  EXPECT_EQ(__ft__vec[0], __std__vec[0]);
   EXPECT_EQ(__ft__vec.size(), __std__vec.size());
 
-  __ft__vec.erase(__ft__vec.begin()+1, __ft__vec.begin()+3);
-  __std__vec.erase(__std__vec.begin()+1, __std__vec.begin()+3);
-  EXPECT_EQ(__ft__vec[1], __std__vec[1]);  // TODO
+  ft::vector<int>::iterator __ft__it = __ft__vec.erase(__ft__vec.begin()+1, __ft__vec.begin()+3);
+  std::vector<int>::iterator __std__it = __std__vec.erase(__std__vec.begin()+1, __std__vec.begin()+3);
+
+  EXPECT_EQ(*__ft__it, *__std__it);
+  EXPECT_EQ(__ft__vec[1], __std__vec[1]);
   EXPECT_EQ(__ft__vec.size(), __std__vec.size());
 
   __ft__vec.erase(__ft__vec.begin(), __ft__vec.end());

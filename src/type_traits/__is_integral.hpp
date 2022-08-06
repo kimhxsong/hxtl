@@ -7,20 +7,6 @@ namespace ft {
 typedef ft::integral_constant<bool, true> true_type;
 typedef ft::integral_constant<bool, false> false_type;
 
-// struct true_type {
-//   typedef bool value_type;
-//   typedef true_type type;
-//   static const value_type value = true;
-//   operator value_type() { return value; }
-// };
-
-// struct false_type {
-//   typedef bool value_type;
-//   typedef false_type type;
-//   static const value_type value = false;
-//   operator value_type() { return value; }
-// };
-
 template <class T> struct is_integral : public false_type {};
 template <class T> struct is_integral<const T> : public is_integral<T> {};
 template <class T> struct is_integral<volatile const T> : public is_integral<T> {};

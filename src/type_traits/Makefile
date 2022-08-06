@@ -1,12 +1,20 @@
-vector:
-	c++ vector_unittest.cpp -g -std=c++11 -I $(shell brew --prefix googletest)/include -L $(shell brew --prefix googletest)/lib -lgtest -o vector_unittest
+CXX = c++
+CXXFLAGS = -std=c++11 -g
+INCLUDES = -I $(shell brew --prefix googletest)/include 
+LIBS = -L $(shell brew --prefix googletest)/lib  -lgtest
 
-map:
-	c++ map_unittest.cpp -g -std=c++11 -I $(shell brew --prefix googletest)/include -L $(shell brew --prefix googletest)/lib -lgtest -o map_unittest
+all: is_integral clean
 
-pair:
-	c++ pair_unittest.cpp -g -std=c++11 -I $(shell brew --prefix googletest)/include -L $(shell brew --prefix googletest)/lib -lgtest -o pair_unittest
+is_integral:
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) __is_integral_unittest.cpp -o __is_integral_unittest
+	@./__is_integral_unittest
+
+enable_if:
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) __enable_if_unittest.cpp -o __enable_if_unittest
+	@./__enable_if_unittest
 
 clean:
-	rm *_unittest;
-	rm -rf *.dSYM;
+	@rm -f *_unittest;
+	@rm -rf *.dSYM;
+
+.PHONY: all is_integral enable_if clean

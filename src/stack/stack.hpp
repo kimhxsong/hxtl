@@ -24,7 +24,7 @@ class stack {
   void push(const value_type& val);
   void pop();
 
- private:
+ protected:
   container_type c;
 };
 

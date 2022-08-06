@@ -2,7 +2,7 @@
 #define __PAIR_TPP_
 
 #ifndef __PAIR_HPP_
-#error __FILE__ should only be included from pair.hpp.
+# error __FILE__ should only be included from pair.hpp.
 #endif // __PAIR_HPP_
 
 #include "__pair.hpp"

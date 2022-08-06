@@ -3,7 +3,7 @@ CXXFLAGS = -std=c++11 -g
 INCLUDES = -I $(shell brew --prefix googletest)/include 
 LIBS = -L $(shell brew --prefix googletest)/lib  -lgtest
 
-all: is_integral clean
+all: is_integral enable_if clean
 
 is_integral:
 	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) __is_integral_unittest.cpp -o __is_integral_unittest

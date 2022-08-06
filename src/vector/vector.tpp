@@ -171,7 +171,7 @@ typename vector<T, Alloc>::const_reference vector<T, Alloc>::operator[](size_typ
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::reference vector<T, Alloc>::at(size_type n) {
   if (n >= size_) {
-    throw std::out_of_range("__func__");
+    throw std::out_of_range(__func__);
   }
   return elem_[n];
 }
@@ -179,7 +179,7 @@ typename vector<T, Alloc>::reference vector<T, Alloc>::at(size_type n) {
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::const_reference vector<T, Alloc>::at(size_type n) const {
   if (n >= size_) {
-    throw std::out_of_range("__func__");
+    throw std::out_of_range(__func__);
   }
   return elem_[n];
 }

@@ -59,13 +59,13 @@ class vector_iterator {
   pointer p_;
 };
 
+template <class T>
+vector_iterator<T> operator+(int n, const vector_iterator<T>& it);
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const vector_iterator<T>& it);
+
 }  // namespace ft
-
-template <class T>
-ft::vector_iterator<T> operator+(int n, const ft::vector_iterator<T>& it);
-
-template <class T>
-std::ostream& operator<<(std::ostream& os, const ft::vector_iterator<T>& it);
 
 #include "vector_iterator.tpp"
 

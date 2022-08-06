@@ -1,5 +1,5 @@
-#ifndef TYPE_TRAITS_ENABLE_IF_HPP
-#define TYPE_TRAITS_ENABLE_IF_HPP
+#ifndef __ENABLE_IF_HPP_
+#define __ENABLE_IF_HPP_
 
 namespace ft {
 
@@ -9,6 +9,6 @@ struct enable_if {};
 template<class T>
 struct enable_if<true, T> { typedef T type; };
 
-}  // ft::
+}  // namespace ft
 
-#endif  // TYPE_TRAITS_ENABLE_IF_HPP
+#endif  // __ENABLE_IF_HPP_

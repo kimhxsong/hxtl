@@ -20,10 +20,15 @@ public:
   typedef MyIterator<T, const node<T> > const_iterator;
 };
 
+#include <map>
+
 int main() {
   Container<int>::iterator it;
   Container<int>::iterator it2(it);
   Container<int>::const_iterator cit;
   Container<int>::const_iterator cit2(cit);
   Container<int>::const_iterator cit3(it);
+  std::map<int, int> mymap;
+  std::map<int, int>::iterator myit;
+
 }

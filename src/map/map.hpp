@@ -1,259 +1,229 @@
 #ifndef MAP_HPP_
 #define MAP_HPP_
 
-#include <utility>
+#include <functional>
+#include <iostream>
+#include <map>
+#include <memory>
 
+#include "../hxtree/hxtree.hpp"
+#include "../utility/utility.hpp"
 
-template <class Key, class T, class Compare = less<Key>,
-          class Allocator = allocator<pair<const Key, Tp> > >
-class map {
-public:
-    typedef Key key_type;
-    typedef T mapped_type;
-    typedef pair<const key_type, mapped_type> value_type;
-    typedef typename __identity<_Compare>::type key_compare;
-    typedef typename __identity<_Allocator>::type allocator_type;
-    typedef value_type& reference;
-    typedef const value_type& const_reference;
-
-    static_assert((is_same<typename allocator_type::value_type, value_type>::value),
-                  "Allocator::value_type must be same type as value_type");
-
-    class _LIBCPP_TEMPLATE_VIS value_compare
-        : public binary_function<value_type, value_type, bool>
-    {
-        friend class map;
-    protected:
-        key_compare comp;
-
-        _LIBCPP_INLINE_VISIBILITY value_compare(key_compare c) : comp(c) {}
-    public:
-        _LIBCPP_INLINE_VISIBILITY
-        bool operator()(const value_type& __x, const value_type& __y) const
-            {return comp(__x.first, __y.first);}
-    };
-
-public:
-    typedef typename __alloc_traits::pointer pointer;
-    typedef typename __alloc_traits::const_pointer const_pointer;
-    typedef typename __alloc_traits::size_type size_type;
-    typedef typename __alloc_traits::difference_type difference_type;
-    typedef __map_iterator<typename __base::iterator> iterator;
-    typedef __map_const_iterator<typename __base::const_iterator> const_iterator;
-    typedef _VSTD::reverse_iterator<iterator>               reverse_iterator;
-    typedef _VSTD::reverse_iterator<const_iterator>         const_reverse_iterator;
-
-#if _LIBCPP_STD_VER > 14
-    typedef __map_node_handle<typename __base::__node, allocator_type> node_type;
-    typedef __insert_return_type<iterator, node_type> insert_return_type;
-#endif
-
-    template <class _Key2, class _Value2, class _Comp2, class _Alloc2>
-        friend class _LIBCPP_TEMPLATE_VIS map;
-    template <class _Key2, class _Value2, class _Comp2, class _Alloc2>
-        friend class _LIBCPP_TEMPLATE_VIS multimap;
-}
-
-/**
-template <class Key,
-          class T,
-          class Compare = less<Key>,
-          class Alloc = allocator<pair<const Key,T> > >
-class map {
-    typedef Key key_type;
-    typedef T mapped_type;
-    typedef pair<const key_type, mapped_type> value_type;
-    typedef Compare key_compare;
-    typedef Allocator allocator_type;
-    typedef typename allocator_type::reference reference;
-    typedef typename allocator_type:: const_reference;
-    typedef typename allocator_type::pointer pointer;
-    typedef typename allocator_type::const_pointer const_pointer;
-    typedef typename allocator_type::size_type size_type;
-    typedef typename allocator_type:: difference_type;
-
-    typedef implementation-defined iterator;
-    typedef implementation-defined const_iterator;
-    typedef std::reverse_iterator<iterator> reverse_iterator;
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-    // typedef unspecified                              node_type;              // C++17
-    // typedef INSERT_RETURN_TYPE<iterator, node_type>  insert_return_type;     // C++17
-
-  explicit map (const key_compare& comp = key_compare(),
-              const allocator_type& alloc = allocator_type());  // empty (1)
-  template <class InputIterator>
-  map (InputIterator first, InputIterator last,
-      const key_compare& comp = key_compare(),
-      const allocator_type& alloc = allocator_type());  // range (2)	
-  map (const map& x);  // copy (3)
-
-  ~map();
-
-  map& operator= (const map& x);
-
-  iterator begin();
-  const_iterator begin() const;
-  iterator end();
-  const_iterator end() const;
-  reverse_iterator rbegin();
-  const_reverse_iterator rbegin() const;
-  reverse_iterator rend();
-  const_reverse_iterator rend() const;
-
-  bool empty() const;
-  size_type size() const;
-  size_type max_size() const;
-
-  mapped_type& operator[] (const key_type& k);
-
-  pair<iterator,bool> insert (const value_type& val);  // single element (1)	
-  iterator insert (iterator position, const value_type& val);  // with hint (2)	
-  template <class InputIterator>
-  void insert (InputIterator first, InputIterator last);  // range (3)	
-  void erase (iterator position);
-  size_type erase(const key_type& k);
-  void erase(iterator first, iterator last);
-  void swap (map& x);
-  void clear();
-
-  iterator find(const key_type& k);
-  const_iterator find(const key_type& k) const;
-  size_type count(const key_type& k) const;
-  key_compare key_comp() const;
-  value_compare value_comp() const;
-  iterator lower_bound(const key_type& k);
-  const_iterator lower_bound(const key_type& k) const;
-  iterator upper_bound(const key_type& k);
-  const_iterator upper_bound(const key_type& k) const;
-  pair<const_iterator,const_iterator> equal_range(const key_type& k) const;
-  pair<iterator,iterator> equal_range(const key_type& k);
-
-  allocator_type get_allocator() const;
-};
-*/
+namespace ft
+{
 
 template <class Key,
           class T,
-          class Compare = less<Key>,
-          class Alloc = allocator<pair<const Key,T> > >
+          class Compare = std::less<Key>,
+          class Alloc = std::allocator<pair<const Key, T> > >
 class map
-  : ft::tree_node<pair<const Key, T> > {
+{
+ public:
   typedef Key key_type;
-  typedef typename T mapped_type;
-  typedef typename pair<const key_type,mapped_type> value_type;
-  typedef typename less<key_type> key_compare;
-  // typedef typename Nested function class to compare elements	see value_comp value_compare;
-  typedef typename allocator<value_type> allocator_type;
-  typedef typename allocator_type::reference reference;
-  typedef typename allocator_type::const_reference const_reference;
-  typedef typename allocator_type::pointer pointer;
-  typedef typename allocator_type::const_pointer const_pointer;
-  // typedef typename map_iterator<> iterator;
-  // typedef typename map_iterator<> const_iterator;
-  typedef typename reverse_iterator<iterator> reverse_iterator;
-  typedef typename reverse_iterator<const_iterator> const_reverse_iterator;
-  typedef typename iterator_traits<iterator>::difference_type difference_type;
-  typedef typename size_t size_type;
-  typedef ft::tree_node<value_type> node_type;
+  typedef T mapped_type;
+  typedef Compare key_compare;
+  typedef typename ft::pair<const key_type, mapped_type> value_type;
+
+  class value_compare
+  {
+    friend class map;
+
+   protected:
+    key_compare comp;
+    value_compare(key_compare comp) : comp(comp) {}
+
+   public:
+    typedef bool result_type;
+    typedef value_type first_argument_type;
+    typedef value_type second_argument_type;
+    bool operator()(const value_type& x, const value_type& y) const
+    {
+      return comp(x.first, y.first);
+    }
+  };
+
+  typedef ft::hxtree<value_type, value_compare, Alloc> map_base;
+  typedef typename map_base::allocator_type allocator_type;
+  typedef typename map_base::const_pointer const_pointer;
+  typedef typename map_base::const_reference const_reference;
+  typedef typename map_base::pointer pointer;
+  typedef typename map_base::reference reference;
+  typedef typename map_base::iterator iterator;
+  typedef typename map_base::const_iterator const_iterator;
+  typedef typename map_base::reverse_iterator reverse_iterator;
+  typedef typename map_base::const_reverse_iterator const_reverse_iterator;
+  typedef typename map_base::difference_type difference_type;
+  typedef typename map_base::size_type size_type;
 
   explicit map(const key_compare& comp = key_compare(),
                const allocator_type& alloc = allocator_type())
-    : alloc_(alloc),
-      comp_(comp),
-      root(0),
-      size_(0) {
-    //
-  }
-
+      : base(value_compare(comp), alloc)
+  {}
   template <class InputIterator>
-  map(InputIterator first, InputIterator last,
+  map(InputIterator first,
+      InputIterator last,
       const key_compare& comp = key_compare(),
       const allocator_type& alloc = allocator_type())
-    : alloc_(alloc),
-      comp_(comp),
-      root(0),
-      size_(0) {
-    //
+      : base(first, last)
+  {}
+  map(const map& other) : base(other.base) {}
+  ~map() {}
+
+  map& operator=(const map& other)
+  {
+    base = other.base;
   }
 
-  map(const map& x)
-    : alloc_(alloc),
-      comp_(comp),
-      root(0),
-      size_(0) {
-    //
+  iterator begin()
+  {
+    return base.begin();
+  }
+  const_iterator begin() const
+  {
+    return const_iterator(base.begin());
+  }
+  iterator end()
+  {
+    return base.end();
+  }
+  const_iterator end() const
+  {
+    return const_iterator(base.end());
+  }
+  reverse_iterator rbegin()
+  {
+    return base.rbegin();
+  }
+  const_reverse_iterator rbegin() const
+  {
+    return base.rbegin();
+  }
+  reverse_iterator rend()
+  {
+    return base.rend();
+  }
+  const_reverse_iterator rend() const
+  {
+    return base.rend();
   }
 
-  ~map() {
-    //
+  bool empty() const
+  {
+    return base.empty();
   }
 
-  map& operator=(const map& x) {
-    alloc_ = x.allo_;
-    comp_ - x.comp_;
-    root_ = x.root_;  // 깊은 복사일까? 얕은 복사일까?
-    size_ = x.size_;
+  size_type size() const
+  {
+    return base.size();
   }
 
-  iterator begin() {}  // 만들때마다 찾아야 하는건가?
-  const_iterator begin() const;
-  iterator end();
-  const_iterator end() const;
-  reverse_iterator rbegin();
-  const_reverse_iterator rbegin() const;
-  reverse_iterator rend();
-  const_reverse_iterator rend() const;
-
-  bool empty() const {
-    return this->size() == 0;
+  size_type max_size() const
+  {
+    return base.max_size();
   }
 
-  size_type size() const {
-    return size_;
+  mapped_type& operator[](const key_type& k)
+  {
+    iterator found =
+        base.find(ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
+    if (found != this->end())
+    {
+      std::cout << "test" << std::endl;
+      return found->second;
+    }
+    else
+      return base
+          .insert(ft::make_pair<const key_type, mapped_type>(k, mapped_type()))
+          .first->second;
   }
 
-  size_type max_size() const {
-    // return std::numeric_limits<
-    return;
+  pair<iterator, bool> insert(const value_type& val)
+  {
+    return base.insert(val);
   }
-
-  // mapped_type& operator[](const key_type& k) {
-
-  // }
-
-  pair<iterator,bool> insert (const value_type& val);  // single element (1)	
-  iterator insert (iterator position, const value_type& val);  // with hint (2)	
+  iterator insert(iterator position, const value_type& val) {}
   template <class InputIterator>
-  void insert (InputIterator first, InputIterator last);  // range (3)	
-  void erase (iterator position);
-  size_type erase(const key_type& k);
-  void erase(iterator first, iterator last);
-  void swap (map& x);
-  void clear();
-
-  iterator find(const key_type& k);
-  const_iterator find(const key_type& k) const;
-  size_type count(const key_type& k) const;
-  key_compare key_comp() const;
-  value_compare value_comp() const;
-  iterator lower_bound(const key_type& k);
-  const_iterator lower_bound(const key_type& k) const;
-  iterator upper_bound(const key_type& k);
-  const_iterator upper_bound(const key_type& k) const;
-  pair<const_iterator,const_iterator> equal_range(const key_type& k) const;
-  pair<iterator,iterator> equal_range(const key_type& k);
-
-  allocator_type get_allocator() const{
-    return alloc_;
+  void insert(InputIterator first, InputIterator last)
+  {
+    while (first != last)
+    {
+      base.insert(ft::make_pair(first.first, first.last));
+      first++;
+    }
+  }
+  void erase(iterator position)
+  {
+    base.erase(position);
+  }
+  size_type erase(const key_type& k)
+  {
+    return base.erase(k);
+  }
+  void erase(iterator first, iterator last)
+  {
+    base.erase(first, last);
+  }
+  void swap(map& x)
+  {
+    base.swap(x.swap);
+  }
+  void clear()
+  {
+    base.clear();
+  }
+  iterator find(const key_type& k)
+  {
+    return base.find(k);
+  }
+  const_iterator find(const key_type& k) const
+  {
+    return base.find(k);
+  }
+  size_type count(const key_type& k) const
+  {
+    return base.count(k);
+  }
+  key_compare key_comp() const
+  {
+    return base.value_comp();
+  }
+  value_compare value_comp() const
+  {
+    return this->value_comp();
+  }
+  iterator lower_bound(const key_type& k)
+  {
+    return base.lower_bound(k);
+  }
+  const_iterator lower_bound(const key_type& k) const
+  {
+    return base.lower_bound(k);
+  }
+  iterator upper_bound(const key_type& k)
+  {
+    return base.upper_bound(k);
+  }
+  const_iterator upper_bound(const key_type& k) const
+  {
+    return base.upper_bound(k);
+  }
+  pair<const_iterator, const_iterator> equal_range(const key_type& k) const
+  {
+    return base.equal_range(k);
+  }
+  pair<iterator, iterator> equal_range(const key_type& k)
+  {
+    return base.equal_range(k);
+  }
+  allocator_type get_allocator() const
+  {
+    return base.get_allocator();
   }
 
  private:
-  allocator_type alloc_;
-  key_compare& comp_;
-  node_type* root;
-  size_type size_;
+  map_base base;
 };
 
-#include "map.tpp"
+}  // namespace ft
 
 #endif  // MAP_HPP_

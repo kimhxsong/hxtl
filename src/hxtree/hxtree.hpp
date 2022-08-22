@@ -4,8 +4,9 @@
 #include <__tree>
 #include <cstddef>     // ptrdiff_t
 #include <functional>  // less
-#include <iterator>    // bidirectional_tag
-#include <memory>      // allocator
+#include <iostream>
+#include <iterator>  // bidirectional_tag
+#include <memory>    // allocator
 
 #include "../iterator/iterator.hpp"  // reverse_iterator
 #include "../utility/utility.hpp"    // pair
@@ -16,19 +17,19 @@ namespace ft
 template <class _T, class _Comp, class Alloc_> class hxtree;
 template <class _T, class NodeType> class hxiterator;
 
-template <class NodeType> bool treeIsLeftChild(NodeType* np)
+template <class NodePtr> bool treeIsLeftChild(NodePtr np)
 {
   return np == np->parent->left;
 }
 
-template <class NodeType> NodeType* treeMax(NodeType* np)
+template <class NodePtr> NodePtr treeMax(NodePtr np)
 {
   while (np->right != NULL)
     np = np->right;
   return np;
 }
 
-template <class NodeType> NodeType* treeMin(NodeType* np)
+template <class NodePtr> NodePtr treeMin(NodePtr np)
 {
   if (!np)
     return 0;
@@ -37,31 +38,31 @@ template <class NodeType> NodeType* treeMin(NodeType* np)
   return np;
 }
 
-template <class NodeType> NodeType* treeNext(NodeType* np)
+template <class NodePtr> NodePtr treeNext(NodePtr np)
 {
   if (np->right)
   {
-    return treeMin<NodeType>(np->right);
+    return treeMin(np->right);
   }
-  while (treeIsLeftChild<NodeType>(np) == false)
+  while (treeIsLeftChild(np) == false)
   {
     np = np->parent;
   }
   return (np->parent);
 }
 
-template <class NodeType> NodeType* treePrev(NodeType* np)
+template <class NodePtr> NodePtr treePrev(NodePtr np)
 {
   if (np->left != NULL)
-    return treeMax<NodeType>(np->left);
-  while (treeIsLeftChild<NodeType>(np))
+    return treeMax(np->left);
+  while (treeIsLeftChild(np))
   {
     np = np->parent;
   }
   return (np->parent);
 }
 
-template <class NodeType> NodeType* treeLeaf(NodeType* np)
+template <class NodePtr> NodePtr treeLeaf(NodePtr np)
 {
   while (1)
   {
@@ -242,6 +243,15 @@ class hxtree
   {
     begin_node.parent = &end_node;
   }
+  void copy_recursive(node_pointer np)
+  {
+    if (!np)
+      return;
+    this->insert(np->value);
+    copy_recursive(np->left);
+    copy_recursive(np->right);
+  }
+
   hxtree(const hxtree& other)
       : comp(other.comp),
         alloc(other.alloc),
@@ -250,13 +260,13 @@ class hxtree
         root(0),
         size(0)
   {
-    this->insert(other.begin(), other.end());
+    copy_recursive(other.root);
   }
 
   hxtree& operator=(const hxtree& other)
   {
     this->clear();
-    this->insert(other.begin(), other.end());
+    copy_recursive(other.root);
     return *this;
   }
   ~hxtree()

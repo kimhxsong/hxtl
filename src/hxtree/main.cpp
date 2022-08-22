@@ -11,5 +11,5 @@ int main()
   {
     mytree.insert(i);
   }
-  // mytree2 = mytree;
+  mytree2 = mytree;
 }

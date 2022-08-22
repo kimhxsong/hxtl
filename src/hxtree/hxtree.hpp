@@ -279,13 +279,13 @@ class hxtree
         root(0),
         size(0)
   {
-    copy_recursive(other.root);
+    copy_recursive(other.end_node.left);
   }
 
   hxtree& operator=(const hxtree& other)
   {
     this->clear();
-    copy_recursive(other.root);
+    copy_recursive(other.end_node.left);
     return *this;
   }
   ~hxtree()
@@ -374,7 +374,7 @@ class hxtree
       }
     }
     this->size++;
-    this->begin_node.set_parent(ft::treeMin(root));
+    this->begin_node.set_parent(ft::treeMin(end_node.left));
     return iterator(new_np);
   }
 
@@ -477,6 +477,7 @@ class hxtree
     this->alloc.destroy(tmp);
     this->alloc.deallocate(tmp, 1);
     this->size--;
+    this->begin_node.set_parent(ft::treeMin(end_node.left));
     return 1;
   }
 
@@ -490,7 +491,7 @@ class hxtree
 
   void clear()
   {
-    this->clear_recursive(this->root);
+    this->clear_recursive(end_node.left);
     root = 0;
     end_node.left = 0;
     begin_node.parent = 0;
@@ -529,7 +530,7 @@ class hxtree
 
   iterator find(const value_type& value)
   {
-    node_pointer current = this->root;
+    node_pointer current = end_node.left;
     while (current)
     {
       if (comp(current->value, value) == comp(value, current->value))

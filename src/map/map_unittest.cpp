@@ -113,7 +113,7 @@ TEST(mapModifiers, erase)
   mci_1['c'] = 30;
   mci_1['d'] = 40;
   it = mci_1.begin();
-  // mci_1.erase(it);  // erasing by iterator
+  mci_1.erase(it);   // erasing by iterator
   mci_1.erase('c');  // erasing by key
   it = mci_1.find('d');
   mci_1.erase(it, mci_1.end());  // erasing by range
@@ -129,9 +129,9 @@ TEST(mapModifiers, swap)
   mci_2['b'] = 200;
   mci_2['c'] = 300;
   ft::map<char, int> mci_1__copied(mci_1);
-  // mci_2.swap(mci_1);
-  // EXPECT_EQ(mci_2['x'], mci_1__copied['x']);
-  // EXPECT_EQ(mci_2['y'], mci_1__copied['y']);
+  mci_2.swap(mci_1);
+  EXPECT_EQ(mci_2['x'], mci_1__copied['x']);
+  EXPECT_EQ(mci_2['y'], mci_1__copied['y']);
 }
 
 TEST(mapModifiers, clear)
@@ -178,7 +178,7 @@ TEST(mapOperations, find)
   mci_1['c'] = 150;
   mci_1['d'] = 200;
   it = mci_1.find('b');
-  EXPECT_EQ((*it).second, 100);
+  EXPECT_EQ(it->second, 100);
 }
 
 TEST(mapOperations, count)

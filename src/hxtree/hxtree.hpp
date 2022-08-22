@@ -117,14 +117,14 @@ template <class _T, class NodeType> class hxiterator
   typedef const _T* const_pointer;
   typedef const _T& const_reference;
   typedef std::ptrdiff_t difference_type;
-  typedef NodeType node_pointer;
+  typedef NodeType* node_pointer;
 
   // Property:
   // Is default-constructible, copy-constructible, copy-assignable and
   // destructible
   hxiterator() : np(0) {}
   // hxiterator(const hxiterator& other) : np(other.np) {}
-  hxiterator(const hxiterator<value_type, hxnode<value_type>*>& other)
+  hxiterator(const hxiterator<value_type, ft::hxnode<value_type> >& other)
       : np(other.np)
   {}
   hxiterator& operator=(const hxiterator& other)
@@ -227,8 +227,8 @@ class hxtree
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
 
-  typedef hxiterator<value_type, node_pointer> iterator;
-  typedef hxiterator<value_type, const node_pointer> const_iterator;
+  typedef hxiterator<value_type, node_type> iterator;
+  typedef hxiterator<value_type, const node_type> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -243,6 +243,25 @@ class hxtree
   {
     begin_node.parent = &end_node;
   }
+
+  template <class InputIterator>
+  hxtree(InputIterator first,
+         InputIterator last,
+         const value_compare& comp = value_compare(),
+         const allocator_type& alloc = allocator_type())
+      : comp(comp),
+        alloc(alloc),
+        end_node(value_type()),
+        begin_node(value_type()),
+        root(0),
+        size(0)
+  {
+    while (first != last)
+    {
+      this->insert(*first++);
+    }
+  }
+
   void copy_recursive(node_pointer np)
   {
     if (!np)
@@ -280,7 +299,7 @@ class hxtree
   }
   const_iterator begin() const
   {
-    return const_iterator(this->begin());
+    return const_iterator(begin_node.parent);
   }
   iterator end()
   {
@@ -288,7 +307,7 @@ class hxtree
   }
   const_iterator end() const
   {
-    return const_iterator(this->end());
+    return const_iterator(&end_node);
   }
   reverse_iterator rbegin()
   {
@@ -472,13 +491,40 @@ class hxtree
   void clear()
   {
     this->clear_recursive(this->root);
+    root = 0;
+    end_node.left = 0;
+    begin_node.parent = 0;
   }
 
-  void swap(hxtree& other) {}
+  void swap(hxtree& other)
+  {
+    hxtree tmp = *this;
+    *this = other;
+    other = tmp;
+  }
 
   value_compare value_comp() const
   {
     return value_compare();
+  }
+
+  const_iterator find(const value_type& value) const
+  {
+    node_pointer current = this->root;
+    while (current)
+    {
+      if (comp(current->value, value) == comp(value, current->value))
+        return iterator(current);
+      if (comp(current->value, value))
+      {
+        current = current->right;
+      }
+      else
+      {
+        current = current->left;
+      }
+    }
+    return this->end();
   }
 
   iterator find(const value_type& value)
@@ -500,7 +546,7 @@ class hxtree
     return this->end();
   }
 
-  size_type count(const value_type& val)
+  size_type count(const value_type& val) const
   {
     return this->find(val) != this->end() ? 1 : 0;
   }
@@ -530,9 +576,24 @@ class hxtree
   {
     return make_pair(this->lower_bound(val), this->upper_bound(val));
   }
-  allocator_type get_allocator()
+  allocator_type get_allocator() const
   {
     return this->alloc;
+  }
+
+  size_type _size() const
+  {
+    return this->size;
+  }
+
+  bool empty() const
+  {
+    return this->size == 0;
+  }
+
+  size_type max_size() const
+  {
+    return std::numeric_limits<size_type>::max() / sizeof(node_type);
   }
 
  private:

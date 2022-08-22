@@ -64,14 +64,15 @@ class map
       InputIterator last,
       const key_compare& comp = key_compare(),
       const allocator_type& alloc = allocator_type())
-      : base(first, last)
+      : base(first, last, value_compare(comp), alloc)
   {}
   map(const map& other) : base(other.base) {}
   ~map() {}
 
   map& operator=(const map& other)
   {
-    base = other.base;
+    this->base = other.base;
+    return *this;
   }
 
   iterator begin()
@@ -114,7 +115,7 @@ class map
 
   size_type size() const
   {
-    return base.size();
+    return base._size();
   }
 
   size_type max_size() const
@@ -147,8 +148,7 @@ class map
   {
     while (first != last)
     {
-      base.insert(ft::make_pair(first.first, first.last));
-      first++;
+      base.insert(*first++);
     }
   }
   void erase(iterator position)
@@ -164,9 +164,9 @@ class map
   {
     base.erase(first, last);
   }
-  void swap(map& x)
+  void swap(map& other)
   {
-    base.swap(x.swap);
+    base.swap(other.base);
   }
   void clear()
   {
@@ -174,23 +174,26 @@ class map
   }
   iterator find(const key_type& k)
   {
-    return base.find(k);
+    return base.find(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   const_iterator find(const key_type& k) const
   {
-    return base.find(k);
+    return base.find(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   size_type count(const key_type& k) const
   {
-    return base.count(k);
+    return base.count(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   key_compare key_comp() const
   {
-    return base.value_comp();
+    return key_compare();
   }
   value_compare value_comp() const
   {
-    return this->value_comp();
+    return value_compare(key_compare());
   }
   iterator lower_bound(const key_type& k)
   {

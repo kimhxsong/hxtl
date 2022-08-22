@@ -1,7 +1,7 @@
 
 #include "./map.hpp"
 #include <iostream>
-#include <map>
+// #include <map>
 #include <string>
 
 #include "gtest/gtest.h"
@@ -192,34 +192,35 @@ TEST(mapOperations, count)
   EXPECT_EQ(mci_1.count('e'), 0);
 }
 
-// TEST(mapOperations, lower_upper_bound)
-// {
-//   ft::map<char, int> mci_1;
-//   ft::map<char, int>::iterator itlow, itup;
-//   mci_1['a'] = 20;
-//   mci_1['b'] = 40;
-//   mci_1['c'] = 60;
-//   mci_1['d'] = 80;
-//   mci_1['e'] = 100;
-//   itlow = mci_1.lower_bound('b');  // itlow points to b
-//   EXPECT_EQ(itlow, mci_1.find('b'));
-//   itup = mci_1.upper_bound('d');  // itup points to e (not d!)
-//   EXPECT_EQ(--itup, mci_1.find('d'));
-// }
+TEST(mapOperations, lower_upper_bound)
+{
+  ft::map<char, int> mci_1;
+  ft::map<char, int>::iterator itlow, itup;
+  mci_1['a'] = 20;
+  mci_1['b'] = 40;
+  mci_1['c'] = 60;
+  mci_1['d'] = 80;
+  mci_1['e'] = 100;
+  itlow = mci_1.lower_bound('b');  // itlow points to b
+  EXPECT_EQ(itlow, mci_1.find('b'));
+  EXPECT_EQ(*itlow, *mci_1.find('b'));
+  itup = mci_1.upper_bound('d');  // itup points to e (not d!)
+  EXPECT_EQ(--itup, mci_1.find('d'));
+}
 
-// TEST(mapOperations, equal_range)
-// {
-//   ft::map<char, int> mci_1;
-//   mci_1['a'] = 20;
-//   mci_1['b'] = 40;
-//   mci_1['c'] = 60;
-//   mci_1['d'] = 80;
-//   mci_1['e'] = 100;
-//   std::pair<ft::map<char, int>::iterator, ft::map<char, int>::iterator> ret;
-//   ret = mci_1.equal_range('b');
-//   EXPECT_EQ(ret.first->first, 'b');
-//   EXPECT_EQ(ret.second->first, 'c');
-// }
+TEST(mapOperations, equal_range)
+{
+  ft::map<char, int> mci_1;
+  mci_1['a'] = 20;
+  mci_1['b'] = 40;
+  mci_1['c'] = 60;
+  mci_1['d'] = 80;
+  mci_1['e'] = 100;
+  ft::pair<ft::map<char, int>::iterator, ft::map<char, int>::iterator> ret;
+  ret = mci_1.equal_range('b');
+  EXPECT_EQ(ret.first->first, 'b');
+  EXPECT_EQ(ret.second->first, 'c');
+}
 
 TEST(mapAllocator, get_allocator)
 {

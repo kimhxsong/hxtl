@@ -197,27 +197,33 @@ class map
   }
   iterator lower_bound(const key_type& k)
   {
-    return base.lower_bound(k);
+    return base.lower_bound(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   const_iterator lower_bound(const key_type& k) const
   {
-    return base.lower_bound(k);
+    return base.lower_bound(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   iterator upper_bound(const key_type& k)
   {
-    return base.upper_bound(k);
+    return base.upper_bound(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   const_iterator upper_bound(const key_type& k) const
   {
-    return base.upper_bound(k);
+    return base.upper_bound(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   pair<const_iterator, const_iterator> equal_range(const key_type& k) const
   {
-    return base.equal_range(k);
+    return base.equal_range(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   pair<iterator, iterator> equal_range(const key_type& k)
   {
-    return base.equal_range(k);
+    return base.equal_range(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   allocator_type get_allocator() const
   {

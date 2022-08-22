@@ -191,7 +191,7 @@ template <class _T, class NodeType> class hxiterator
   // sequence).
   friend bool operator==(const hxiterator& lhs, const hxiterator& rhs)
   {
-    return lhs.np == rhs.np;
+    return &*lhs == &*rhs;
   }
   friend bool operator!=(const hxiterator& lhs, const hxiterator& rhs)
   {
@@ -511,7 +511,7 @@ class hxtree
 
   const_iterator find(const value_type& value) const
   {
-    node_pointer current = this->root;
+    node_pointer current = this->end_node.left;
     while (current)
     {
       if (comp(current->value, value) == comp(value, current->value))
@@ -530,7 +530,7 @@ class hxtree
 
   iterator find(const value_type& value)
   {
-    node_pointer current = end_node.left;
+    node_pointer current = this->end_node.left;
     while (current)
     {
       if (comp(current->value, value) == comp(value, current->value))
@@ -554,29 +554,83 @@ class hxtree
 
   iterator lower_bound(const value_type& value)
   {
-    // while (root != 0)
-    // {
-    //   if (!value_comp()(root->value, value))
-    //   {
-    //     = static_cast<__iter_pointer>(__root);
-    //     root = static_cast<__node_pointer>(__root->__left_);
-    //   }
-    //   else
-    //     root = static_cast<__node_pointer>(__root->__right_);
-    // }
-    // return const_iterator(__result);
-    return this->begin();
+    node_pointer result = &this->end_node;
+    node_pointer current = this->end_node.left;
+    while (current)
+    {
+      if (!comp(current->value, value))
+      {
+        result = current;
+        current = current->left;
+      }
+      else
+        current = current->right;
+    }
+    return iterator(result);
   }
 
-  iterator upper_bound(const value_type& val)
+  const_iterator lower_bound(const value_type& value) const
   {
-    return this->end();
+    node_pointer result = &this->end_node;
+    node_pointer current = this->end_node.left;
+    while (current)
+    {
+      if (!comp(current->value, value))
+      {
+        result = current;
+        current = current->left;
+      }
+      else
+        current = current->right;
+    }
+    return const_iterator(result);
   }
 
-  pair<iterator, iterator> equal_range(const value_type& val)
+  iterator upper_bound(const value_type& value)
   {
-    return make_pair(this->lower_bound(val), this->upper_bound(val));
+    node_pointer result = &this->end_node;
+    node_pointer current = this->end_node.left;
+    while (current)
+    {
+      if (comp(value, current->value))
+      {
+        result = current;
+        current = current->left;
+      }
+      else
+        current = current->right;
+    }
+    return iterator(result);
   }
+
+  const_iterator upper_bound(const value_type& value) const
+  {
+    node_pointer result = &this->end_node;
+    node_pointer current = this->end_node.left;
+    while (current)
+    {
+      if (comp(value, current->value))
+      {
+        result = current;
+        current = current->left;
+      }
+      else
+        current = current->right;
+    }
+    return const_iterator(result);
+  }
+
+  pair<iterator, iterator> equal_range(const value_type& value)
+  {
+    return make_pair(this->lower_bound(value), this->upper_bound(value));
+  }
+
+  pair<const_iterator, const_iterator>
+  equal_range(const value_type& value) const
+  {
+    return make_pair(this->lower_bound(value), this->upper_bound(value));
+  }
+
   allocator_type get_allocator() const
   {
     return this->alloc;

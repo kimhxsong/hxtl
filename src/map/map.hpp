@@ -157,7 +157,8 @@ class map
   }
   size_type erase(const key_type& k)
   {
-    return base.erase(k);
+    return base.erase(
+        ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
   void erase(iterator first, iterator last)
   {

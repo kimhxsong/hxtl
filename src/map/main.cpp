@@ -12,6 +12,8 @@ int main()
     mymap.insert(ft::make_pair<const char, int>('a', 1));
     mymap.insert(ft::make_pair<const char, int>('b', 2));
     mymap.insert(ft::make_pair<const char, int>('c', 3));
+    mymap['d'] = 4;
+    mymap.erase('b');
     std::cout << "test" << std::endl;
     for (ft::map<char, int>::iterator it = mymap.begin(); it != mymap.end();
          it++)

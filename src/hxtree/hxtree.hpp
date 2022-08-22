@@ -14,21 +14,21 @@ namespace ft
 {
 
 template <class _T, class _Comp, class Alloc_> class hxtree;
-template <class _T, class _NodePtr> class hxiterator;
+template <class _T, class NodeType> class hxiterator;
 
-template <class _NodePtr> bool treeIsLeftChild(_NodePtr np)
+template <class NodeType> bool treeIsLeftChild(NodeType* np)
 {
   return np == np->parent->left;
 }
 
-template <class _NodePtr> _NodePtr treeMax(_NodePtr np)
+template <class NodeType> NodeType* treeMax(NodeType* np)
 {
   while (np->right != NULL)
     np = np->right;
   return np;
 }
 
-template <class _NodePtr> _NodePtr treeMin(_NodePtr np)
+template <class NodeType> NodeType* treeMin(NodeType* np)
 {
   if (!np)
     return 0;
@@ -37,31 +37,31 @@ template <class _NodePtr> _NodePtr treeMin(_NodePtr np)
   return np;
 }
 
-template <class _NodePtr> _NodePtr treeNext(_NodePtr np)
+template <class NodeType> NodeType* treeNext(NodeType* np)
 {
   if (np->right)
   {
-    return treeMin<_NodePtr>(np->right);
+    return treeMin<NodeType>(np->right);
   }
-  while (treeIsLeftChild<_NodePtr>(np) == false)
+  while (treeIsLeftChild<NodeType>(np) == false)
   {
     np = np->parent;
   }
   return (np->parent);
 }
 
-template <class _NodePtr> _NodePtr treePrev(_NodePtr np)
+template <class NodeType> NodeType* treePrev(NodeType* np)
 {
   if (np->left != NULL)
-    return treeMax<_NodePtr>(np->left);
-  while (treeIsLeftChild<_NodePtr>(np))
+    return treeMax<NodeType>(np->left);
+  while (treeIsLeftChild<NodeType>(np))
   {
     np = np->parent;
   }
   return (np->parent);
 }
 
-template <class _NodePtr> _NodePtr treeLeaf(_NodePtr np)
+template <class NodeType> NodeType* treeLeaf(NodeType* np)
 {
   while (1)
   {
@@ -106,7 +106,7 @@ template <class _T> class hxnode
   hxnode& operator=(hxnode const&);
 };
 
-template <class _T, class _NodePtr> class hxiterator
+template <class _T, class NodeType> class hxiterator
 {
  public:
   typedef std::bidirectional_iterator_tag iterator_category;
@@ -116,7 +116,7 @@ template <class _T, class _NodePtr> class hxiterator
   typedef const _T* const_pointer;
   typedef const _T& const_reference;
   typedef std::ptrdiff_t difference_type;
-  typedef _NodePtr node_pointer;
+  typedef NodeType node_pointer;
 
   // Property:
   // Is default-constructible, copy-constructible, copy-assignable and
@@ -160,27 +160,29 @@ template <class _T, class _NodePtr> class hxiterator
   // increased.
   hxiterator& operator++()
   {
-    this->np = treeNext<node_pointer>(this->np);
+    this->np = treeNext(this->np);
     return *this;
   }
   hxiterator operator++(int)
   {
     hxiterator tmp(*this);
-    ++(*this);
-    return tmp;
+    ++tmp;
+    *this = tmp;
+    return --tmp;
   }
   // Property:
   // Can be decremented (if a dereferenceable iterator value precedes it).
   hxiterator& operator--()
   {
-    np = treePrev<node_pointer>(np);
+    this->np = treePrev(this->np);
     return *this;
   }
   hxiterator operator--(int)
   {
     hxiterator tmp(*this);
-    --(*this);
-    return tmp;
+    --tmp;
+    *this = tmp;
+    return ++tmp;
   }
   // Property:
   // Can be compared for equivalence using the equality/inequality operators
@@ -188,7 +190,7 @@ template <class _T, class _NodePtr> class hxiterator
   // sequence).
   friend bool operator==(const hxiterator& lhs, const hxiterator& rhs)
   {
-    return &*lhs == &*rhs;
+    return lhs.np == rhs.np;
   }
   friend bool operator!=(const hxiterator& lhs, const hxiterator& rhs)
   {
@@ -240,6 +242,23 @@ class hxtree
   {
     begin_node.parent = &end_node;
   }
+  hxtree(const hxtree& other)
+      : comp(other.comp),
+        alloc(other.alloc),
+        end_node(value_type()),
+        begin_node(value_type()),
+        root(0),
+        size(0)
+  {
+    this->insert(other.begin(), other.end());
+  }
+
+  hxtree& operator=(const hxtree& other)
+  {
+    this->clear();
+    this->insert(other.begin(), other.end());
+    return *this;
+  }
   ~hxtree()
   {
     this->clear();
@@ -251,7 +270,7 @@ class hxtree
   }
   const_iterator begin() const
   {
-    return iteartor(begin_node.parent);
+    return const_iterator(this->begin());
   }
   iterator end()
   {
@@ -259,7 +278,7 @@ class hxtree
   }
   const_iterator end() const
   {
-    return iterator(&end_node);
+    return const_iterator(this->end());
   }
   reverse_iterator rbegin()
   {
@@ -281,7 +300,7 @@ class hxtree
   pair<iterator, bool> insert(const value_type& value)
   {
     iterator found = this->find(value);
-    if (found == this->end())
+    if (found != this->end())
       return ft::make_pair(found, false);
     else
       return ft::make_pair(insert(this->end(), value), true);
@@ -457,8 +476,8 @@ class hxtree
     node_pointer current = this->root;
     while (current)
     {
-      if (current->value == value)
-        break;
+      if (comp(current->value, value) == comp(value, current->value))
+        return iterator(current);
       if (comp(current->value, value))
       {
         current = current->right;
@@ -468,7 +487,7 @@ class hxtree
         current = current->left;
       }
     }
-    return iterator(current);
+    return this->end();
   }
 
   size_type count(const value_type& val)
@@ -478,17 +497,18 @@ class hxtree
 
   iterator lower_bound(const value_type& value)
   {
-    while (root != 0)
-    {
-      if (!value_comp()(root->value, value))
-      {
-        = static_cast<__iter_pointer>(__root);
-        root = static_cast<__node_pointer>(__root->__left_);
-      }
-      else
-        root = static_cast<__node_pointer>(__root->__right_);
-    }
-    return const_iterator(__result);
+    // while (root != 0)
+    // {
+    //   if (!value_comp()(root->value, value))
+    //   {
+    //     = static_cast<__iter_pointer>(__root);
+    //     root = static_cast<__node_pointer>(__root->__left_);
+    //   }
+    //   else
+    //     root = static_cast<__node_pointer>(__root->__right_);
+    // }
+    // return const_iterator(__result);
+    return this->begin();
   }
 
   iterator upper_bound(const value_type& val)
@@ -524,6 +544,7 @@ class hxtree
   size_type size;
 
   template <class, class, class> friend class hxtree_iterator;
+  template <class, class, class, class> friend class map;
 };
 
 }  // namespace ft

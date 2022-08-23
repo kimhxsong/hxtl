@@ -5,10 +5,11 @@
 
 #include "../iterator/iterator.hpp"
 
-namespace ft {
+namespace ft
+{
 
-template <class T>
-class vector_iterator {
+template <class T> class vector_iterator
+{
  public:
   typedef typename iterator_traits<T>::iterator_category iterator_category;
   typedef typename iterator_traits<T>::value_type value_type;

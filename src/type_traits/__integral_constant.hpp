@@ -1,19 +1,23 @@
 #ifndef __INTEGRAL_CONSTANTS_HPP_
 #define __INTEGRAL_CONSTANTS_HPP_
 
-namespace ft {
+namespace ft
+{
 
-template<class T, T v>
-struct integral_constant {
-    static const T value = v;
-    typedef T value_type;
-    typedef integral_constant type;
-    operator value_type() const throw() { return value; }  // conversion operator
+template <class T, T v> struct integral_constant
+{
+  static const T value = v;
+  typedef T value_type;
+  typedef integral_constant type;
+  operator value_type() const throw()
+  {
+    return value;
+  }  // conversion operator
 };
 
 }  // namespace ft
 
-// Possible implementation 
+// Possible implementation
 // From https://en.cppreference.com/w/cpp/types/integral_constant
 // template<class T, T v>
 // struct integral_constant {
@@ -25,4 +29,3 @@ struct integral_constant {
 // };
 
 #endif  // __INTEGRAL_CONSTANTS_HPP_
-

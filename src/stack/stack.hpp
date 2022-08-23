@@ -3,10 +3,11 @@
 
 #include <vector>
 
-namespace ft {
+namespace ft
+{
 
-template <class T, class Container = std::vector<T> >
-class stack {
+template <class T, class Container = std::vector<T> > class stack
+{
  public:
   typedef T value_type;
   typedef Container container_type;
@@ -30,23 +31,29 @@ class stack {
 
 }  // namespace ft
 
-template <class T, class Container >
-bool operator==(const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs);
+template <class T, class Container>
+bool operator==(const ft::stack<T, Container>& lhs,
+                const ft::stack<T, Container>& rhs);
 
-template< class T, class Container >
-bool operator!=(const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs);
+template <class T, class Container>
+bool operator!=(const ft::stack<T, Container>& lhs,
+                const ft::stack<T, Container>& rhs);
 
-template< class T, class Container >
-bool operator<(const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs);
+template <class T, class Container>
+bool operator<(const ft::stack<T, Container>& lhs,
+               const ft::stack<T, Container>& rhs);
 
-template< class T, class Container >
-bool operator<=(const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs);
+template <class T, class Container>
+bool operator<=(const ft::stack<T, Container>& lhs,
+                const ft::stack<T, Container>& rhs);
 
-template< class T, class Container >
-bool operator>(const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs);
+template <class T, class Container>
+bool operator>(const ft::stack<T, Container>& lhs,
+               const ft::stack<T, Container>& rhs);
 
-template< class T, class Container >
-bool operator>=(const ft::stack<T,Container>& lhs, const ft::stack<T,Container>& rhs);
+template <class T, class Container>
+bool operator>=(const ft::stack<T, Container>& lhs,
+                const ft::stack<T, Container>& rhs);
 
 #include "stack.tpp"
 

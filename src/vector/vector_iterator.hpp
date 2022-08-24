@@ -8,14 +8,6 @@
 namespace ft {
 
 template <class T>
-class vector_iterator;
-
-template <class T>
-vector_iterator<T> operator+(int n, const vector_iterator<T>& it);
-template <class T>
-std::ostream& operator<<(std::ostream& os, const vector_iterator<T>& it);
-
-template <class T>
 class vector_iterator {
  public:
   typedef typename ft::iterator_traits<T>::iterator_category iterator_category;
@@ -56,7 +48,7 @@ class vector_iterator {
   vector_iterator operator+(difference_type n) const;
   vector_iterator operator-(difference_type n) const;
 
-  difference_type operator-(const vector_iterator& other);
+  difference_type operator-(const vector_iterator& other) const;
 
   vector_iterator& operator+=(difference_type n);
   vector_iterator& operator-=(difference_type n);
@@ -163,7 +155,7 @@ vector_iterator<T> vector_iterator<T>::operator-(difference_type n) const {
 
 template <class T>
 typename vector_iterator<T>::difference_type vector_iterator<T>::operator-(
-    const vector_iterator& other) {
+    const vector_iterator& other) const {
   return p_ - &*other;
 }
 
@@ -193,10 +185,41 @@ vector_iterator<T> operator+(int n, const vector_iterator<T>& it) {
   return it + n;
 }
 
-template <class T>
-std::ostream& operator<<(std::ostream& os, const vector_iterator<T>& it) {
-  os << *it;
-  return os;
+// non-member functions
+template <class T1, class T2>
+typename ft::vector_iterator<T1>::difference_type operator-(const ft::vector_iterator<T1>& lhs,
+                                                            const ft::vector_iterator<T2>& rhs) {
+  return lhs - rhs;
+}
+
+template <class T1, class T2>
+bool operator==(const ft::vector_iterator<T1>& lhs, const ft::vector_iterator<T2>& rhs) {
+  return lhs == rhs;
+}
+
+template <class T1, class T2>
+bool operator!=(const ft::vector_iterator<T1>& lhs, const ft::vector_iterator<T2>& rhs) {
+  return lhs != rhs;
+}
+
+template <class T1, class T2>
+bool operator<(const ft::vector_iterator<T1>& lhs, const ft::vector_iterator<T2>& rhs) {
+  return lhs < rhs;
+}
+
+template <class T1, class T2>
+bool operator<=(const ft::vector_iterator<T1>& lhs, const ft::vector_iterator<T2>& rhs) {
+  return lhs <= rhs;
+}
+
+template <class T1, class T2>
+bool operator>(const ft::vector_iterator<T1>& lhs, const ft::vector_iterator<T2>& rhs) {
+  return lhs > rhs;
+}
+
+template <class T1, class T2>
+bool operator>=(const ft::vector_iterator<T1>& lhs, const ft::vector_iterator<T2>& rhs) {
+  return lhs >= rhs;
 }
 
 }  // namespace ft

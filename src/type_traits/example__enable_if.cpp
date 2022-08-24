@@ -1,13 +1,13 @@
 #include <iostream>
-#include <typeinfo>
-#include <type_traits>
 #include <limits>
+#include <type_traits>
+#include <typeinfo>
 
 #include "type_traits_enable_if.hpp"
 
 using ft::enable_if;
 
-template<class T>
+template <class T>
 void do_something(unsigned int arg) {
   std::cout << typeid(arg).name() << std::endl;
 }
@@ -17,7 +17,7 @@ void do_something(T arg) {
   std::cout << typeid(arg).name() << std::endl;
 }
 
-template<class T2>
+template <class T2>
 void do_something2(unsigned int arg) {
   std::cout << typeid(arg).name() << std::endl;
 }

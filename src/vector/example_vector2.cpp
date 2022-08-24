@@ -2,40 +2,25 @@
 #include <string>
 #include <vector>
 
-class A
-{
+class A {
   int num;
 
  public:
-  A() : num(0)
-  {
-    std::cout << "ctor: default" << std::endl;
-  }
+  A() : num(0) { std::cout << "ctor: default" << std::endl; }
 
-  A(int num) : num(num)
-  {
-    std::cout << "ctor: conversion" << std::endl;
-  }
+  A(int num) : num(num) { std::cout << "ctor: conversion" << std::endl; }
 
-  A(const A& other) : num(other.num)
-  {
-    std::cout << "ctor: copied" << std::endl;
-  }
+  A(const A& other) : num(other.num) { std::cout << "ctor: copied" << std::endl; }
 
-  ~A()
-  {
-    std::cout << "dtor" << std::endl;
-  }
+  ~A() { std::cout << "dtor" << std::endl; }
 
-  A& operator=(const A& other)
-  {
+  A& operator=(const A& other) {
     std::cout << "oper: =" << std::endl;
     return *this;
   }
 };
 
-int main()
-{
+int main() {
   std::vector<A> testA(10, 42);
   std::cout << std::endl;
   testA.reserve(20);

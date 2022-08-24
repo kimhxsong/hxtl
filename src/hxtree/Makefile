@@ -3,7 +3,6 @@ CXXFLAGS = -std=c++11 -g
 INCLUDES = -I $(shell brew --prefix googletest)/include -I .
 LIBS = -L $(shell brew --prefix googletest)/lib -lgtest_main -lgtest -pthread  -lpthread -mmacosx-version-min=12.0
 
-
 all: hxtree clean
 
 hxtree:

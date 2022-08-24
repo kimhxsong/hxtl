@@ -1,52 +1,43 @@
-#include "gtest/gtest.h"
-
-#include <iostream>
-
-#include <map>
-#include <tuple>
-#include <utility>
 #include "hxtree.hpp"
 
 #include <functional>
+#include <iostream>
+#include <map>
+#include <tuple>
+#include <utility>
 
-TEST(tree_constructor, default_constructor)
-{
+#include "gtest/gtest.h"
+
+TEST(tree_constructor, default_constructor) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;      // 9:37
   ft::hxtree<int, std::greater<int>, std::allocator<int> > mytree2;  // 9:37
 }
 
-TEST(tree_insert, default_constructor)
-{
+TEST(tree_insert, default_constructor) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;      // 9:37
   ft::hxtree<int, std::greater<int>, std::allocator<int> > mytree2;  // 9:37
 
-  for (int i = 0; i < 21; i++)
-  {
+  for (int i = 0; i < 21; i++) {
     mytree.insert(i);
   }
-  for (int i = 21; i >= 0; i--)
-  {
+  for (int i = 21; i >= 0; i--) {
     mytree2.insert(i);
   }
 }
 
-TEST(tree_erase, default_constructor)
-{
+TEST(tree_erase, default_constructor) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;      // 9:37
   ft::hxtree<int, std::greater<int>, std::allocator<int> > mytree2;  // 9:37
 
-  for (int i = 0; i < 21; i++)
-  {
+  for (int i = 0; i < 21; i++) {
     mytree.insert(i);
   }
-  for (int i = 21; i >= 0; i--)
-  {
+  for (int i = 21; i >= 0; i--) {
     mytree2.insert(i);
   }
 }
 
-TEST(tree_node, default_constructor)
-{
+TEST(tree_node, default_constructor) {
   // ft::hxnode<int> node; //  기본생성자 정의하지 않았음
   ft::hxnode<int> node2(21);
   ft::hxnode<int> node3(42);
@@ -56,8 +47,7 @@ TEST(tree_node, default_constructor)
   std::cout << node3.parent->value << std::endl;
 }
 
-TEST(tree_iterator, default_constructor)
-{
+TEST(tree_iterator, default_constructor) {
   ft::hxiterator<int, ft::hxnode<int>*> it;
   ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator it2;
   // std::map<int, int>::iterator it3;
@@ -66,8 +56,7 @@ TEST(tree_iterator, default_constructor)
   // it2++;
 }
 
-TEST(tree_node_next_prev, test)
-{
+TEST(tree_node_next_prev, test) {
   // ft::hxnode<int> node; //  기본생성자 정의하지 않았음
   ft::hxnode<int> node2(21);
   ft::hxnode<int> node3(42);
@@ -80,8 +69,7 @@ TEST(tree_node_next_prev, test)
   std::cout << np2->value << std::endl;
 }
 
-TEST(tree, test)
-{
+TEST(tree, test) {
   // ft::hxnode<int> node; //  기본생성자 정의하지 않았음
   ft::hxnode<int> node2(21);
   ft::hxnode<int> node3(42);
@@ -93,38 +81,30 @@ TEST(tree, test)
   ft::hxnode<int>* np2 = ft::treePrev<ft::hxnode<int>*>(np3);
 }
 
-TEST(tree_iterators, begin_end)
-{
+TEST(tree_iterators, begin_end) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;      // 9:37
   ft::hxtree<int, std::greater<int>, std::allocator<int> > mytree2;  // 9:37
   ft::hxtree<int, std::plus<int>, std::allocator<int> > mytree3;     // 9:37
 
-  for (int i = 0; i < 21; i++)
-  {
+  for (int i = 0; i < 21; i++) {
     mytree.insert(i);
     mytree2.insert(i);
     mytree3.insert(i);
   }
-  ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator it =
-      mytree.begin();
-  ft::hxtree<int, std::greater<int>, std::allocator<int> >::iterator it2 =
-      mytree2.begin();
-  ft::hxtree<int, std::plus<int>, std::allocator<int> >::iterator it3 =
-      mytree3.begin();
-  while (it != mytree.end())
-  {
+  ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator it = mytree.begin();
+  ft::hxtree<int, std::greater<int>, std::allocator<int> >::iterator it2 = mytree2.begin();
+  ft::hxtree<int, std::plus<int>, std::allocator<int> >::iterator it3 = mytree3.begin();
+  while (it != mytree.end()) {
     std::cout << *it << " ";
     it++;
   }
   std::cout << std::endl;
-  while (it2 != mytree2.end())
-  {
+  while (it2 != mytree2.end()) {
     std::cout << *it2 << " ";
     it2++;
   }
   std::cout << std::endl;
-  while (it3 != mytree3.end())
-  {
+  while (it3 != mytree3.end()) {
     std::cout << *it3 << " ";
     it3++;
   }
@@ -140,38 +120,30 @@ TEST(tree_iterators, begin_end)
 */
 }
 
-TEST(tree_iterators, rbegin_rend)
-{
+TEST(tree_iterators, rbegin_rend) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;      // 9:37
   ft::hxtree<int, std::greater<int>, std::allocator<int> > mytree2;  // 9:37
   ft::hxtree<int, std::plus<int>, std::allocator<int> > mytree3;     // 9:37
 
-  for (int i = 0; i < 21; i++)
-  {
+  for (int i = 0; i < 21; i++) {
     mytree.insert(i);
     mytree2.insert(i);
     mytree3.insert(i);
   }
-  ft::hxtree<int, std::less<int>, std::allocator<int> >::reverse_iterator it =
-      mytree.rbegin();
-  ft::hxtree<int, std::greater<int>, std::allocator<int> >::reverse_iterator
-      it2 = mytree2.rbegin();
-  ft::hxtree<int, std::plus<int>, std::allocator<int> >::reverse_iterator it3 =
-      mytree3.rbegin();
-  while (it != mytree.rend())
-  {
+  ft::hxtree<int, std::less<int>, std::allocator<int> >::reverse_iterator it = mytree.rbegin();
+  ft::hxtree<int, std::greater<int>, std::allocator<int> >::reverse_iterator it2 = mytree2.rbegin();
+  ft::hxtree<int, std::plus<int>, std::allocator<int> >::reverse_iterator it3 = mytree3.rbegin();
+  while (it != mytree.rend()) {
     std::cout << *it << " ";
     it++;
   }
   std::cout << std::endl;
-  while (it2 != mytree2.rend())
-  {
+  while (it2 != mytree2.rend()) {
     std::cout << *it2 << " ";
     it2++;
   }
   std::cout << std::endl;
-  while (it3 != mytree3.rend())
-  {
+  while (it3 != mytree3.rend()) {
     std::cout << *it3 << " ";
     it3++;
   }
@@ -187,21 +159,18 @@ TEST(tree_iterators, rbegin_rend)
 */
 }
 
-TEST(tree_iterators, bidirectional_iterator_test)
-{
+TEST(tree_iterators, bidirectional_iterator_test) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;
   ft::hxtree<std::string, std::less<std::string>, std::allocator<int> > mytree2;
 
-  for (int i = 0; i < 21; i++)
-  {
+  for (int i = 0; i < 21; i++) {
     mytree.insert(i);
   }
 
   mytree2.insert("Hello");
 
   // Is default-constructible, copy-constructible, copy-assignable and destructible
-  ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator it =
-      mytree.begin();
+  ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator it = mytree.begin();
   ft::hxtree<int, std::greater<int>, std::allocator<int> >::iterator it2(it);
   ft::hxtree<int, std::plus<int>, std::allocator<int> >::iterator it3;
   it3 = it2;
@@ -234,19 +203,15 @@ TEST(tree_iterators, bidirectional_iterator_test)
 }
 
 // TODO
-TEST(tree_iterators, convert_iterator_to_const_iterator)
-{
+TEST(tree_iterators, convert_iterator_to_const_iterator) {
   ft::hxtree<int, std::less<int>, std::allocator<int> > mytree;
 
-  for (int i = 0; i < 21; i++)
-  {
+  for (int i = 0; i < 21; i++) {
     mytree.insert(i);
   }
 
-  typedef ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator
-      iterator;
-  typedef ft::hxtree<int, std::less<int>, std::allocator<int> >::const_iterator
-      const_iterator;
+  typedef ft::hxtree<int, std::less<int>, std::allocator<int> >::iterator iterator;
+  typedef ft::hxtree<int, std::less<int>, std::allocator<int> >::const_iterator const_iterator;
   iterator it = mytree.begin();
   const_iterator cit;
   const_iterator cit2(cit);

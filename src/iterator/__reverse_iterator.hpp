@@ -3,51 +3,42 @@
 
 #include "__iterator_traits.hpp"
 
-namespace ft
-{
+namespace ft {
 
-template <class Iterator> class reverse_iterator;
-
-template <class Iterator1, class Iterator2>
-bool operator==(const reverse_iterator<Iterator1>& lhs,
-                const reverse_iterator<Iterator2>& rhs);
-template <class Iterator1, class Iterator2>
-bool operator!=(const reverse_iterator<Iterator1>& lhs,
-                const reverse_iterator<Iterator2>& rhs);
-template <class Iterator1, class Iterator2>
-bool operator<(const reverse_iterator<Iterator1>& lhs,
-               const reverse_iterator<Iterator2>& rhs);
-template <class Iterator1, class Iterator2>
-bool operator<=(const reverse_iterator<Iterator1>& lhs,
-                const reverse_iterator<Iterator2>& rhs);
-template <class Iterator1, class Iterator2>
-bool operator>(const reverse_iterator<Iterator1>& lhs,
-               const reverse_iterator<Iterator2>& rhs);
-template <class Iterator1, class Iterator2>
-bool operator>=(const reverse_iterator<Iterator1>& lhs,
-                const reverse_iterator<Iterator2>& rhs);
+template <class Iterator>
+class reverse_iterator;
 
 template <class Iterator1, class Iterator2>
-typename reverse_iterator<Iterator1>::difference_type
-operator-(const reverse_iterator<Iterator1>& lhs,
-          const reverse_iterator<Iterator2>& rhs);
+bool operator==(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
+template <class Iterator1, class Iterator2>
+bool operator!=(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
+template <class Iterator1, class Iterator2>
+bool operator<(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
+template <class Iterator1, class Iterator2>
+bool operator<=(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
+template <class Iterator1, class Iterator2>
+bool operator>(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
+template <class Iterator1, class Iterator2>
+bool operator>=(const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
 
-template <class Iterator> reverse_iterator<Iterator>
-operator+(typename reverse_iterator<Iterator>::difference_type n,
-          const reverse_iterator<Iterator>& rev_it);
+template <class Iterator1, class Iterator2>
+typename reverse_iterator<Iterator1>::difference_type operator-(
+    const reverse_iterator<Iterator1>& lhs, const reverse_iterator<Iterator2>& rhs);
+
+template <class Iterator>
+reverse_iterator<Iterator> operator+(typename reverse_iterator<Iterator>::difference_type n,
+                                     const reverse_iterator<Iterator>& rev_it);
 
 // Template paramters: Iterator
 // A bidirectional iterator type. Or a random-access iterator, if an operator
 // that requires such a category of iterators is used.
-template <class Iterator> class reverse_iterator
-{
+template <class Iterator>
+class reverse_iterator {
  public:
   typedef Iterator iterator_type;
-  typedef typename ft::iterator_traits<Iterator>::iterator_category
-      iterator_category;
+  typedef typename ft::iterator_traits<Iterator>::iterator_category iterator_category;
   typedef typename ft::iterator_traits<Iterator>::value_type value_type;
-  typedef
-      typename ft::iterator_traits<Iterator>::difference_type difference_type;
+  typedef typename ft::iterator_traits<Iterator>::difference_type difference_type;
   typedef typename ft::iterator_traits<Iterator>::pointer pointer;
   typedef typename ft::iterator_traits<Iterator>::reference reference;
 

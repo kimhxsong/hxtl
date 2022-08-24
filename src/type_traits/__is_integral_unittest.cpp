@@ -2,8 +2,7 @@
 
 #include "gtest/gtest.h"
 
-TEST(is_integral, non_cv)
-{
+TEST(is_integral, non_cv) {
   // EXPECT_EQ(ft::is_integral<int>::value, true);  // !NOTE: Does Not Compile
   EXPECT_EQ(ft::is_integral<unsigned char>::value == true, true);
   EXPECT_EQ(ft::is_integral<unsigned short>::value == true, true);
@@ -22,15 +21,13 @@ TEST(is_integral, non_cv)
   EXPECT_EQ(ft::is_integral<double>::value == false, true);
 }
 
-TEST(is_integral, cv_qualified)
-{
+TEST(is_integral, cv_qualified) {
   EXPECT_EQ(ft::is_integral<int>::value == true, true);
   EXPECT_EQ(ft::is_integral<const int>::value == true, true);
   EXPECT_EQ(ft::is_integral<volatile int>::value == true, true);
 }
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }

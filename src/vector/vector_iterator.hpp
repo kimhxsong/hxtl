@@ -5,11 +5,10 @@
 
 #include "../iterator/iterator.hpp"
 
-namespace ft
-{
+namespace ft {
 
-template <class T> class vector_iterator
-{
+template <class T>
+class vector_iterator {
  public:
   typedef typename iterator_traits<T>::iterator_category iterator_category;
   typedef typename iterator_traits<T>::value_type value_type;
@@ -66,18 +65,14 @@ vector_iterator<T> operator+(int n, const vector_iterator<T>& it);
 template <class T>
 std::ostream& operator<<(std::ostream& os, const vector_iterator<T>& it);
 
+template <class T>
+vector_iterator<T>::vector_iterator() : p_(0) {}
 
 template <class T>
-vector_iterator<T>::vector_iterator()
-  : p_(0) {}
+vector_iterator<T>::vector_iterator(pointer p) : p_(p) {}
 
 template <class T>
-vector_iterator<T>::vector_iterator(pointer p)
-  : p_(p) {}
-
-template <class T>
-vector_iterator<T>::vector_iterator(const vector_iterator<value_type*>& other)
-  : p_(&*other) {}
+vector_iterator<T>::vector_iterator(const vector_iterator<value_type*>& other) : p_(&*other) {}
 
 template <class T>
 vector_iterator<T>::~vector_iterator() {}
@@ -177,7 +172,8 @@ vector_iterator<T> vector_iterator<T>::operator-(difference_type n) const {
 }
 
 template <class T>
-typename vector_iterator<T>::difference_type vector_iterator<T>::operator-(const vector_iterator& other) {
+typename vector_iterator<T>::difference_type vector_iterator<T>::operator-(
+    const vector_iterator& other) {
   return p_ - &*other;
 }
 

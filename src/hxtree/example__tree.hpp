@@ -1,16 +1,13 @@
+#include <__tree>
 #include <cstddef>
-
 #include <memory>
 #include <vector>
-#include <__tree>
 
 namespace ft {
 
 template <typename T>
 struct Less {
-  bool operator()(const T& lhs, const T& rhs) const {
-      return lhs < rhs;
-  }
+  bool operator()(const T& lhs, const T& rhs) const { return lhs < rhs; }
 };
 
 template <typename T, typename Comp = Less<T> >
@@ -22,17 +19,14 @@ class hx_tree_node {
   typedef node_type* node_type*;
 
   explicit hx_tree_node(const value_type& value = value_type())
-    : value_(value),
-      parent_(0),
-      left_(0),
-      right_(0) {}
+      : value_(value), parent_(0), left_(0), right_(0) {}
 
   const value_type& value() const { return value_; }
   node_type* left() const { return left_; }
   node_type* right() const { return right_; }
   node_type* parent() const { return parent_; }
 
-//  private:  // TO RETURN
+  //  private:  // TO RETURN
   value_type value_;
   node_type* parent_;
   node_type* left_;
@@ -70,7 +64,7 @@ bool operator>=(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& r
   return !(lhs < rhs);
 }
 
-template <typename T, typename Comp = Less<T> , typename Alloc = std::allocator<T> >
+template <typename T, typename Comp = Less<T>, typename Alloc = std::allocator<T> >
 class hx_tree {
  public:
   typedef T value_type;
@@ -86,12 +80,7 @@ class hx_tree {
 
   explicit hx_tree(const value_compare& comp = value_compare(),
                    const allocator_type& alloc = allocator_type())
-    : alloc_(alloc),
-      comp_(comp),
-      end_node_(0),
-      begin_node_ptr_(&end_node_),
-      root_(0),
-      size_(0) {}
+      : alloc_(alloc), comp_(comp), end_node_(0), begin_node_ptr_(&end_node_), root_(0), size_(0) {}
 
   // hx_tree(const hx_tree& other)
   //   : alloc_(other.alloc_),
@@ -100,9 +89,7 @@ class hx_tree {
   //     begin_node_(other.begin_node_),
   //     size_(other.size()) {}
 
-  ~hx_tree() {
-    clear();
-  }
+  ~hx_tree() { clear(); }
 
   void insert(const value_type& value) {
     if (!root_) {
@@ -141,20 +128,16 @@ class hx_tree {
     }
   }
 
-  bool isLeftChild(node_type* node) {
-    return *node == *(node->parent_->left_);
-  }
+  bool isLeftChild(node_type* node) { return *node == *(node->parent_->left_); }
 
-  bool isRightChild(node_type* node) {
-    return *node == *(node->parent_->right_);
-  }
+  bool isRightChild(node_type* node) { return *node == *(node->parent_->right_); }
 
   void erase(node_type* subroot) {
     if (!subroot) {
       return;
     }
     node_type* next_subroot;
-    if (subroot->left_ && subroot->right_ ) {
+    if (subroot->left_ && subroot->right_) {
       next_subroot = subroot->right_;
       while (next_subroot->left_) {
         next_subroot->subroot->left_;
@@ -165,7 +148,7 @@ class hx_tree {
         next_subroot->parent_->right_ = NULL;
       }
       subroot->left_->parent_ = next_subroot;
-      next_subroot = 
+      next_subroot =
     } else if (subroot->left_) {
       next_subroot = subroot->left_;
     } else if (subroot->right_) {
@@ -179,17 +162,14 @@ class hx_tree {
   }
 
   void clear_recursive(node_type* node) {
-    if (!node)
-      return;
+    if (!node) return;
     clear_recursive(node->left_);
     clear_recursive(node->right_);
     alloc_.destroy(node);
     alloc_.deallocate(node, 1);
   }
 
-  void clear() {
-    clear_recursive(root_);
-  }
+  void clear() { clear_recursive(root_); }
 
   void printPreOrder(node_type* node) {
     if (!node) {
@@ -215,19 +195,16 @@ class hx_tree {
     }
     printPostOrder(node->left_);
     printPostOrder(node->right_);
-    std::cout << (*node).value()  << " ";
+    std::cout << (*node).value() << " ";
   }
-
 
   node_type* tree_min(node_type* np) {
-    while (np->right_ != NULL)
-      np = np->right_;
+    while (np->right_ != NULL) np = np->right_;
     return np;
   }
-  
+
   node_type* tree_max(node_type* np) {
-    while (np->left_ != NULL)
-      np = np->left_;
+    while (np->left_ != NULL) np = np->left_;
     return np;
   }
 
@@ -242,8 +219,7 @@ class hx_tree {
   }
 
   node_type* tree_prev(node_type* np) {
-    if (np->left_ != NULL)
-      return tree_max(np->left_);
+    if (np->left_ != NULL) return tree_max(np->left_);
     while (tree_is_left_child(np)) {
       np = np->parent_;
     }
@@ -276,6 +252,4 @@ class hx_tree {
   size_type size_;
 };
 
-
-}
-
+}  // namespace ft

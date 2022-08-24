@@ -28,7 +28,7 @@ class vector {
   typedef std::ptrdiff_t difference_type;
 
   explicit vector(const allocator_type& alloc = allocator_type());
-  explicit vector(size_type n, const value_type& val = value_type(),
+  explicit vector(size_type n, const_reference val = value_type(),
                   const allocator_type& alloc = allocator_type());
   template <class InputIterator>
   vector(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
@@ -41,7 +41,7 @@ class vector {
   void assign(
       typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
       InputIterator last);
-  void assign(size_type n, const value_type& val);
+  void assign(size_type n, const_reference val);
   allocator_type get_allocator() const;
 
   reference at(size_type n);
@@ -71,15 +71,16 @@ class vector {
   size_type capacity() const;
 
   void clear();
-  iterator insert(iterator position, const value_type& val);
-  void insert(iterator position, size_type n, const value_type& val);
+  iterator insert(iterator position, const_reference val);
+  void insert(iterator position, size_type n, const_reference val);
   template <class InputIterator>
-  void insert(iterator position,
-              typename enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
-              InputIterator last);
+  void insert(
+      iterator position,
+      typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
+      InputIterator last);
   iterator erase(iterator position);
   iterator erase(iterator first, iterator last);
-  void push_back(const value_type& val);
+  void push_back(const_reference val);
   void pop_back();
   void resize(size_type n, value_type val = value_type());
   void swap(vector& other);
@@ -103,8 +104,7 @@ bool operator!=(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs
 
 template <class T, class Alloc>
 bool operator<(const ft::vector<T, Alloc>& lhs, const ft::vector<T, Alloc>& rhs) {
-  return (lhs.size() < rhs.size()) ||
-         ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 }
 
 template <class T, class Alloc>
@@ -132,7 +132,7 @@ vector<T, Alloc>::vector(const allocator_type& alloc)
     : alloc_(alloc), elem_(0), space_(0), size_(0) {}
 
 template <typename T, typename Alloc>
-vector<T, Alloc>::vector(size_type n, const value_type& val, const allocator_type& alloc)
+vector<T, Alloc>::vector(size_type n, const_reference val, const allocator_type& alloc)
     : alloc_(alloc), elem_(alloc_.allocate(n)), space_(n), size_(n) {
   for (size_type i = 0; i < n; i++) {
     alloc_.construct(&elem_[i], val);
@@ -297,7 +297,7 @@ void vector<T, Alloc>::reserve(size_type n) {
     return;
   }
   pointer elem = alloc_.allocate(n);
-  if (!is_integral<value_type>::value) {
+  if (!ft::is_integral<value_type>::value) {
     for (size_type i = 0; i < size_; i++) {
       alloc_.construct(&elem[i], elem_[i]);
     }
@@ -325,7 +325,7 @@ void vector<T, Alloc>::clear() {
 template <typename T, typename Alloc>
 template <class InputIterator>
 void vector<T, Alloc>::assign(
-    typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type first,
+    typename ft::enable_if<!is_integral<InputIterator>::value, InputIterator>::type first,
     InputIterator last) {
   clear();
   reserve(static_cast<size_t>(std::distance(first, last)));
@@ -335,7 +335,7 @@ void vector<T, Alloc>::assign(
 }
 
 template <typename T, typename Alloc>
-void vector<T, Alloc>::assign(size_type n, const value_type& val) {
+void vector<T, Alloc>::assign(size_type n, const_reference val) {
   clear();
   reserve(n);
   for (size_type i = 0; i < n; i++) {
@@ -369,7 +369,7 @@ typename vector<T, Alloc>::allocator_type vector<T, Alloc>::get_allocator() cons
 }
 
 template <typename T, typename Alloc>
-void vector<T, Alloc>::push_back(const value_type& val) {
+void vector<T, Alloc>::push_back(const_reference val) {
   if (space_ == size_) {
     int new_space = space_ < (max_size() / 2) ? (space_ << 1) : max_size();
     if (new_space == 0) {
@@ -391,29 +391,32 @@ void vector<T, Alloc>::pop_back() {
 
 template <typename T, typename Alloc>
 typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator position,
-                                                             const value_type& val) {
-  difference_type pos = std::distance(begin(), position);
+                                                             const_reference val) {
+  difference_type pos = std::distance(this->begin(), position);
   insert(position, 1, val);
   return begin() + pos;
 }
 
 template <typename T, typename Alloc>
-void vector<T, Alloc>::insert(iterator position, size_type n, const value_type& val) {
+void vector<T, Alloc>::insert(iterator position, size_type n, const_reference val) {
   difference_type pos = std::distance(this->begin(), position);
   size_type new_size = size_ + n;
-  reserve(new_size);
+  this->reserve(new_size);
   size_type src = size_;
   size_type dest = new_size;
   while (dest > size_ && src > static_cast<size_type>(pos)) {
     alloc_.construct(&elem_[--dest], elem_[--src]);
   }
-  while (dest > size_ && n > 0) {
+
+  while (dest >= size_ && n > 0) {
     alloc_.construct(&elem_[--dest], val);
     n--;
   }
+
   for (size_type i = 0; i < n; i++) {
     elem_[pos + i] = val;
   }
+
   size_ = new_size;
 }
 
@@ -421,7 +424,7 @@ template <typename T, typename Alloc>
 template <class InputIterator>
 void vector<T, Alloc>::insert(
     iterator position,
-    typename enable_if<!is_integral<InputIterator>::value, InputIterator>::type first,
+    typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
     InputIterator last) {
   difference_type pos = std::distance(this->begin(), position);
   size_type n = std::distance(first, last);
@@ -432,7 +435,7 @@ void vector<T, Alloc>::insert(
   while (dest > size_ && src > static_cast<size_type>(pos)) {
     alloc_.construct(&elem_[--dest], elem_[--src]);
   }
-  while (dest > size_ && first != last) {
+  while (dest >= size_ && first != last) {
     alloc_.construct(&elem_[--dest], *--last);
   }
   iterator it(&elem_[pos]);

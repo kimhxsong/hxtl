@@ -6,7 +6,7 @@
 #include <map>
 #include <memory>
 
-#include "../hxtree/hxtree.hpp"
+#include "../hx_tree/hx_tree.hpp"
 #include "../utility/utility.hpp"
 
 namespace ft {
@@ -36,7 +36,7 @@ class map {
     }
   };
 
-  typedef ft::hxtree<value_type, value_compare, Alloc> map_base;
+  typedef ft::hx_tree<value_type, value_compare, Alloc> map_base;
   typedef typename map_base::allocator_type allocator_type;
   typedef typename map_base::const_pointer const_pointer;
   typedef typename map_base::const_reference const_reference;
@@ -89,8 +89,10 @@ class map {
           .first->second;
   }
 
-  pair<iterator, bool> insert(const value_type& val) { return base.insert(val); }
-  iterator insert(iterator position, const value_type& val) {}
+  pair<iterator, bool> insert(const value_type& value) { return base.insert(value); }
+  iterator insert(iterator position, const value_type& value) {
+    return base.insert(position, value);
+  }
   template <class InputIterator>
   void insert(InputIterator first, InputIterator last) {
     while (first != last) {

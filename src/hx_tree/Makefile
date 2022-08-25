@@ -3,14 +3,14 @@ CXXFLAGS = -std=c++11 -g
 INCLUDES = -I $(shell brew --prefix googletest)/include -I .
 LIBS = -L $(shell brew --prefix googletest)/lib -lgtest_main -lgtest -pthread  -lpthread -mmacosx-version-min=12.0
 
-all: hxtree clean
+all: hx_tree clean
 
-hxtree:
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) hxtree_unittest.cpp -o hxtree_unittest
-	./hxtree_unittest
+hx_tree:
+	$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIBS) hx_tree_unittest.cpp -o hx_tree_unittest
+	./hx_tree_unittest
 
 clean:
 	rm -f *_unittest;
 	rm -rf *.dSYM;
 
-.PHONY: all hxtree clean
+.PHONY: all hx_tree clean

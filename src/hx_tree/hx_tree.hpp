@@ -1,5 +1,5 @@
-#ifndef HXTREE_HPP_
-#define HXTREE_HPP_
+#ifndef HX_TREE_HPP_
+#define HX_TREE_HPP_
 
 #include <__tree>
 #include <cstddef>     // ptrdiff_t
@@ -13,11 +13,6 @@
 
 namespace ft {
 
-template <class _T, class _Comp, class Alloc_>
-class hxtree;
-template <class _T, class NodeType>
-class hxiterator;
-
 template <class NodePtr>
 bool treeIsLeftChild(NodePtr np) {
   return np == np->parent->left;
@@ -25,7 +20,9 @@ bool treeIsLeftChild(NodePtr np) {
 
 template <class NodePtr>
 NodePtr treeMax(NodePtr np) {
-  while (np->right != NULL) np = np->right;
+  while (np->right != NULL) {
+    np = np->right
+  };
   return np;
 }
 
@@ -72,16 +69,16 @@ NodePtr treeLeaf(NodePtr np) {
   return np;
 }
 
-template <class _T>
-class hxnode {
+template <class T>
+class hx_node {
  public:
-  typedef hxnode<_T> node_type;
+  typedef hx_node<T> node_type;
   typedef node_type* node_pointer;
-  typedef _T value_type;
+  typedef T value_type;
 
-  hxnode(const value_type& value) : parent(0), right(0), left(0), value(value) {}
+  hx_node(const value_type& value) : parent(0), right(0), left(0), value(value) {}
   void set_parent(node_pointer parent) { this->parent = parent; }
-  ~hxnode() {}
+  ~hx_node() {}
 
   node_pointer parent;
   node_pointer right;
@@ -90,34 +87,32 @@ class hxnode {
 
  private:
   // equal to delete
-  hxnode(hxnode const&);
-  hxnode& operator=(hxnode const&);
+  hx_node(hx_node const&);
+  hx_node& operator=(hx_node const&);
 };
 
-template <class _T, class NodeType>
-class hxiterator {
+template <class T, class NodeType>
+class hx_iterator {
  public:
   typedef std::bidirectional_iterator_tag iterator_category;
-  typedef _T value_type;
-  typedef _T* pointer;
-  typedef _T& reference;
-  typedef const _T* const_pointer;
-  typedef const _T& const_reference;
+  typedef T value_type;
+  typedef T* pointer;
+  typedef T& reference;
+  typedef const T* const_pointer;
+  typedef const T& const_reference;
   typedef std::ptrdiff_t difference_type;
-  typedef NodeType* node_pointer;
-
   // Property:
   // Is default-constructible, copy-constructible, copy-assignable and
   // destructible
-  hxiterator() : np(0) {}
-  // hxiterator(const hxiterator& other) : np(other.np) {}
-  hxiterator(const hxiterator<value_type, ft::hxnode<value_type> >& other) : np(other.np) {}
-  hxiterator& operator=(const hxiterator& other) {
+  hx_iterator() : np(0) {}
+  // hx_iterator(const hx_iterator& other) : np(other.np) {}
+  hx_iterator(const hx_iterator<value_type, ft::hx_node<value_type> >& other) : np(other.np) {}
+  hx_iterator& operator=(const hx_iterator& other) {
     if (this == &other) return *this;
     this->np = other.np;
     return *this;
   }
-  ~hxiterator() {}
+  ~hx_iterator() {}
 
   // Property:
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
@@ -130,24 +125,24 @@ class hxiterator {
   // The result is either also dereferenceable or a past-the-end iterator.
   // Two iterators that compare equal, keep comparing equal after being both
   // increased.
-  hxiterator& operator++() {
+  hx_iterator& operator++() {
     this->np = treeNext(this->np);
     return *this;
   }
-  hxiterator operator++(int) {
-    hxiterator tmp(*this);
+  hx_iterator operator++(int) {
+    hx_iterator tmp(*this);
     ++tmp;
     *this = tmp;
     return --tmp;
   }
   // Property:
   // Can be decremented (if a dereferenceable iterator value precedes it).
-  hxiterator& operator--() {
+  hx_iterator& operator--() {
     this->np = treePrev(this->np);
     return *this;
   }
-  hxiterator operator--(int) {
-    hxiterator tmp(*this);
+  hx_iterator operator--(int) {
+    hx_iterator tmp(*this);
     --tmp;
     *this = tmp;
     return ++tmp;
@@ -156,60 +151,61 @@ class hxiterator {
   // Can be compared for equivalence using the equality/inequality operators
   // (meaningful when both iterator values iterate over the same underlying
   // sequence).
-  friend bool operator==(const hxiterator& lhs, const hxiterator& rhs) { return &*lhs == &*rhs; }
-  friend bool operator!=(const hxiterator& lhs, const hxiterator& rhs) { return !(lhs == rhs); }
+  friend bool operator==(const hx_iterator& lhs, const hx_iterator& rhs) { return &*lhs == &*rhs; }
+  friend bool operator!=(const hx_iterator& lhs, const hx_iterator& rhs) { return !(lhs == rhs); }
 
  private:
-  explicit hxiterator(node_pointer np) : np(np) {}
+  explicit hx_iterator(node_pointer np) : np(np) {}
+
+  typedef NodeType* node_pointer;
+
+  node_pointer np;
 
   template <class, class, class>
-  friend class hxtree;  // explicit TreeIterator(node_pointer);
-                        // template <class, class> friend class hxiterator;
-
- public:
-  node_pointer np;
+  friend class hx_tree;  // explicit TreeIterator(node_pointer);
+                         // template <class, class> friend class hx_iterator;
 };
 
-template <class _T, class _Comp = std::less<_T>, class _Alloc = std::allocator<_T> >
-class hxtree {
+template <class T, class _Comp = std::less<T>, class _Alloc = std::allocator<T> >
+class hx_tree {
  public:
-  typedef hxnode<_T> node_type;
+  typedef hx_node<T> node_type;
   typedef node_type* node_pointer;
-  typedef _T value_type;
+  typedef T value_type;
   typedef _Comp value_compare;
   typedef typename _Alloc::template rebind<node_type>::other allocator_type;
-  typedef _T* pointer;
-  typedef _T& reference;
-  typedef const _T* const_pointer;
-  typedef const _T& const_reference;
+  typedef T* pointer;
+  typedef T& reference;
+  typedef const T* const_pointer;
+  typedef const T& const_reference;
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
 
-  typedef hxiterator<value_type, node_type> iterator;
-  typedef hxiterator<value_type, const node_type> const_iterator;
+  typedef hx_iterator<value_type, node_type> iterator;
+  typedef hx_iterator<value_type, const node_type> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  hxtree(const value_compare& comp = value_compare(),
-         const allocator_type& alloc = allocator_type())
-      : comp(comp),
-        alloc(alloc),
-        end_node(value_type()),
-        begin_node(value_type()),
+  hx_tree(const value_compare& comp = value_compare(),
+          const allocator_type& alloc = allocator_type())
+      : alloc(alloc),
         root(0),
-        size(0) {
+        begin_node(value_type()),
+        end_node(value_type()),
+        size(0),
+        comp(comp) {
     begin_node.parent = &end_node;
   }
 
   template <class InputIterator>
-  hxtree(InputIterator first, InputIterator last, const value_compare& comp = value_compare(),
-         const allocator_type& alloc = allocator_type())
-      : comp(comp),
-        alloc(alloc),
-        end_node(value_type()),
-        begin_node(value_type()),
+  hx_tree(InputIterator first, InputIterator last, const value_compare& comp = value_compare(),
+          const allocator_type& alloc = allocator_type())
+      : alloc(alloc),
         root(0),
-        size(0) {
+        begin_node(value_type()),
+        end_node(value_type()),
+        size(0),
+        comp(comp) {
     while (first != last) {
       this->insert(*first++);
     }
@@ -222,22 +218,22 @@ class hxtree {
     copy_recursive(np->right);
   }
 
-  hxtree(const hxtree& other)
-      : comp(other.comp),
-        alloc(other.alloc),
-        end_node(value_type()),
-        begin_node(value_type()),
+  hx_tree(const hx_tree& other)
+      : alloc(other.alloc),
         root(0),
-        size(0) {
+        begin_node(value_type()),
+        end_node(value_type()),
+        size(0),
+        comp(other.comp) {
     copy_recursive(other.end_node.left);
   }
 
-  hxtree& operator=(const hxtree& other) {
+  hx_tree& operator=(const hx_tree& other) {
     this->clear();
     copy_recursive(other.end_node.left);
     return *this;
   }
-  ~hxtree() { this->clear(); }
+  ~hx_tree() { this->clear(); }
 
   iterator begin() { return iterator(begin_node.parent); }
   const_iterator begin() const { return const_iterator(begin_node.parent); }
@@ -265,7 +261,7 @@ class hxtree {
       this->root->set_parent(&end_node);
       this->end_node.left = root;
     } else {
-      node_pointer current = this->root;
+      node_pointer current = position.np->left;
       while (current) {
         if (comp(current->value, value) != 0) {
           if (!current->right) {
@@ -372,8 +368,8 @@ class hxtree {
     begin_node.parent = 0;
   }
 
-  void swap(hxtree& other) {
-    hxtree tmp = *this;
+  void swap(hx_tree& other) {
+    hx_tree tmp = *this;
     *this = other;
     other = tmp;
   }
@@ -409,7 +405,7 @@ class hxtree {
   size_type count(const value_type& val) const { return this->find(val) != this->end() ? 1 : 0; }
 
   iterator lower_bound(const value_type& value) {
-    node_pointer result = &this->end_node;
+    node_pointer result = 0;
     node_pointer current = this->end_node.left;
     while (current) {
       if (!comp(current->value, value)) {
@@ -418,11 +414,14 @@ class hxtree {
       } else
         current = current->right;
     }
-    return iterator(result);
+    if (!result)
+      return this->end();
+    else
+      return iterator(result);
   }
 
   const_iterator lower_bound(const value_type& value) const {
-    node_pointer result = &this->end_node;
+    node_pointer result = 0;
     node_pointer current = this->end_node.left;
     while (current) {
       if (!comp(current->value, value)) {
@@ -431,11 +430,14 @@ class hxtree {
       } else
         current = current->right;
     }
-    return const_iterator(result);
+    if (!result)
+      return this->end();
+    else
+      return const_iterator(result);
   }
 
   iterator upper_bound(const value_type& value) {
-    node_pointer result = &this->end_node;
+    node_pointer result = 0;
     node_pointer current = this->end_node.left;
     while (current) {
       if (comp(value, current->value)) {
@@ -444,11 +446,14 @@ class hxtree {
       } else
         current = current->right;
     }
-    return iterator(result);
+    if (!result)
+      return this->end();
+    else
+      return iterator(result);
   }
 
   const_iterator upper_bound(const value_type& value) const {
-    node_pointer result = &this->end_node;
+    node_pointer result = 0;
     node_pointer current = this->end_node.left;
     while (current) {
       if (comp(value, current->value)) {
@@ -457,7 +462,10 @@ class hxtree {
       } else
         current = current->right;
     }
-    return const_iterator(result);
+    if (!result)
+      return this->end();
+    else
+      return const_iterator(result);
   }
 
   pair<iterator, iterator> equal_range(const value_type& value) {
@@ -486,18 +494,18 @@ class hxtree {
   }
 
   allocator_type alloc;
-  node_type end_node;
-  node_type begin_node;
   node_pointer root;
-  value_compare comp;
+  node_type begin_node;
+  node_type end_node;
   size_type size;
+  value_compare comp;
 
   template <class, class, class>
-  friend class hxtree_iterator;
+  friend class hx_tree_iterator;
   template <class, class, class, class>
   friend class map;
 };
 
 }  // namespace ft
 
-#endif  // HXTREE_HPP_
+#endif  // HX_TREE_HPP_

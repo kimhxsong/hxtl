@@ -409,6 +409,80 @@ TEST(vector_nonmember, relational_operators) {
   EXPECT_EQ(__ft__vec2 >= __ft__vec3, __std__vec2 >= __std__vec3);
 }
 
+/*
+void	checkErase(TESTED_NAMESPACE::vector<TESTED_TYPE> const &vct,
+                                        TESTED_NAMESPACE::vector<TESTED_TYPE>::const_iterator const
+&it)
+{
+        static int i = 0;
+        std::cout << "[" << i++ << "] " << "erase: " << it - vct.begin() << std::endl;
+        printSize(vct);
+}
+
+  TESTED_NAMESPACE::vector<TESTED_TYPE> vct(10);
+  TESTED_NAMESPACE::vector<TESTED_TYPE> vct2;
+  TESTED_NAMESPACE::vector<TESTED_TYPE> vct3;
+
+  for (unsigned long int i = 0; i < vct.size(); ++i) vct[i] = (vct.size() - i) * 3;
+  printSize(vct);
+
+  vct2.insert(vct2.end(), 42);
+  vct2.insert(vct2.begin(), 2, 21);
+  printSize(vct2);
+
+  vct2.insert(vct2.end() - 2, 42);
+  printSize(vct2);  // FIX
+
+  vct2.insert(vct2.end(), 2, 84);
+  printSize(vct2);  // FIX
+
+  vct2.resize(4);
+  printSize(vct2);  // FIX
+
+  vct2.insert(vct2.begin() + 2, vct.begin(), vct.end());
+  vct.clear();
+  printSize(vct2);
+
+  printSize(vct);  // FIX
+
+  for (int i = 0; i < 5; ++i) vct3.insert(vct3.end(), i);
+  vct3.insert(vct3.begin() + 1, 2, 111);
+  printSize(vct3);  // FIX
+
+
+#include "common.hpp"
+
+#define TESTED_TYPE int
+
+int		main(void)
+{
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct(5);
+	TESTED_NAMESPACE::vector<TESTED_TYPE> vct2;
+	const int cut = 3;
+
+	for (unsigned long int i = 0; i < vct.size(); ++i)
+		vct[i] = (vct.size() - i) * 7;
+	printSize(vct);
+
+	vct2.insert(vct2.begin(), vct.begin(), vct.begin() + cut);
+	printSize(vct2);
+	vct2.insert(vct2.begin(), vct.begin() + cut, vct.end());
+	printSize(vct2);
+	vct2.insert(vct2.end(), vct.begin(), vct.begin() + cut);
+	printSize(vct2);
+
+	std::cout << "insert return:" << std::endl;
+
+	std::cout << *vct2.insert(vct2.end(), 42) << std::endl;
+	std::cout << *vct2.insert(vct2.begin() + 5, 84) << std::endl;
+	std::cout << "----------------------------------------" << std::endl;
+
+	printSize(vct2);
+	return (0);
+}
+
+*/
+
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

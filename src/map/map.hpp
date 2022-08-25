@@ -75,7 +75,7 @@ class map {
 
   bool empty() const { return base.empty(); }
 
-  size_type size() const { return base._size(); }
+  size_type size() const { return base.size(); }
 
   size_type max_size() const { return base.max_size(); }
 
@@ -139,20 +139,22 @@ class map {
 
  private:
   map_base base;
+
+  template <class _Key, class _T, class _Comp, class _Alloc>
+  friend bool operator==(const ft::map<_Key, _T, _Comp, _Alloc>& lhs,
+                         const ft::map<_Key, _T, _Comp, _Alloc>& rhs) {
+    return lhs.base == rhs.base;
+  }
+  template <class _Key, class _T, class _Comp, class _Alloc>
+  friend bool operator<(const ft::map<_Key, _T, _Comp, _Alloc>& lhs,
+                        const ft::map<_Key, _T, _Comp, _Alloc>& rhs) {
+    return lhs.base < rhs.base;
+  }
 };
 
 template <class Key, class T, class Comp, class Alloc>
-bool operator==(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
-  return lhs == rhs;
-}
-template <class Key, class T, class Comp, class Alloc>
 bool operator!=(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
-  return lhs != rhs;
-}
-
-template <class Key, class T, class Comp, class Alloc>
-bool operator<(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
-  return lhs < rhs;
+  return !(lhs == rhs);
 }
 
 template <class Key, class T, class Comp, class Alloc>

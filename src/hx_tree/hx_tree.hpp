@@ -8,6 +8,7 @@
 #include <iterator>  // bidirectional_tag
 #include <memory>    // allocator
 
+#include "../algorithm/algorithm.hpp"
 #include "../iterator/iterator.hpp"  // reverse_iterator
 #include "../utility/utility.hpp"    // pair
 
@@ -29,7 +30,9 @@ NodePtr __tree_max(NodePtr np) {
 template <class NodePtr>
 NodePtr __tree_min(NodePtr np) {
   if (!np) return 0;
-  while (np->left != NULL) np = np->left;
+  while (np->left != NULL) {
+    np = np->left;
+  }
   return np;
 }
 
@@ -231,14 +234,14 @@ class hx_tree_const_iterator {
                          // template <class, class> friend class hx_tree_iterator;
 };
 
-template <class T, class _Comp = std::less<T>, class _Alloc = std::allocator<T> >
+template <class T, class Comp = std::less<T>, class Alloc = std::allocator<T> >
 class hx_tree {
  public:
   typedef hx_node<T> node_type;
   typedef node_type* node_pointer;
   typedef T value_type;
-  typedef _Comp value_compare;
-  typedef typename _Alloc::template rebind<node_type>::other allocator_type;
+  typedef Comp value_compare;
+  typedef typename Alloc::template rebind<node_type>::other allocator_type;
   typedef T* pointer;
   typedef T& reference;
   typedef const T* const_pointer;
@@ -253,24 +256,14 @@ class hx_tree {
 
   hx_tree(const value_compare& comp = value_compare(),
           const allocator_type& alloc = allocator_type())
-      : alloc(alloc),
-        root(0),
-        begin_node(value_type()),
-        end_node(value_type()),
-        size(0),
-        comp(comp) {
+      : alloc(alloc), root(0), begin_node(value_type()), end_node(value_type()), sz(0), comp(comp) {
     begin_node.parent = &end_node;
   }
 
   template <class InputIterator>
   hx_tree(InputIterator first, InputIterator last, const value_compare& comp = value_compare(),
           const allocator_type& alloc = allocator_type())
-      : alloc(alloc),
-        root(0),
-        begin_node(value_type()),
-        end_node(value_type()),
-        size(0),
-        comp(comp) {
+      : alloc(alloc), root(0), begin_node(value_type()), end_node(value_type()), sz(0), comp(comp) {
     while (first != last) {
       this->insert(*first++);
     }
@@ -288,7 +281,7 @@ class hx_tree {
         root(0),
         begin_node(value_type()),
         end_node(value_type()),
-        size(0),
+        sz(0),
         comp(other.comp) {
     copy_recursive(other.end_node.left);
   }
@@ -345,7 +338,7 @@ class hx_tree {
         }
       }
     }
-    this->size++;
+    this->sz++;
     this->begin_node.set_parent(ft::__tree_min(end_node.left));
     return iterator(new_np);
   }
@@ -361,40 +354,41 @@ class hx_tree {
 
   size_type erase(const value_type& val) {
     iterator found = this->find(val);
-    if (found == this->end()) return 0;
+    if (found == this->end()) {
+      return 0;
+    }
 
-    node_pointer tmp = 0;
+    node_pointer tmp = found.np;
     if (found.np->left == 0 && found.np->right == 0) {
       if (ft::__tree_is_left_child(found.np)) {
-        tmp = found.np->parent->left;
+        // tmp = found.np->parent->left;
         found.np->parent->left = 0;
       } else {
-        tmp = found.np->parent->right;
+        // tmp = found.np->parent->right;
         found.np->parent->right = 0;
       }
     } else if (found.np->left != 0 && found.np->right != 0) {
       node_pointer subroot = ft::__tree_max(found.np->left);
-      if (ft::__tree_is_left_child(subroot)) {
-        if (ft::__tree_is_left_child(found.np)) {
-          found.np->parent->left = subroot;
-        } else {
-          found.np->parent->right = subroot;
-        }
-        subroot->set_parent(found.np->parent);
+      if (ft::__tree_is_left_child(found.np)) {
+        found.np->parent->left = subroot;
       } else {
-        if (ft::__tree_is_left_child(found.np)) {
-          found.np->parent->left = subroot->left;
-        } else {
-          subroot->parent->right = subroot->left;
+        found.np->parent->right = subroot;
+      }
+      if (!ft::__tree_is_left_child(subroot)) {
+        subroot->parent->right = subroot->left;
+        if (subroot->left) {
+          subroot->left->set_parent(subroot->parent);
         }
-        subroot->left->set_parent(subroot->parent);
         subroot->left = found.np->left;
+        subroot->left->set_parent(subroot);
       }
       subroot->right = found.np->right;
+      subroot->right->set_parent((subroot));
+      subroot->set_parent(found.np->parent);
       subroot->right->set_parent(subroot);
     } else {
       if (ft::__tree_is_left_child(found.np)) {
-        tmp = found.np->parent->left;
+        // tmp = found.np->parent->left;
         if (found.np->left) {
           found.np->parent->left = found.np->left;
           found.np->left->set_parent(found.np->parent);
@@ -403,7 +397,7 @@ class hx_tree {
           found.np->right->set_parent(found.np->parent);
         }
       } else {
-        tmp = found.np->parent->right;
+        // tmp = found.np->parent->right;
         if (found.np->left) {
           found.np->parent->right = found.np->left;
           found.np->left->set_parent(found.np->parent);
@@ -415,8 +409,8 @@ class hx_tree {
     }
     this->alloc.destroy(tmp);
     this->alloc.deallocate(tmp, 1);
-    this->size--;
-    this->begin_node.set_parent(ft::__tree_min(end_node.left));
+    this->sz--;
+    this->begin_node.set_parent(ft::__tree_min(&end_node));
     return 1;
   }
 
@@ -428,9 +422,10 @@ class hx_tree {
 
   void clear() {
     this->clear_recursive(end_node.left);
-    root = 0;
-    end_node.left = 0;
-    begin_node.parent = 0;
+    this->root = 0;
+    this->end_node.left = 0;
+    this->begin_node.parent = &end_node;
+    this->sz = 0;
   }
 
   void swap(hx_tree& other) {
@@ -444,7 +439,9 @@ class hx_tree {
   const_iterator find(const value_type& value) const {
     node_pointer current = this->end_node.left;
     while (current) {
-      if (comp(current->value, value) == comp(value, current->value)) return iterator(current);
+      if (comp(current->value, value) == comp(value, current->value)) {
+        return iterator(current);
+      }
       if (comp(current->value, value)) {
         current = current->right;
       } else {
@@ -457,7 +454,9 @@ class hx_tree {
   iterator find(const value_type& value) {
     node_pointer current = this->end_node.left;
     while (current) {
-      if (comp(current->value, value) == comp(value, current->value)) return iterator(current);
+      if (comp(current->value, value) == comp(value, current->value)) {
+        return iterator(current);
+      }
       if (comp(current->value, value)) {
         current = current->right;
       } else {
@@ -543,9 +542,9 @@ class hx_tree {
 
   allocator_type get_allocator() const { return this->alloc; }
 
-  size_type _size() const { return this->size; }
+  size_type size() const { return this->sz; }
 
-  bool empty() const { return this->size == 0; }
+  bool empty() const { return this->sz == 0; }
 
   size_type max_size() const { return std::numeric_limits<size_type>::max() / sizeof(node_type); }
 
@@ -562,7 +561,7 @@ class hx_tree {
   node_pointer root;
   node_type begin_node;
   node_type end_node;
-  size_type size;
+  size_type sz;
   value_compare comp;
 
   template <class, class>
@@ -571,7 +570,44 @@ class hx_tree {
   friend class hx_tree_const_iterator;
   template <class, class, class, class>
   friend class map;
+
+  template <class _T, class _Comp, class _Alloc>
+  friend bool operator==(const ft::hx_tree<_T, _Comp, _Alloc>& lhs,
+                         const ft::hx_tree<_T, _Comp, _Alloc>& rhs) {
+    return (lhs.size() == rhs.size()) && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+  }
+
+  template <class _T, class _Comp, class _Alloc>
+  friend bool operator<(const ft::hx_tree<_T, _Comp, _Alloc>& lhs,
+                        const ft::hx_tree<_T, _Comp, _Alloc>& rhs) {
+    return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  }
 };
+
+template <class T, class Comp, class Alloc>
+bool operator!=(const ft::hx_tree<T, Comp, Alloc>& lhs, const ft::hx_tree<T, Comp, Alloc>& rhs) {
+  return !(lhs == rhs);
+}
+
+template <class T, class Comp, class Alloc>
+bool operator<=(const ft::hx_tree<T, Comp, Alloc>& lhs, const ft::hx_tree<T, Comp, Alloc>& rhs) {
+  return !(lhs > rhs);
+}
+
+template <class T, class Comp, class Alloc>
+bool operator>(const ft::hx_tree<T, Comp, Alloc>& lhs, const ft::hx_tree<T, Comp, Alloc>& rhs) {
+  return rhs < lhs;
+}
+
+template <class T, class Comp, class Alloc>
+bool operator>=(const ft::hx_tree<T, Comp, Alloc>& lhs, const ft::hx_tree<T, Comp, Alloc>& rhs) {
+  return !(lhs < rhs);
+}
+
+template <class T, class Comp, class Alloc>
+void swap(ft::hx_tree<T, Comp, Alloc>& lhs, ft::hx_tree<T, Comp, Alloc>& rhs) {
+  return lhs.swap(rhs);
+}
 
 }  // namespace ft
 

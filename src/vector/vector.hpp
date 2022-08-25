@@ -402,22 +402,23 @@ void vector<T, Alloc>::insert(iterator position, size_type n, const_reference va
   difference_type pos = std::distance(this->begin(), position);
   size_type new_size = size_ + n;
   this->reserve(new_size);
-  size_type src = size_;
-  size_type dest = new_size;
-  while (dest > size_ && src > static_cast<size_type>(pos)) {
-    alloc_.construct(&elem_[--dest], elem_[--src]);
+  size_type src_idx = size_;
+  size_type dest_idx = new_size;
+  for (size_type i = this->size_ - pos; i > 0; i--) {
+    alloc_.construct(&this->elem_[--dest_idx], this->elem_[--src_idx]);
   }
-
-  while (dest >= size_ && n > 0) {
-    alloc_.construct(&elem_[--dest], val);
-    n--;
+  if (n > this->size_ - pos) {
+    for (size_type i = n - this->size_ + pos; i > 0; i--) {
+      alloc_.construct(&elem_[--dest_idx], val);
+    }
   }
-
-  for (size_type i = 0; i < n; i++) {
-    elem_[pos + i] = val;
+  while (src_idx != static_cast<size_type>(pos)) {
+    this->elem_[--dest_idx] = this->elem_[--src_idx];
   }
-
-  size_ = new_size;
+  while (n--) {
+    this->elem_[pos + n] = val;
+  }
+  this->size_ = new_size;
 }
 
 template <typename T, typename Alloc>
@@ -426,23 +427,10 @@ void vector<T, Alloc>::insert(
     iterator position,
     typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
     InputIterator last) {
-  difference_type pos = std::distance(this->begin(), position);
-  size_type n = std::distance(first, last);
-  size_type new_size = size_ + n;
-  reserve(new_size);
-  size_type src = size_;
-  size_type dest = new_size;
-  while (dest > size_ && src > static_cast<size_type>(pos)) {
-    alloc_.construct(&elem_[--dest], elem_[--src]);
-  }
-  while (dest >= size_ && first != last) {
-    alloc_.construct(&elem_[--dest], *--last);
-  }
-  iterator it(&elem_[pos]);
   while (first != last) {
-    *it++ = *first++;
+    position = this->insert(position, *first++);
+    ++position;
   }
-  size_ = new_size;
 }
 
 template <typename T, typename Alloc>

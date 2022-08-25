@@ -101,10 +101,10 @@ class hx_tree_iterator {
 
   // Property:
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
-  reference operator*() { return this->np->value; }
-  const_reference operator*() const { return this->np->value; }
-  pointer operator->() { return &(this->np->value); }
-  const_pointer operator->() const { return &(this->np->value); }
+  reference operator*() const { return this->np->value; }
+  // const_reference operator*() const { return this->np->value; }
+  pointer operator->() const { return &(this->np->value); }
+  // const_pointer operator->() const { return &(this->np->value); }
   // Property:
   // Can be incremented (if in a dereferenceable state).
   // The result is either also dereferenceable or a past-the-end iterator.
@@ -136,7 +136,7 @@ class hx_tree_iterator {
   // (meaningful when both iterator values iterate over the same underlying
   // sequence).
   friend bool operator==(const hx_tree_iterator& lhs, const hx_tree_iterator& rhs) {
-    return &*lhs == &*rhs;
+    return lhs.np == rhs.np;
   }
   friend bool operator!=(const hx_tree_iterator& lhs, const hx_tree_iterator& rhs) {
     return !(lhs == rhs);
@@ -161,38 +161,26 @@ class hx_tree_const_iterator {
  public:
   typedef std::bidirectional_iterator_tag iterator_category;
   typedef T value_type;
-  typedef T* pointer;
-  typedef T& reference;
-  typedef const T* const_pointer;
-  typedef const T& const_reference;
+  typedef const T* pointer;
+  typedef const T& reference;
   typedef std::ptrdiff_t difference_type;
   typedef ft::hx_tree_iterator<value_type, ft::hx_node<value_type> > non_const_iterator;
-  // Property:
-  // Is default-constructible, copy-constructible, copy-assignable and
-  // destructible
+
   hx_tree_const_iterator() : np(0) {}
   hx_tree_const_iterator(const hx_tree_const_iterator& other) : np(other.np) {}
   hx_tree_const_iterator(const non_const_iterator& other) : np(other.np) {}
+  ~hx_tree_const_iterator() {}
+
   hx_tree_const_iterator& operator=(const hx_tree_const_iterator& other) {
     if (this == &other) return *this;
     this->np = other.np;
     return *this;
   }
-  // hx_tree_const_iterator& operator=(const non_const_iterator& other) {
-  //   if (this == &other) return *this;
-  //   this->np = other.np;
-  //   return *this;
-  // }
-  ~hx_tree_const_iterator() {}
 
-  // Property:
-  // Can be dereferenced as an rvalue (if in a dereferenceable state).
-  // reference operator*() { return this->np->value; }
-  const_reference operator*() const { return this->np->value; }
-  // const_reference operator*() const { return this->np->value; }
+  reference operator*() const { return this->np->value; }
   // pointer operator->() { return &(this->np->value); }
-  // const_pointer operator->() const { return &(this->np->value); }
-  const_pointer operator->() const { return &(this->np->value); }
+  // pointer operator->() { return &(this->np->value); }
+  pointer operator->() const { return &(this->np->value); }
   // Property:
   // Can be incremented (if in a dereferenceable state).
   // The result is either also dereferenceable or a past-the-end iterator.
@@ -223,7 +211,7 @@ class hx_tree_const_iterator {
   // (meaningful when both iterator values iterate over the same underlying
   // sequence).
   friend bool operator==(const hx_tree_const_iterator& lhs, const hx_tree_const_iterator& rhs) {
-    return &*lhs == &*rhs;
+    return lhs.np == rhs.np;
   }
   friend bool operator!=(const hx_tree_const_iterator& lhs, const hx_tree_const_iterator& rhs) {
     return !(lhs == rhs);

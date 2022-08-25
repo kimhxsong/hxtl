@@ -141,6 +141,35 @@ class map {
   map_base base;
 };
 
+template <class Key, class T, class Comp, class Alloc>
+bool operator==(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
+  return lhs == rhs;
+}
+template <class Key, class T, class Comp, class Alloc>
+bool operator!=(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
+  return lhs != rhs;
+}
+
+template <class Key, class T, class Comp, class Alloc>
+bool operator<(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
+  return lhs < rhs;
+}
+
+template <class Key, class T, class Comp, class Alloc>
+bool operator<=(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
+  return !(rhs < lhs);
+}
+
+template <class Key, class T, class Comp, class Alloc>
+bool operator>(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
+  return rhs < lhs;
+}
+
+template <class Key, class T, class Comp, class Alloc>
+bool operator>=(const ft::map<Key, T, Comp, Alloc>& lhs, const ft::map<Key, T, Comp, Alloc>& rhs) {
+  return !(lhs < rhs);
+}
+
 }  // namespace ft
 
 #endif  // MAP_HPP_

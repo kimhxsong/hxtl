@@ -62,10 +62,10 @@ TEST(tree_node_next_prev, test) {
   ft::hx_node<int> node3(42);
   node2.right = &node3;
   node3.set_parent(&node2);
-  ft::hx_node<int>* np3 = ft::treeNext<ft::hx_node<int>*>(&node2);
+  ft::hx_node<int>* np3 = ft::__tree_next<ft::hx_node<int>*>(&node2);
   std::cout << node3.value << std::endl;
   std::cout << np3->value << std::endl;
-  ft::hx_node<int>* np2 = ft::treePrev<ft::hx_node<int>*>(np3);
+  ft::hx_node<int>* np2 = ft::__tree_prev<ft::hx_node<int>*>(np3);
   std::cout << np2->value << std::endl;
 }
 
@@ -75,10 +75,10 @@ TEST(tree, test) {
   ft::hx_node<int> node3(42);
   node2.right = &node3;
   node3.set_parent(&node2);
-  ft::hx_node<int>* np3 = ft::treeNext<ft::hx_node<int>*>(&node2);
+  ft::hx_node<int>* np3 = ft::__tree_next<ft::hx_node<int>*>(&node2);
   std::cout << node3.value << std::endl;
   std::cout << np3->value << std::endl;
-  ft::hx_node<int>* np2 = ft::treePrev<ft::hx_node<int>*>(np3);
+  ft::hx_node<int>* np2 = ft::__tree_prev<ft::hx_node<int>*>(np3);
 }
 
 TEST(tree_iterators, begin_end) {

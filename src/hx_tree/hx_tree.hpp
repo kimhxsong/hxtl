@@ -14,59 +14,43 @@
 namespace ft {
 
 template <class NodePtr>
-bool treeIsLeftChild(NodePtr np) {
+bool __tree_is_left_child(NodePtr np) {
   return np == np->parent->left;
 }
 
 template <class NodePtr>
-NodePtr treeMax(NodePtr np) {
+NodePtr __tree_max(NodePtr np) {
   while (np->right != NULL) {
-    np = np->right
+    np = np->right;
   };
   return np;
 }
 
 template <class NodePtr>
-NodePtr treeMin(NodePtr np) {
+NodePtr __tree_min(NodePtr np) {
   if (!np) return 0;
   while (np->left != NULL) np = np->left;
   return np;
 }
 
 template <class NodePtr>
-NodePtr treeNext(NodePtr np) {
+NodePtr __tree_next(NodePtr np) {
   if (np->right) {
-    return treeMin(np->right);
+    return ft::__tree_min(np->right);
   }
-  while (treeIsLeftChild(np) == false) {
+  while (ft::__tree_is_left_child(np) == false) {
     np = np->parent;
   }
   return (np->parent);
 }
 
 template <class NodePtr>
-NodePtr treePrev(NodePtr np) {
-  if (np->left != NULL) return treeMax(np->left);
-  while (treeIsLeftChild(np)) {
+NodePtr __tree_prev(NodePtr np) {
+  if (np->left != NULL) return ft::__tree_max(np->left);
+  while (ft::__tree_is_left_child(np)) {
     np = np->parent;
   }
   return (np->parent);
-}
-
-template <class NodePtr>
-NodePtr treeLeaf(NodePtr np) {
-  while (1) {
-    if (np->left) {
-      np = np->left;
-      continue;
-    }
-    if (np->right) {
-      np = np->right;
-      continue;
-    }
-    break;
-  }
-  return np;
 }
 
 template <class T>
@@ -92,7 +76,7 @@ class hx_node {
 };
 
 template <class T, class NodeType>
-class hx_iterator {
+class hx_tree_iterator {
  public:
   typedef std::bidirectional_iterator_tag iterator_category;
   typedef T value_type;
@@ -104,15 +88,16 @@ class hx_iterator {
   // Property:
   // Is default-constructible, copy-constructible, copy-assignable and
   // destructible
-  hx_iterator() : np(0) {}
-  // hx_iterator(const hx_iterator& other) : np(other.np) {}
-  hx_iterator(const hx_iterator<value_type, ft::hx_node<value_type> >& other) : np(other.np) {}
-  hx_iterator& operator=(const hx_iterator& other) {
-    if (this == &other) return *this;
+  hx_tree_iterator() : np(0) {}
+  hx_tree_iterator(const hx_tree_iterator& other) : np(other.np) {}
+  ~hx_tree_iterator() {}
+  hx_tree_iterator& operator=(const hx_tree_iterator& other) {
+    if (this == &other) {
+      return *this;
+    }
     this->np = other.np;
     return *this;
   }
-  ~hx_iterator() {}
 
   // Property:
   // Can be dereferenced as an rvalue (if in a dereferenceable state).
@@ -125,45 +110,137 @@ class hx_iterator {
   // The result is either also dereferenceable or a past-the-end iterator.
   // Two iterators that compare equal, keep comparing equal after being both
   // increased.
-  hx_iterator& operator++() {
-    this->np = treeNext(this->np);
+  hx_tree_iterator& operator++() {
+    this->np = ft::__tree_next(this->np);
     return *this;
   }
-  hx_iterator operator++(int) {
-    hx_iterator tmp(*this);
-    ++tmp;
-    *this = tmp;
-    return --tmp;
+  hx_tree_iterator operator++(int) {
+    hx_tree_iterator tmp(*this);
+    ++(*this);
+    return tmp;
   }
   // Property:
   // Can be decremented (if a dereferenceable iterator value precedes it).
-  hx_iterator& operator--() {
-    this->np = treePrev(this->np);
+  hx_tree_iterator& operator--() {
+    this->np = __tree_prev(this->np);
     return *this;
   }
-  hx_iterator operator--(int) {
-    hx_iterator tmp(*this);
-    --tmp;
-    *this = tmp;
-    return ++tmp;
+
+  hx_tree_iterator operator--(int) {
+    hx_tree_iterator tmp(*this);
+    --(*this);
+    return tmp;
   }
   // Property:
   // Can be compared for equivalence using the equality/inequality operators
   // (meaningful when both iterator values iterate over the same underlying
   // sequence).
-  friend bool operator==(const hx_iterator& lhs, const hx_iterator& rhs) { return &*lhs == &*rhs; }
-  friend bool operator!=(const hx_iterator& lhs, const hx_iterator& rhs) { return !(lhs == rhs); }
+  friend bool operator==(const hx_tree_iterator& lhs, const hx_tree_iterator& rhs) {
+    return &*lhs == &*rhs;
+  }
+  friend bool operator!=(const hx_tree_iterator& lhs, const hx_tree_iterator& rhs) {
+    return !(lhs == rhs);
+  }
 
  private:
-  explicit hx_iterator(node_pointer np) : np(np) {}
-
   typedef NodeType* node_pointer;
+
+  explicit hx_tree_iterator(node_pointer np) : np(np) {}
 
   node_pointer np;
 
   template <class, class, class>
   friend class hx_tree;  // explicit TreeIterator(node_pointer);
-                         // template <class, class> friend class hx_iterator;
+                         // template <class, class> friend class hx_tree_iterator;
+  template <class, class>
+  friend class hx_tree_const_iterator;
+};
+
+template <class T, class NodeType>
+class hx_tree_const_iterator {
+ public:
+  typedef std::bidirectional_iterator_tag iterator_category;
+  typedef T value_type;
+  typedef T* pointer;
+  typedef T& reference;
+  typedef const T* const_pointer;
+  typedef const T& const_reference;
+  typedef std::ptrdiff_t difference_type;
+  typedef ft::hx_tree_iterator<value_type, ft::hx_node<value_type> > non_const_iterator;
+  // Property:
+  // Is default-constructible, copy-constructible, copy-assignable and
+  // destructible
+  hx_tree_const_iterator() : np(0) {}
+  hx_tree_const_iterator(const hx_tree_const_iterator& other) : np(other.np) {}
+  hx_tree_const_iterator(const non_const_iterator& other) : np(other.np) {}
+  hx_tree_const_iterator& operator=(const hx_tree_const_iterator& other) {
+    if (this == &other) return *this;
+    this->np = other.np;
+    return *this;
+  }
+  // hx_tree_const_iterator& operator=(const non_const_iterator& other) {
+  //   if (this == &other) return *this;
+  //   this->np = other.np;
+  //   return *this;
+  // }
+  ~hx_tree_const_iterator() {}
+
+  // Property:
+  // Can be dereferenced as an rvalue (if in a dereferenceable state).
+  // reference operator*() { return this->np->value; }
+  const_reference operator*() const { return this->np->value; }
+  // const_reference operator*() const { return this->np->value; }
+  // pointer operator->() { return &(this->np->value); }
+  // const_pointer operator->() const { return &(this->np->value); }
+  const_pointer operator->() const { return &(this->np->value); }
+  // Property:
+  // Can be incremented (if in a dereferenceable state).
+  // The result is either also dereferenceable or a past-the-end iterator.
+  // Two iterators that compare equal, keep comparing equal after being both
+  // increased.
+  hx_tree_const_iterator& operator++() {
+    this->np = ft::__tree_next(this->np);
+    return *this;
+  }
+  hx_tree_const_iterator operator++(int) {
+    hx_tree_const_iterator tmp(*this);
+    ++(*this);
+    return tmp;
+  }
+  // Property:
+  // Can be decremented (if a dereferenceable iterator value precedes it).
+  hx_tree_const_iterator& operator--() {
+    this->np = __tree_prev(this->np);
+    return *this;
+  }
+  hx_tree_const_iterator operator--(int) {
+    hx_tree_const_iterator tmp(*this);
+    --(*this);
+    return tmp;
+  }
+  // Property:
+  // Can be compared for equivalence using the equality/inequality operators
+  // (meaningful when both iterator values iterate over the same underlying
+  // sequence).
+  friend bool operator==(const hx_tree_const_iterator& lhs, const hx_tree_const_iterator& rhs) {
+    return &*lhs == &*rhs;
+  }
+  friend bool operator!=(const hx_tree_const_iterator& lhs, const hx_tree_const_iterator& rhs) {
+    return !(lhs == rhs);
+  }
+
+ private:
+  typedef NodeType node_type;
+  typedef node_type* node_pointer;
+  typedef const node_pointer const_node_pointer;
+
+  explicit hx_tree_const_iterator(const_node_pointer np) : np(np) {}
+
+  node_pointer np;
+
+  template <class, class, class>
+  friend class hx_tree;  // explicit TreeIterator(node_pointer);
+                         // template <class, class> friend class hx_tree_iterator;
 };
 
 template <class T, class _Comp = std::less<T>, class _Alloc = std::allocator<T> >
@@ -181,8 +258,8 @@ class hx_tree {
   typedef size_t size_type;
   typedef ptrdiff_t difference_type;
 
-  typedef hx_iterator<value_type, node_type> iterator;
-  typedef hx_iterator<value_type, const node_type> const_iterator;
+  typedef hx_tree_iterator<value_type, node_type> iterator;
+  typedef hx_tree_const_iterator<value_type, const node_type> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
@@ -281,7 +358,7 @@ class hx_tree {
       }
     }
     this->size++;
-    this->begin_node.set_parent(ft::treeMin(end_node.left));
+    this->begin_node.set_parent(ft::__tree_min(end_node.left));
     return iterator(new_np);
   }
 
@@ -298,9 +375,9 @@ class hx_tree {
     iterator found = this->find(val);
     if (found == this->end()) return 0;
 
-    node_pointer tmp;
+    node_pointer tmp = 0;
     if (found.np->left == 0 && found.np->right == 0) {
-      if (ft::treeIsLeftChild(found.np)) {
+      if (ft::__tree_is_left_child(found.np)) {
         tmp = found.np->parent->left;
         found.np->parent->left = 0;
       } else {
@@ -308,16 +385,16 @@ class hx_tree {
         found.np->parent->right = 0;
       }
     } else if (found.np->left != 0 && found.np->right != 0) {
-      node_pointer subroot = ft::treeMax(found.np->left);
-      if (ft::treeIsLeftChild(subroot)) {
-        if (ft::treeIsLeftChild(found.np)) {
+      node_pointer subroot = ft::__tree_max(found.np->left);
+      if (ft::__tree_is_left_child(subroot)) {
+        if (ft::__tree_is_left_child(found.np)) {
           found.np->parent->left = subroot;
         } else {
           found.np->parent->right = subroot;
         }
         subroot->set_parent(found.np->parent);
       } else {
-        if (ft::treeIsLeftChild(found.np)) {
+        if (ft::__tree_is_left_child(found.np)) {
           found.np->parent->left = subroot->left;
         } else {
           subroot->parent->right = subroot->left;
@@ -328,7 +405,7 @@ class hx_tree {
       subroot->right = found.np->right;
       subroot->right->set_parent(subroot);
     } else {
-      if (ft::treeIsLeftChild(found.np)) {
+      if (ft::__tree_is_left_child(found.np)) {
         tmp = found.np->parent->left;
         if (found.np->left) {
           found.np->parent->left = found.np->left;
@@ -351,7 +428,7 @@ class hx_tree {
     this->alloc.destroy(tmp);
     this->alloc.deallocate(tmp, 1);
     this->size--;
-    this->begin_node.set_parent(ft::treeMin(end_node.left));
+    this->begin_node.set_parent(ft::__tree_min(end_node.left));
     return 1;
   }
 
@@ -500,8 +577,10 @@ class hx_tree {
   size_type size;
   value_compare comp;
 
-  template <class, class, class>
+  template <class, class>
   friend class hx_tree_iterator;
+  template <class, class>
+  friend class hx_tree_const_iterator;
   template <class, class, class, class>
   friend class map;
 };

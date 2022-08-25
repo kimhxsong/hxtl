@@ -74,11 +74,25 @@ typename reverse_iterator<Iterator>::reference reverse_iterator<Iterator>::opera
   return *(--tmp);
 }
 
+// template <class Iterator>
+// typename reverse_iterator<Iterator>::const_reference reverse_iterator<Iterator>::operator*()
+// const {
+//   iterator_type tmp = current;
+//   return *(--tmp);
+// }
+
 template <class Iterator>
 typename reverse_iterator<Iterator>::pointer reverse_iterator<Iterator>::operator->() const {
   iterator_type tmp = current;
   return &(*(--tmp));
 }
+
+// template <class Iterator>
+// typename reverse_iterator<Iterator>::const_pointer reverse_iterator<Iterator>::operator->() const
+// {
+//   iterator_type tmp = current;
+//   return &(*(--tmp));
+// }
 
 template <class Iterator>
 reverse_iterator<Iterator>& reverse_iterator<Iterator>::operator++() {

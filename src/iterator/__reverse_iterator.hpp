@@ -48,8 +48,10 @@ class reverse_iterator {
   reverse_iterator(const reverse_iterator<Iter>& rev_it);  // copy (3)
 
   iterator_type base() const;
+
   reference operator*() const;
   pointer operator->() const;
+
   reverse_iterator& operator++();
   reverse_iterator operator++(int);
   reverse_iterator& operator--();

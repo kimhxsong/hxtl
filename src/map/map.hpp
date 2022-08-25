@@ -82,7 +82,6 @@ class map {
   mapped_type& operator[](const key_type& k) {
     iterator found = base.find(ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
     if (found != this->end()) {
-      std::cout << "test" << std::endl;
       return found->second;
     } else
       return base.insert(ft::make_pair<const key_type, mapped_type>(k, mapped_type()))

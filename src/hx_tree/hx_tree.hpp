@@ -41,19 +41,21 @@ NodePtr __tree_next(NodePtr np) {
   if (np->right) {
     return ft::__tree_min(np->right);
   }
-  while (ft::__tree_is_left_child(np) == false) {
+  while (np->parent && !ft::__tree_is_left_child(np)) {
     np = np->parent;
   }
-  return (np->parent);
+  return np->parent;
 }
 
 template <class NodePtr>
 NodePtr __tree_prev(NodePtr np) {
-  if (np->left != NULL) return ft::__tree_max(np->left);
+  if (np->left) {
+    return ft::__tree_max(np->left);
+  }
   while (ft::__tree_is_left_child(np)) {
     np = np->parent;
   }
-  return (np->parent);
+  return np->parent;
 }
 
 template <class T>
@@ -320,18 +322,26 @@ class hx_tree {
       this->end_node.left = root;
     } else {
       node_pointer current = position.np->left;
+      if (!current || comp(current->value, value)) {
+        current = end_node.left;
+      }
+      // node_pointer current = position.np;
       while (current) {
-        if (comp(current->value, value) != 0) {
+        if (comp(current->value, value) == comp(value, current->value)) {
+          this->alloc.destroy(new_np);
+          this->alloc.deallocate(new_np, 1);
+          return iterator(current);
+        } else if (comp(current->value, value)) {
           if (!current->right) {
+            new_np->set_parent(current);
             current->right = new_np;
-            current->right->set_parent(current);
             break;
           }
           current = current->right;
         } else {
           if (!current->left) {
+            new_np->set_parent(current);
             current->left = new_np;
-            current->left->set_parent(current);
             break;
           }
           current = current->left;
@@ -361,10 +371,8 @@ class hx_tree {
     node_pointer tmp = found.np;
     if (found.np->left == 0 && found.np->right == 0) {
       if (ft::__tree_is_left_child(found.np)) {
-        // tmp = found.np->parent->left;
         found.np->parent->left = 0;
       } else {
-        // tmp = found.np->parent->right;
         found.np->parent->right = 0;
       }
     } else if (found.np->left != 0 && found.np->right != 0) {
@@ -429,9 +437,26 @@ class hx_tree {
   }
 
   void swap(hx_tree& other) {
-    hx_tree tmp = *this;
-    *this = other;
-    other = tmp;
+    node_pointer tmp_np = other.end_node.left;
+    other.end_node.left = this->end_node.left;
+    this->end_node.left = tmp_np;
+    other.end_node.left->parent = &other.end_node;
+    this->end_node.left->parent = &this->end_node;
+    tmp_np = other.begin_node.parent;
+    other.begin_node.parent = this->begin_node.parent;
+    this->begin_node.parent = tmp_np;
+    tmp_np = other.root;
+    other.root = this->root;
+    this->root = tmp_np;
+    size_type tmp_sz = other.sz;
+    other.sz = this->sz;
+    this->sz = tmp_sz;
+    allocator_type tmp_alloc = other.alloc;
+    other.alloc = this->alloc;
+    this->alloc = tmp_alloc;
+    value_compare tmp_comp = other.comp;
+    other.comp = this->comp;
+    this->comp = tmp_comp;
   }
 
   value_compare value_comp() const { return value_compare(); }

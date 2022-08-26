@@ -14,4 +14,4 @@ clean:
 	rm -f *_unittest;
 	rm -rf *.dSYM;
 
-.PHONY: all hx_tree clean
+.PHONY: all __tree clean

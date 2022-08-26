@@ -3,16 +3,18 @@
 
 #include <functional>
 #include <iostream>
-#include <map>
 #include <memory>
 
-#include "../hx_tree/hx_tree.hpp"
-#include "../utility/utility.hpp"
+#include "__enable_if.hpp"
+#include "__is_integral.hpp"
+#include "__pair.hpp"
+#include "__reverse_iterator.hpp"
+#include "__tree.hpp"
 
 namespace ft {
 
 template <class Key, class T, class Compare = std::less<Key>,
-          class Alloc = std::allocator<pair<const Key, T> > >
+          class Allocator = std::allocator<pair<const Key, T> > >
 class map {
  public:
   typedef Key key_type;
@@ -36,24 +38,28 @@ class map {
     }
   };
 
-  typedef ft::hx_tree<value_type, value_compare, Alloc> map_base;
-  typedef typename map_base::allocator_type allocator_type;
-  typedef typename map_base::const_pointer const_pointer;
-  typedef typename map_base::const_reference const_reference;
-  typedef typename map_base::pointer pointer;
-  typedef typename map_base::reference reference;
+ private:
+  typedef ft::__tree<value_type, value_compare, Allocator> map_base;
+
+ public:
+  typedef Allocator allocator_type;
+  typedef typename allocator_type::reference reference;
+  typedef typename allocator_type::const_reference const_reference;
+  typedef typename allocator_type::pointer pointer;
+  typedef typename allocator_type::const_pointer const_pointer;
   typedef typename map_base::iterator iterator;
   typedef typename map_base::const_iterator const_iterator;
-  typedef typename map_base::reverse_iterator reverse_iterator;
-  typedef typename map_base::const_reverse_iterator const_reverse_iterator;
-  typedef typename map_base::difference_type difference_type;
-  typedef typename map_base::size_type size_type;
+  typedef ft::reverse_iterator<iterator> reverse_iterator;
+  typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
+  typedef std::ptrdiff_t difference_type;
+  typedef std::size_t size_type;
 
   explicit map(const key_compare& comp = key_compare(),
                const allocator_type& alloc = allocator_type())
       : base(value_compare(comp), alloc) {}
   template <class InputIterator>
-  map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
+  map(typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
+      InputIterator last, const key_compare& comp = key_compare(),
       const allocator_type& alloc = allocator_type())
       : base(first, last, value_compare(comp), alloc) {}
   map(const map& other) : base(other.base) {}
@@ -93,7 +99,9 @@ class map {
     return base.insert(position, value);
   }
   template <class InputIterator>
-  void insert(InputIterator first, InputIterator last) {
+  void insert(
+      typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first,
+      InputIterator last) {
     while (first != last) {
       base.insert(*first++);
     }
@@ -134,7 +142,7 @@ class map {
   pair<iterator, iterator> equal_range(const key_type& k) {
     return base.equal_range(ft::make_pair<const key_type, mapped_type>(k, mapped_type()));
   }
-  allocator_type get_allocator() const { return base.get_allocator(); }
+  allocator_type get_allocator() const { return allocator_type(); }
 
  private:
   map_base base;

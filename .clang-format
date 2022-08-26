@@ -2,3 +2,4 @@ Language: Cpp
 BasedOnStyle: Google
 DerivePointerAlignment: false
 ColumnLimit: 100
+Standard: c++03

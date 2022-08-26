@@ -11,14 +11,14 @@ struct Less {
 };
 
 template <typename T, typename Comp = Less<T> >
-class hx_tree_node {
+class __tree_node {
  public:
   typedef T value_type;
   typedef Comp value_compare;
-  typedef hx_tree_node<T, Comp> node_type;
+  typedef __tree_node<T, Comp> node_type;
   typedef node_type* node_type*;
 
-  explicit hx_tree_node(const value_type& value = value_type())
+  explicit __tree_node(const value_type& value = value_type())
       : value_(value), parent_(0), left_(0), right_(0) {}
 
   const value_type& value() const { return value_; }
@@ -35,41 +35,41 @@ class hx_tree_node {
 
 // 이터레이터에서 비교연산이 필요하기 때문에 전역에 선언되어 있어야 함.
 template <typename T, typename Comp>
-bool operator==(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& rhs) {
+bool operator==(const __tree_node<T, Comp>& lhs, const __tree_node<T, Comp>& rhs) {
   return lhs.value() == rhs.value();
 }
 
 template <typename T, typename Comp>
-bool operator!=(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& rhs) {
+bool operator!=(const __tree_node<T, Comp>& lhs, const __tree_node<T, Comp>& rhs) {
   return !(lhs.value() == rhs.value());
 }
 
 template <typename T, typename Comp>
-bool operator<(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& rhs) {
-  return typename hx_tree_node<T, Comp>::value_compare()(lhs.value(), rhs.value());
+bool operator<(const __tree_node<T, Comp>& lhs, const __tree_node<T, Comp>& rhs) {
+  return typename __tree_node<T, Comp>::value_compare()(lhs.value(), rhs.value());
 }
 
 template <typename T, typename Comp>
-bool operator>(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& rhs) {
+bool operator>(const __tree_node<T, Comp>& lhs, const __tree_node<T, Comp>& rhs) {
   return rhs < lhs;
 }
 
 template <typename T, typename Comp>
-bool operator<=(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& rhs) {
+bool operator<=(const __tree_node<T, Comp>& lhs, const __tree_node<T, Comp>& rhs) {
   return !(lhs > rhs);
 }
 
 template <typename T, typename Comp>
-bool operator>=(const hx_tree_node<T, Comp>& lhs, const hx_tree_node<T, Comp>& rhs) {
+bool operator>=(const __tree_node<T, Comp>& lhs, const __tree_node<T, Comp>& rhs) {
   return !(lhs < rhs);
 }
 
 template <typename T, typename Comp = Less<T>, typename Alloc = std::allocator<T> >
-class hx_tree {
+class __tree {
  public:
   typedef T value_type;
   typedef Comp value_compare;
-  typedef typename ft::hx_tree_node<T, Comp>::node_type node_type;
+  typedef typename ft::__tree_node<T, Comp>::node_type node_type;
   typedef node_type* node_type*;
   typedef typename Alloc::template rebind<node_type>::other allocator_type;
   typedef typename allocator_type::reference reference;
@@ -78,18 +78,18 @@ class hx_tree {
   typedef typename allocator_type::const_pointer const_pointer;
   typedef typename allocator_type::size_type size_t;
 
-  explicit hx_tree(const value_compare& comp = value_compare(),
-                   const allocator_type& alloc = allocator_type())
+  explicit __tree(const value_compare& comp = value_compare(),
+                  const allocator_type& alloc = allocator_type())
       : alloc_(alloc), comp_(comp), end_node_(0), begin_node_ptr_(&end_node_), root_(0), size_(0) {}
 
-  // hx_tree(const hx_tree& other)
+  // __tree(const __tree& other)
   //   : alloc_(other.alloc_),
   //     comp_(other.comp_),
   //     end_node_(other.end_node_),
   //     begin_node_(other.begin_node_),
   //     size_(other.size()) {}
 
-  ~hx_tree() { clear(); }
+  ~__tree() { clear(); }
 
   void insert(const value_type& value) {
     if (!root_) {

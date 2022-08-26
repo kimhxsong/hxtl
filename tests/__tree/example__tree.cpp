@@ -4,7 +4,7 @@
 #include "tree.hpp"
 
 void test() {
-  ft::hx_tree<char> mytree;
+  ft::__tree<char> mytree;
   std::vector<char> arr = {'F', 'B', 'G', 'A', 'D', 'I', 'C', 'E', 'H'};
 
   for (size_t i = 0; i < arr.size(); i++) {

@@ -1,5 +1,6 @@
 #include <deque>
 #include <iostream>
+#include <list>
 #include <string>
 #if 0  // CREATE A REAL STL EXAMPLE
 #include <map>
@@ -74,11 +75,16 @@ int main(int argc, char** argv) {
       std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" << std::endl;
     }
   } catch (const std::exception& e) {
+    std::cout << "OK: exception catched" << std::endl;
     // NORMAL ! :P
   }
 
   for (int i = 0; i < COUNT; ++i) {
     map_int.insert(ft::make_pair(rand(), rand()));
+  }
+
+  for (int i = 0; i < COUNT; ++i) {
+    map_int.insert(ft::make_pair(i, rand()));
   }
 
   int sum = 0;
@@ -89,11 +95,20 @@ int main(int argc, char** argv) {
   std::cout << "should be constant with the same seed: " << sum << std::endl;
 
   { ft::map<int, int> copy = map_int; }
-  MutantStack<char> iterable_stack;
-  for (char letter = 'a'; letter <= 'z'; letter++) iterable_stack.push(letter);
-  for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++) {
-    std::cout << *it;
+
+  {
+    MutantStack<char> iterable_stack;
+    for (char letter = 'a'; letter <= 'z'; letter++) iterable_stack.push(letter);
+    for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end();
+         it++) {
+      std::cout << *it;
+    }
+    std::cout << std::endl;
   }
-  std::cout << std::endl;
+
+  {
+    ft::stack<char, std::list<char> > lstStack;
+  }
+
   return (0);
 }

@@ -30,6 +30,7 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1, InputI
       ++first2;
     }
   }
+
   return first2 != last2;
 }
 
@@ -46,6 +47,7 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1, InputI
       ++first2;
     }
   }
+
   return first2 != last2;
 }
 

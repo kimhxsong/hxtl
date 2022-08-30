@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <functional>
+#include <iostream>
 #include <iterator>
 #include <limits>
 #include <memory>
@@ -10,12 +11,16 @@
 #include "__enable_if.hpp"
 #include "__equal.hpp"
 #include "__is_integral.hpp"
+#include "__iterator_traits.hpp"
 #include "__lexicographical_compare.hpp"
 #include "__pair.hpp"
 #include "__reverse_iterator.hpp"
 
 namespace ft {
 
+//
+// Non Member __tree_node Utilities
+//
 template <class NodePtr>
 bool __tree_is_left_child(NodePtr np) {
   return np == np->parent->left;
@@ -26,15 +31,20 @@ NodePtr __tree_max(NodePtr np) {
   while (np->right != NULL) {
     np = np->right;
   };
+
   return np;
 }
 
 template <class NodePtr>
 NodePtr __tree_min(NodePtr np) {
-  if (!np) return 0;
+  if (!np) {
+    return 0;
+  }
+
   while (np->left != NULL) {
     np = np->left;
   }
+
   return np;
 }
 
@@ -43,9 +53,11 @@ NodePtr __tree_next(NodePtr np) {
   if (np->right) {
     return ft::__tree_min(np->right);
   }
+
   while (np->parent && !ft::__tree_is_left_child(np)) {
     np = np->parent;
   }
+
   return np->parent;
 }
 
@@ -54,29 +66,37 @@ NodePtr __tree_prev(NodePtr np) {
   if (np->left) {
     return ft::__tree_max(np->left);
   }
+
   while (ft::__tree_is_left_child(np)) {
     np = np->parent;
   }
+
   return np->parent;
 }
 
 template <class T>
 class __tree_node {
  public:
-  typedef __tree_node<T> node_type;
-  typedef node_type* node_pointer;
   typedef T value_type;
 
-  __tree_node(const value_type& value) : parent(0), right(0), left(0), value(value) {}
-  void set_parent(node_pointer parent) { this->parent = parent; }
-  ~__tree_node() {}
+ private:
+  typedef __tree_node<T> node_type;
+  typedef node_type* node_pointer;
 
+ public:
   node_pointer parent;
   node_pointer right;
   node_pointer left;
   value_type value;
+  int height;
+
+ public:
+  __tree_node(const value_type& value) : parent(0), right(0), left(0), value(value), height(1) {}
+  void set_parent(node_pointer parent) { this->parent = parent; }
+  ~__tree_node() {}
 
  private:
+  __tree_node();
   __tree_node(__tree_node const&);
   __tree_node& operator=(__tree_node const&);
 };
@@ -85,23 +105,35 @@ template <class T, class NodeType>
 class __tree_iterator {
  public:
   typedef std::bidirectional_iterator_tag iterator_category;
-  typedef T value_type;
-  typedef T* pointer;
-  typedef T& reference;
-  typedef const T* const_pointer;
-  typedef const T& const_reference;
-  typedef std::ptrdiff_t difference_type;
+  typedef typename ft::iterator_traits<T*>::difference_type difference_type;
+  typedef typename ft::iterator_traits<T*>::value_type value_type;
+  typedef typename ft::iterator_traits<T*>::pointer pointer;
+  typedef typename ft::iterator_traits<T*>::reference reference;
 
+ private:
+  typedef NodeType* node_pointer;
+
+  node_pointer np;
+
+ public:
   __tree_iterator() : np(0) {}
-  __tree_iterator(const __tree_iterator& other) : np(other.np) {}
+
+  template <class _T, class _NodeType>
+  __tree_iterator(const __tree_iterator<_T, _NodeType>& other) : np(other.base()) {}
+
   ~__tree_iterator() {}
-  __tree_iterator& operator=(const __tree_iterator& other) {
-    if (this == &other) {
-      return *this;
+
+  template <class _T, class _NodeType>
+  __tree_iterator& operator=(const __tree_iterator<_T, _NodeType>& other) {
+    if (this != &other) {
+      this->np = other.base();
     }
-    this->np = other.np;
+
     return *this;
   }
+
+  explicit __tree_iterator(const node_pointer np) : np(np) {}
+  node_pointer base() const { return this->np; }
 
   reference operator*() const { return this->np->value; }
   pointer operator->() const { return &(this->np->value); }
@@ -125,91 +157,37 @@ class __tree_iterator {
     --(*this);
     return tmp;
   }
-
-  friend bool operator==(const __tree_iterator& lhs, const __tree_iterator& rhs) {
-    return lhs.np == rhs.np;
-  }
-  friend bool operator!=(const __tree_iterator& lhs, const __tree_iterator& rhs) {
-    return !(lhs == rhs);
-  }
-
- private:
-  typedef NodeType* node_pointer;
-
-  explicit __tree_iterator(node_pointer np) : np(np) {}
-
-  node_pointer np;
-
-  template <class, class, class>
-  friend class __tree;
-  template <class, class>
-  friend class __tree_const_iterator;
 };
 
-template <class T, class NodeType>
-class __tree_const_iterator {
- public:
-  typedef std::bidirectional_iterator_tag iterator_category;
-  typedef T value_type;
-  typedef const value_type* pointer;
-  typedef const value_type& reference;
-  typedef std::ptrdiff_t difference_type;
+template <class T1, class N1, class T2, class N2>
+bool operator==(const __tree_iterator<T1, N1>& lhs, const __tree_iterator<T2, N2>& rhs) {
+  return lhs.base() == rhs.base();
+}
 
- private:
-  typedef ft::__tree_iterator<value_type, ft::__tree_node<value_type> > non_const_iterator;
-  typedef NodeType node_type;
-  typedef node_type* node_pointer;
+template <class T1, class N1, class T2, class N2>
+bool operator!=(const __tree_iterator<T1, N1>& lhs, const __tree_iterator<T2, N2>& rhs) {
+  return !(lhs == rhs);
+}
 
-  node_pointer np;
+template <class T1, class N1, class T2, class N2>
+bool operator<(const __tree_iterator<T1, N1>& lhs, const __tree_iterator<T2, N2>& rhs) {
+  return lhs.base() > rhs.base();
+}
 
- public:
-  __tree_const_iterator() : np(0) {}
-  __tree_const_iterator(const __tree_const_iterator& other) : np(other.np) {}
-  __tree_const_iterator(const non_const_iterator& other) : np(other.np) {}
-  ~__tree_const_iterator() {}
+template <class T1, class N1, class T2, class N2>
+bool operator<=(const __tree_iterator<T1, N1>& lhs, const __tree_iterator<T2, N2>& rhs) {
+  return !(rhs < lhs);
+}
 
-  __tree_const_iterator& operator=(const __tree_const_iterator& other) {
-    if (this == &other) return *this;
-    this->np = other.np;
-    return *this;
-  }
+template <class T1, class N1, class T2, class N2>
+bool operator>(const __tree_iterator<T1, N1>& lhs, const __tree_iterator<T2, N2>& rhs) {
+  return rhs < lhs;
+}
 
-  reference operator*() const { return this->np->value; }
-  pointer operator->() const { return &(this->np->value); }
-
-  __tree_const_iterator& operator++() {
-    this->np = ft::__tree_next(this->np);
-    return *this;
-  }
-  __tree_const_iterator operator++(int) {
-    __tree_const_iterator tmp(*this);
-    ++(*this);
-    return tmp;
-  }
-
-  __tree_const_iterator& operator--() {
-    this->np = __tree_prev(this->np);
-    return *this;
-  }
-  __tree_const_iterator operator--(int) {
-    __tree_const_iterator tmp(*this);
-    --(*this);
-    return tmp;
-  }
-
-  friend bool operator==(const __tree_const_iterator& lhs, const __tree_const_iterator& rhs) {
-    return lhs.np == rhs.np;
-  }
-  friend bool operator!=(const __tree_const_iterator& lhs, const __tree_const_iterator& rhs) {
-    return !(lhs == rhs);
-  }
-
- private:
-  explicit __tree_const_iterator(const node_pointer np) : np(np) {}
-
-  template <class, class, class>
-  friend class __tree;
-};
+template <class T1, class N1, class T2, class N2>
+bool operator>=(const __tree_iterator<T1, N1>& lhs, const __tree_iterator<T2, N2>& rhs) {
+  return !(lhs < rhs);
+}
 
 template <class T, class Comp = std::less<T>, class Allocator = std::allocator<T> >
 class __tree {
@@ -221,20 +199,20 @@ class __tree {
   typedef T value_type;
   typedef Comp value_compare;
   typedef typename Allocator::template rebind<node_type>::other allocator_type;
-  typedef value_type* pointer;
   typedef value_type& reference;
-  typedef const value_type* const_pointer;
   typedef const value_type& const_reference;
+  typedef value_type* pointer;
+  typedef const value_type* const_pointer;
   typedef std::size_t size_type;
   typedef std::ptrdiff_t difference_type;
-  typedef __tree_iterator<value_type, node_type> iterator;
-  typedef __tree_const_iterator<value_type, const node_type> const_iterator;
+
+  typedef ft::__tree_iterator<value_type, node_type> iterator;
+  typedef ft::__tree_iterator<const value_type, const node_type> const_iterator;
   typedef ft::reverse_iterator<iterator> reverse_iterator;
   typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
  private:
   allocator_type alloc;
-  node_pointer root;
   node_type begin_node;
   node_type end_node;
   size_type sz;
@@ -243,7 +221,7 @@ class __tree {
  public:
   __tree(const value_compare& comp = value_compare(),
          const allocator_type& alloc = allocator_type())
-      : alloc(alloc), root(0), begin_node(value_type()), end_node(value_type()), sz(0), comp(comp) {
+      : alloc(alloc), begin_node(value_type()), end_node(value_type()), sz(0), comp(comp) {
     begin_node.parent = &end_node;
   }
 
@@ -252,32 +230,25 @@ class __tree {
          typename ft::enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type last,
          const value_compare& comp = value_compare(),
          const allocator_type& alloc = allocator_type())
-      : alloc(alloc), root(0), begin_node(value_type()), end_node(value_type()), sz(0), comp(comp) {
+      : alloc(alloc), begin_node(value_type()), end_node(value_type()), sz(0), comp(comp) {
+    begin_node.parent = &end_node;
     while (first != last) {
       this->insert(*first++);
     }
   }
 
-  void copy_recursive(node_pointer np) {
-    if (!np) return;
-    this->insert(np->value);
-    copy_recursive(np->left);
-    copy_recursive(np->right);
-  }
-
   __tree(const __tree& other)
       : alloc(other.alloc),
-        root(0),
         begin_node(value_type()),
         end_node(value_type()),
         sz(0),
         comp(other.comp) {
-    copy_recursive(other.end_node.left);
+    __copy_recursive(other.end_node.left);
   }
 
   __tree& operator=(const __tree& other) {
     this->clear();
-    copy_recursive(other.end_node.left);
+    __copy_recursive(other.end_node.left);
     return *this;
   }
   ~__tree() { this->clear(); }
@@ -296,47 +267,51 @@ class __tree {
     if (found != this->end())
       return ft::make_pair(found, false);
     else
-      return ft::make_pair(insert(this->end(), value), true);
+      return ft::make_pair(this->insert(this->end(), value), true);
   }
 
   iterator insert(iterator position, const value_type& value) {
-    node_pointer new_np = this->alloc.allocate(1);
-    this->alloc.construct(new_np, value);
+    iterator found = this->find(value);
+    if (this->find(value) != this->end()) {
+      return found;
+    }
 
-    if (!root) {
-      this->root = new_np;
-      this->root->set_parent(&end_node);
-      this->end_node.left = root;
+    node_pointer balance_np = this->alloc.allocate(1);
+    this->alloc.construct(balance_np, value);
+    if (!end_node.left) {
+      balance_np->set_parent(&end_node);
+      this->end_node.left = balance_np;
     } else {
-      node_pointer current = position.np->left;
+      node_pointer current = position.base()->left;
+      node_pointer prev = 0;
       if (!current || comp(current->value, value)) {
         current = end_node.left;
       }
+
       while (current) {
-        if (comp(current->value, value) == comp(value, current->value)) {
-          this->alloc.destroy(new_np);
-          this->alloc.deallocate(new_np, 1);
-          return iterator(current);
-        } else if (comp(current->value, value)) {
-          if (!current->right) {
-            new_np->set_parent(current);
-            current->right = new_np;
-            break;
-          }
+        if (comp(current->value, value)) {
+          prev = current;
           current = current->right;
         } else {
-          if (!current->left) {
-            new_np->set_parent(current);
-            current->left = new_np;
-            break;
-          }
+          prev = current;
           current = current->left;
         }
       }
+
+      if (comp(prev->value, value)) {
+        prev->right = balance_np;
+        balance_np->set_parent(prev);
+      } else {
+        prev->left = balance_np;
+        balance_np->set_parent(prev);
+      }
+
+      this->__rebalance(balance_np);
     }
+
     this->sz++;
     this->begin_node.set_parent(ft::__tree_min(end_node.left));
-    return iterator(new_np);
+    return iterator(balance_np);
   }
 
   template <class InputIterator>
@@ -356,53 +331,58 @@ class __tree {
       return 0;
     }
 
-    node_pointer tmp = found.np;
-    if (found.np->left == 0 && found.np->right == 0) {
-      if (ft::__tree_is_left_child(found.np)) {
-        found.np->parent->left = 0;
+    node_pointer del = found.base();
+    node_pointer balance_np = del->parent;
+    if (del->left == 0 && del->right == 0) {
+      if (ft::__tree_is_left_child(del)) {
+        del->parent->left = 0;
       } else {
-        found.np->parent->right = 0;
+        del->parent->right = 0;
       }
-    } else if (found.np->left != 0 && found.np->right != 0) {
-      node_pointer subroot = ft::__tree_max(found.np->left);
-      if (ft::__tree_is_left_child(found.np)) {
-        found.np->parent->left = subroot;
+    } else if (del->left != 0 && del->right != 0) {
+      node_pointer subroot = ft::__tree_max(del->left);
+      if (ft::__tree_is_left_child(del)) {
+        del->parent->left = subroot;
       } else {
-        found.np->parent->right = subroot;
+        del->parent->right = subroot;
       }
       if (!ft::__tree_is_left_child(subroot)) {
         subroot->parent->right = subroot->left;
         if (subroot->left) {
           subroot->left->set_parent(subroot->parent);
         }
-        subroot->left = found.np->left;
+
+        subroot->left = del->left;
         subroot->left->set_parent(subroot);
       }
-      subroot->right = found.np->right;
+
+      subroot->right = del->right;
       subroot->right->set_parent((subroot));
-      subroot->set_parent(found.np->parent);
+      subroot->set_parent(del->parent);
       subroot->right->set_parent(subroot);
     } else {
-      if (ft::__tree_is_left_child(found.np)) {
-        if (found.np->left) {
-          found.np->parent->left = found.np->left;
-          found.np->left->set_parent(found.np->parent);
+      if (ft::__tree_is_left_child(del)) {
+        if (del->left) {
+          del->parent->left = del->left;
+          del->left->set_parent(del->parent);
         } else {
-          found.np->parent->left = found.np->right;
-          found.np->right->set_parent(found.np->parent);
+          del->parent->left = del->right;
+          del->right->set_parent(del->parent);
         }
       } else {
-        if (found.np->left) {
-          found.np->parent->right = found.np->left;
-          found.np->left->set_parent(found.np->parent);
+        if (del->left) {
+          del->parent->right = del->left;
+          del->left->set_parent(del->parent);
         } else {
-          found.np->parent->right = found.np->right;
-          found.np->right->set_parent(found.np->parent);
+          del->parent->right = del->right;
+          del->right->set_parent(del->parent);
         }
       }
     }
-    this->alloc.destroy(tmp);
-    this->alloc.deallocate(tmp, 1);
+
+    this->__rebalance(balance_np);
+    this->alloc.destroy(del);
+    this->alloc.deallocate(del, 1);
     this->sz--;
     this->begin_node.set_parent(ft::__tree_min(&end_node));
     return 1;
@@ -415,34 +395,31 @@ class __tree {
   }
 
   void clear() {
-    this->clear_recursive(end_node.left);
-    this->root = 0;
+    this->__clear_recursive(end_node.left);
     this->end_node.left = 0;
     this->begin_node.parent = &end_node;
     this->sz = 0;
   }
 
   void swap(__tree& other) {
-    node_pointer tmp_np = other.end_node.left;
+    node_pointer tmp_np = 0;
+    tmp_np = other.end_node.left;
     other.end_node.left = this->end_node.left;
     this->end_node.left = tmp_np;
-    other.end_node.left->parent = &other.end_node;
-    this->end_node.left->parent = &this->end_node;
+    if (other.end_node.left) {
+      other.end_node.left->parent = &other.end_node;
+    }
+
+    if (this->end_node.left) {
+      this->end_node.left->parent = &this->end_node;
+    }
+
     tmp_np = other.begin_node.parent;
     other.begin_node.parent = this->begin_node.parent;
     this->begin_node.parent = tmp_np;
-    tmp_np = other.root;
-    other.root = this->root;
-    this->root = tmp_np;
     size_type tmp_sz = other.sz;
     other.sz = this->sz;
     this->sz = tmp_sz;
-    allocator_type tmp_alloc = other.alloc;
-    other.alloc = this->alloc;
-    this->alloc = tmp_alloc;
-    value_compare tmp_comp = other.comp;
-    other.comp = this->comp;
-    this->comp = tmp_comp;
   }
 
   value_compare value_comp() const { return value_compare(); }
@@ -450,30 +427,34 @@ class __tree {
   const_iterator find(const value_type& value) const {
     node_pointer current = this->end_node.left;
     while (current) {
-      if (comp(current->value, value) == comp(value, current->value)) {
+      if (!comp(current->value, value) && !comp(value, current->value)) {
         return iterator(current);
       }
+
       if (comp(current->value, value)) {
         current = current->right;
       } else {
         current = current->left;
       }
     }
+
     return this->end();
   }
 
   iterator find(const value_type& value) {
     node_pointer current = this->end_node.left;
     while (current) {
-      if (comp(current->value, value) == comp(value, current->value)) {
+      if (!comp(current->value, value) && !comp(value, current->value)) {
         return iterator(current);
       }
+
       if (comp(current->value, value)) {
         current = current->right;
       } else {
         current = current->left;
       }
     }
+
     return this->end();
   }
 
@@ -489,6 +470,7 @@ class __tree {
       } else
         current = current->right;
     }
+
     if (!result)
       return this->end();
     else
@@ -505,6 +487,7 @@ class __tree {
       } else
         current = current->right;
     }
+
     if (!result)
       return this->end();
     else
@@ -521,6 +504,7 @@ class __tree {
       } else
         current = current->right;
     }
+
     if (!result)
       return this->end();
     else
@@ -537,6 +521,7 @@ class __tree {
       } else
         current = current->right;
     }
+
     if (!result)
       return this->end();
     else
@@ -551,8 +536,6 @@ class __tree {
     return ft::make_pair(this->lower_bound(value), this->upper_bound(value));
   }
 
-  allocator_type get_allocator() const { return this->alloc; }
-
   size_type size() const { return this->sz; }
 
   bool empty() const { return this->sz == 0; }
@@ -560,26 +543,124 @@ class __tree {
   size_type max_size() const { return std::numeric_limits<size_type>::max() / sizeof(node_type); }
 
  private:
-  void clear_recursive(node_pointer np) {
-    if (!np) return;
-    clear_recursive(np->left);
-    clear_recursive(np->right);
+  void __copy_recursive(node_pointer np) {
+    if (!np) {
+      return;
+    }
+    this->insert(np->value);
+    __copy_recursive(np->left);
+    __copy_recursive(np->right);
+  }
+
+  void __clear_recursive(node_pointer np) {
+    if (!np) {
+      return;
+    }
+    __clear_recursive(np->left);
+    __clear_recursive(np->right);
     this->alloc.destroy(np);
     this->alloc.deallocate(np, 1);
   }
 
-  template <class _T, class _Comp, class _Alloc>
-  friend bool operator==(const ft::__tree<_T, _Comp, _Alloc>& lhs,
-                         const ft::__tree<_T, _Comp, _Alloc>& rhs) {
-    return (lhs.size() == rhs.size()) && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+  int __tree_height(node_pointer root) {
+    if (!root || root == &this->end_node) {
+      return 0;
+    }
+
+    int left_height = root->left != 0 ? root->left->height : 0;
+    int right_height = root->right != 0 ? root->right->height : 0;
+    int max_height = left_height > right_height ? left_height : right_height;
+    return max_height + 1;
   }
 
-  template <class _T, class _Comp, class _Alloc>
-  friend bool operator<(const ft::__tree<_T, _Comp, _Alloc>& lhs,
-                        const ft::__tree<_T, _Comp, _Alloc>& rhs) {
-    return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+  int __tree_balance_factor(node_pointer np) {
+    if (!np) {
+      return 1;
+    }
+
+    return __tree_height(np->left) - __tree_height(np->right);
   }
-};
+
+  void __rotate_left(node_pointer down_np) {
+    node_pointer up_np = down_np->right;
+    down_np->right = up_np->left;
+    if (up_np->left) {
+      up_np->left->parent = down_np;
+    }
+
+    up_np->left = down_np;
+    up_np->parent = down_np->parent;
+    if (down_np->parent) {
+      if (down_np->parent->left == down_np)
+        down_np->parent->left = up_np;
+      else
+        down_np->parent->right = up_np;
+    }
+
+    down_np->parent = up_np;
+    down_np->height = __tree_height(down_np);
+    up_np->height = __tree_height(up_np);
+  }
+
+  void __rotate_right(node_pointer down_np) {
+    node_pointer up_np = down_np->left;
+    down_np->left = up_np->right;
+    if (up_np->right) {
+      up_np->right->parent = down_np;
+    }
+
+    up_np->right = down_np;
+    up_np->parent = down_np->parent;
+    if (down_np->parent) {
+      if (down_np->parent->left == down_np)
+        down_np->parent->left = up_np;
+      else
+        down_np->parent->right = up_np;
+    }
+
+    down_np->parent = up_np;
+    down_np->height = __tree_height(down_np);
+    up_np->height = __tree_height(up_np);
+  }
+
+  void __rebalance(node_pointer np) {
+    while (np != &this->end_node) {
+      np->height = __tree_height(np);
+      int balance = __tree_balance_factor(np);
+      if (balance < -1) {
+        if (__tree_balance_factor(np->right) < 0) {
+          __rotate_left(np);
+        } else {
+          __rotate_right(np->right);
+          __rotate_left(np);
+        }
+      } else if (balance > 1) {
+        if (__tree_balance_factor(np->left) > 0) {
+          __rotate_right(np);
+        } else {
+          __rotate_left(np->left);
+          __rotate_right(np);
+        }
+      }
+
+      np = np->parent;
+    }
+  }
+};  // class __tree
+
+//
+// Non Member Functions
+//
+template <class _T, class _Comp, class _Alloc>
+bool operator==(const ft::__tree<_T, _Comp, _Alloc>& lhs,
+                const ft::__tree<_T, _Comp, _Alloc>& rhs) {
+  return (lhs.size() == rhs.size()) && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+}
+
+template <class _T, class _Comp, class _Alloc>
+bool operator<(const ft::__tree<_T, _Comp, _Alloc>& lhs, const ft::__tree<_T, _Comp, _Alloc>& rhs) {
+  return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+}
 
 template <class T, class Comp, class Alloc>
 bool operator!=(const ft::__tree<T, Comp, Alloc>& lhs, const ft::__tree<T, Comp, Alloc>& rhs) {

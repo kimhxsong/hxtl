@@ -11,16 +11,17 @@
 /* ************************************************************************** */
 
 #include <iostream>
-#include <map>
 #include <string>
-#include <utility>
 
 #include "gtest/gtest.h"
 
-#if 1
+#if 0
+#include <utility>
+#include <map>
 namespace ft = std;
 #else
-#include "../map.hpp"
+#include "__pair.hpp"
+#include "map.hpp"
 #endif
 
 // MAP_CONSTRUCTOR
@@ -36,9 +37,9 @@ TEST(map_constructor, empty__1__) {
 // map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(),
 //     const allocator_type& alloc = allocator_type());
 TEST(map_constructor, range__2__) {
-  std::vector<std::pair<char, int> > __std__vec_with_pair;
+  std::vector<ft::pair<char, int> > __std__vec_with_pair;
   for (int i = 33; i < 127; i++) {
-    __std__vec_with_pair.push_back(std::make_pair(static_cast<char>(i), i));
+    __std__vec_with_pair.push_back(ft::make_pair(static_cast<char>(i), i));
   }
 
   ft::map<char, int> __ft__map(__std__vec_with_pair.begin(), __std__vec_with_pair.end());
@@ -55,9 +56,9 @@ TEST(map_constructor, copy__3__) {
 }
 
 TEST(map_operator, assign) {
-  std::vector<std::pair<char, int> > __std__vec_with_pair;
+  std::vector<ft::pair<char, int> > __std__vec_with_pair;
   for (int i = 33; i < 127; i++) {
-    __std__vec_with_pair.push_back(std::make_pair(static_cast<char>(i), i));
+    __std__vec_with_pair.push_back(ft::make_pair(static_cast<char>(i), i));
   }
 
   ft::map<char, int> __ft__map(__std__vec_with_pair.begin(), __std__vec_with_pair.end());
@@ -315,21 +316,21 @@ TEST(map_operator, element_access) {
 TEST(map_insert, single_element__1) {
   ft::map<std::string, int> __ft__map;
   // pair<iterator,bool> insert (const value_type& val);
-  __ft__map.insert(std::pair<std::string, int>("zero", 0));  // single element(1)
+  __ft__map.insert(ft::pair<std::string, int>("zero", 0));  // single element(1)
 }
 
 TEST(map_insert, with_hint__2) {
   ft::map<std::string, int> __ft__map;
 
-  std::pair<std::map<std::string, int>::iterator, bool> ret;
+  ft::pair<ft::map<std::string, int>::iterator, bool> ret;
   // iterator insert (iterator position, const value_type& val);
-  ret = __ft__map.insert(std::pair<std::string, int>("answer", 42));  // with hint(2)
+  ret = __ft__map.insert(ft::pair<std::string, int>("answer", 42));  // with hint(2)
   EXPECT_EQ(ret.second, true);
 }
 
 TEST(map_insert, range__3) {
-  std::vector<std::pair<std::string, int> > __std__vec;
-  __std__vec.push_back(std::make_pair("answer", 42));
+  std::vector<ft::pair<std::string, int> > __std__vec;
+  __std__vec.push_back(ft::make_pair("answer", 42));
 
   ft::map<std::string, int> __ft__map;
   // template <class InputIterator>
@@ -520,7 +521,7 @@ TEST(map_equal_range, equal_range) {
   __ft__map['c'] = 60;
   __ft__map['d'] = 80;
   __ft__map['e'] = 100;
-  std::pair<std::map<char, int>::iterator, ft::map<char, int>::iterator> ret;
+  ft::pair<ft::map<char, int>::iterator, ft::map<char, int>::iterator> ret;
   // pair<iterator,iterator>             equal_range (const key_type& k);
   ret = __ft__map.equal_range('b');
   EXPECT_EQ(ret.first->first, 'b');
@@ -538,7 +539,7 @@ TEST(map_equal_range, equal_range_const) {
   __ft__map['c'] = 60;
   __ft__map['d'] = 80;
   __ft__map['e'] = 100;
-  std::pair<std::map<char, int>::const_iterator, ft::map<char, int>::const_iterator> cret;
+  ft::pair<ft::map<char, int>::const_iterator, ft::map<char, int>::const_iterator> cret;
   // pair<const_iterator,const_iterator> equal_range (const key_type& k) const;
   cret = __ft__map.equal_range('b');
   EXPECT_EQ(cret.first->first, 'b');
